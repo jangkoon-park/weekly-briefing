@@ -218,3 +218,7 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# weekly-news-briefing: 수집/발송 시 생성되는 결과물 (코드 아님, 매 실행마다 새로 생성됨)
+data/*.json
+data/preview.html

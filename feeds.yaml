@@ -1,0 +1,64 @@
+# 주간 뉴스 브리핑에 사용할 RSS 피드 목록.
+# 분야(category)를 추가/삭제하거나, 각 분야의 feeds 목록에 피드를 추가/삭제해서 자유롭게 구성하세요.
+#
+# 피드 한 개의 형식:
+#   - name: "표시용 이름 (출처로 메일에 표시됨)"
+#     url: "RSS/Atom 피드 URL"
+#     lang: ko | en   # 참고용, 동작에는 영향 없음
+#
+# 주의: 여기에는 "공식 RSS 피드"만 넣습니다. RSS가 없는 사이트를 넣으면 수집 단계에서
+# 에러 없이 조용히 건너뛰고 경고만 로그에 남습니다(크롤링은 하지 않습니다).
+
+settings:
+  days_back: 7          # 최근 며칠치 기사까지 포함할지
+  max_items_per_category: 10
+
+categories:
+  - key: ai_data
+    name: "AI·데이터 도구"
+    feeds:
+      # 필수 요청 피드
+      - name: "GeekNews"
+        url: "https://news.hada.io/rss/news"
+        lang: ko
+      # Anthropic 공지(anthropic.com/news)는 공식 RSS가 없어서 포함하지 못했습니다.
+      # (아래 README "조사 결과" 참고)
+
+      # 추가로 고른 영어/한국어 공식 RSS
+      - name: "OpenAI News"
+        url: "https://openai.com/news/rss.xml"
+        lang: en
+      - name: "Hugging Face Blog"
+        url: "https://huggingface.co/blog/feed.xml"
+        lang: en
+      - name: "AWS Big Data Blog"
+        url: "https://aws.amazon.com/blogs/big-data/feed/"
+        lang: en
+      - name: "Simon Willison's Weblog (LLM)"
+        url: "https://simonwillison.net/tags/llms.atom"
+        lang: en
+
+  - key: freelance
+    name: "프리랜서·업워크 시장"
+    feeds:
+      # Upwork 블로그는 공식 RSS가 없어(2024-08 RSS 전면 종료) 포함하지 못했습니다.
+      # (아래 README "조사 결과" 참고)
+      - name: "Freelancers Union Blog"
+        url: "https://blog.freelancersunion.org/rss"
+        lang: en
+
+  - key: construction_erp
+    name: "건설IT·ERP"
+    feeds:
+      - name: "Engineering News-Record (ENR)"
+        url: "https://www.enr.com/rss/articles"
+        lang: en
+      - name: "Construction Dive"
+        url: "https://www.constructiondive.com/feeds/news/"
+        lang: en
+
+# Hacker News는 RSS가 아니라 Algolia HN API로 별도 수집합니다 (아래 설정 사용).
+hacker_news:
+  min_points: 200
+  days_back: 7
+  max_items: 5
