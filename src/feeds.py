@@ -255,9 +255,10 @@ def _rank_by_coverage(per_feed_items, threshold):
 
 def collect_rss_category(category, hours_back, now_epoch):
     """분야의 후보 기사 목록(우선순위 순)을 돌려준다. 개수 제한·분야 간 중복 제거는 select_items에서."""
-    cutoff_epoch = now_epoch - hours_back * 3600
     category_pattern = compile_keywords(category.get("keywords"))
     category_exclude = compile_keywords(category.get("exclude_keywords"))
+    # settings.exclude_keywords (광고·보도자료성 등) 는 모든 RSS 분야에 항상 적용
+    global_exclude = compile_keywords(category.get("_global_exclude"))
     seen_links = set()
     seen_titles = set()
     per_feed_items = []
@@ -274,6 +275,8 @@ def collect_rss_category(category, hours_back, now_epoch):
             if "exclude_keywords" in feed_cfg
             else category_exclude
         )
+        # 격주간지처럼 글이 드문 피드는 feeds.yaml에서 hours_back을 따로 줄 수 있다
+        cutoff_epoch = now_epoch - float(feed_cfg.get("hours_back", hours_back)) * 3600
         try:
             parsed = fetch_feed(feed_url, feed_cfg.get("user_agent"))
         except Exception as exc:  # noqa: BLE001 - 피드 하나 실패해도 전체는 계속 진행
@@ -298,6 +301,8 @@ def collect_rss_category(category, hours_back, now_epoch):
             if not _matches(pattern, title):
                 continue
             if exclude is not None and exclude.search(title):
+                continue
+            if global_exclude is not None and global_exclude.search(title):
                 continue
             norm = _normalize_title(title)
             if link in seen_links or norm in seen_titles:
@@ -488,6 +493,7 @@ def collect_schedule(config, schedule, now_epoch=None, seen=None):
         ctype = category.get("type", "rss")
         max_items = int(category.get("max_items", default_max))
         logger.info("[%s] %s (type=%s, 최근 %d시간, 최대 %d개)", schedule, category["name"], ctype, hours_back, max_items)
+        category = {**category, "_global_exclude": config.get("settings", {}).get("exclude_keywords")}
         candidates = COLLECTORS[ctype](category, hours_back, now_epoch)
         threshold = float(category.get("similarity", DEFAULT_SIMILARITY))
         items, skipped = select_items(candidates, max_items, seen, threshold)
@@ -497,7 +503,10 @@ def collect_schedule(config, schedule, now_epoch=None, seen=None):
             items.sort(key=lambda x: x["published_epoch"], reverse=True)
         for item in items:
             item.pop("_score", None)
-        results.append({"key": category["key"], "name": category["name"], "type": ctype, "items": items})
+        result = {"key": category["key"], "name": category["name"], "type": ctype, "items": items}
+        if category.get("summary_style"):
+            result["summary_style"] = category["summary_style"]
+        results.append(result)
     return results
 
 

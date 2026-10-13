@@ -93,6 +93,8 @@ TASK_TEXT = {
   "오픈소스" → "누구나 무료로 쓰고 고칠 수 있게 공개한", "기준금리" → "한국은행이 정하는 기본 금리".
 - 발췌문·댓글이 비어 있거나 부족하면 제목에서 알 수 있는 만큼만 쓰고, 추측해서 지어내지 않는다.
   제목·발췌문·댓글로도 무슨 내용인지 알 수 없으면 summary를 딱 "원문 확인 필요"라고만 쓴다.
+- `"kind": "essay"`인 원소(에세이·비평·장문 글)는 사건이 아니라 **무슨 주장·내용인지**를 쓴다.
+  예: "AI가 인간의 판단을 대신할수록 책임 소재가 흐려진다고 주장하는 에세이".
 """,
     "debate": """## debate — HN 댓글 쟁점 (쉬운 말)
 - `comments`(Hacker News 상위 댓글)를 읽고 사람들이 무엇을 두고 의견이 갈렸는지 쉬운 한국어로 쓴다.
@@ -106,14 +108,20 @@ DUP_TEXT = """## dup_of — 같은 사건 중복 표시
 - `items`는 메일에 나오는 순서다. 어떤 원소가 앞에 나온 다른 원소와 **같은 사건**을 다룬다면
   (매체·언어·표현이 달라도) 그 원소에 "dup_of": "<앞 원소의 id>"를 넣는다. 그 원소는 메일에서 빠진다.
 - 같은 주제라도 서로 다른 사건(예: 다른 회사의 실적, 다른 날의 발표)이면 표시하지 않는다. 애매하면 표시하지 않는다.
+
+## ad — 광고·보도자료성 기사 표시
+- 기사가 특정 상품·서비스·업체 홍보가 목적인 광고성 글이거나, 기업 보도자료를 그대로 옮긴 홍보성 글이면
+  "ad": true를 넣는다 (예: 건강식품·영양제 홍보, 할인·이벤트 안내, 신제품 홍보 일색, 행사 개최 알림). 그 원소는 메일에서 빠진다.
+- 기업 소식이라도 실적·투자·사고·정책처럼 뉴스 가치가 있으면 표시하지 않는다. 애매하면 표시하지 않는다.
 """
 
 PROMPT_TAIL = """## 결과 저장
 결과를 `data/enrich.json`에 Write로 저장한다. 구조:
-{ "<id>": { "title_ko": "...", "summary": "...", "debate": "...", "dup_of": "..." }, ... }
-- 각 id에는 그 원소의 `tasks`에 있는 키와 (해당할 때만) dup_of만 넣는다. 넣을 게 없는 id는 빼도 된다.
+{ "<id>": { "title_ko": "...", "summary": "...", "debate": "...", "dup_of": "...", "ad": true }, ... }
+- 각 id에는 그 원소의 `tasks`에 있는 키와 (해당할 때만) dup_of·ad만 넣는다. 넣을 게 없는 id는 빼도 된다.
 - 반드시 유효한 JSON만 저장한다. 마크다운 코드블록이나 설명을 붙이지 않는다.
-- data/enrich.json 외의 파일은 만들거나 고치지 않는다.
+- 원소가 많아 한 번에 쓰기 길면 같은 구조로 `data/enrich_out_1.json`, `data/enrich_out_2.json` … 처럼
+  여러 파일로 나눠 저장해도 된다 (id가 겹치지 않게). 이 파일들 외에는 만들거나 고치지 않는다.
 """
 
 
@@ -127,6 +135,7 @@ def prepare(translate, summarize, summarize_hn):
     for section in briefing["sections"]:
         for cat in section["categories"]:
             is_hn = cat.get("type") == "hacker_news"
+            is_essay = cat.get("summary_style") == "essay"
             for item in cat["items"]:
                 counter += 1
                 item["eid"] = f"i{counter}"
@@ -148,6 +157,8 @@ def prepare(translate, summarize, summarize_hn):
                     continue
                 if "summary" in tasks and not is_hn:
                     entry["excerpt"] = make_excerpt(item.get("excerpt", ""), SUMMARY_EXCERPT_CHARS)
+                if is_essay:
+                    entry["kind"] = "essay"
                 entry["tasks"] = tasks
                 used_tasks.update(tasks)
                 inputs.append(entry)

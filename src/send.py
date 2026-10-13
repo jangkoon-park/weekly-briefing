@@ -31,9 +31,11 @@ def _load_json(path, default):
 
 
 def drop_duplicates(briefing, enrich):
-    """Claude가 dup_of(앞 기사와 같은 사건)로 표시한 기사를 뺀다. 가리키는 기사가 실제로 앞에 있을 때만."""
+    """Claude가 dup_of(앞 기사와 같은 사건)로 표시한 기사(가리키는 기사가 실제로 앞에 있을 때만)와
+    ad(광고·보도자료성)로 표시한 기사를 뺀다."""
     kept_ids = set()
     removed = 0
+    ads = 0
     for section in briefing["sections"]:
         for cat in section["categories"]:
             kept = []
@@ -43,11 +45,16 @@ def drop_duplicates(briefing, enrich):
                 if dup_of and dup_of in kept_ids:
                     removed += 1
                     continue
+                if isinstance(info, dict) and info.get("ad") is True:
+                    ads += 1
+                    continue
                 kept.append(item)
                 kept_ids.add(item.get("eid"))
             cat["items"] = kept
     if removed:
         logger.info("같은 사건 중복 %d건 제외 (Claude 판단)", removed)
+    if ads:
+        logger.info("광고·보도자료성 %d건 제외 (Claude 판단)", ads)
 
 
 def main():
@@ -69,11 +76,16 @@ def main():
     subject = f"[{title}] {now_kst.strftime('%Y-%m-%d')}"
     date_label = now_kst.strftime("%Y-%m-%d (%a) %H:%M KST")
     # (선택) Claude 번역·요약 결과. 없거나 깨져 있으면 원문 그대로 보냄
-    try:
-        enrich = _load_json(DATA_DIR / "enrich.json", {})
-    except ValueError as exc:
-        logger.warning("data/enrich.json을 읽을 수 없어 번역·요약 없이 보냅니다: %s", exc)
-        enrich = {}
+    # Claude가 결과를 enrich.json 하나 또는 enrich_out_N.json 여러 개로 나눠 쓸 수 있다
+    enrich = {}
+    for path in [DATA_DIR / "enrich.json", *sorted(DATA_DIR.glob("enrich_out_*.json"))]:
+        try:
+            part = _load_json(path, {})
+        except ValueError as exc:
+            logger.warning("%s을 읽을 수 없어 이 파일의 번역·요약은 건너뜁니다: %s", path.name, exc)
+            continue
+        if isinstance(part, dict):
+            enrich.update(part)
     if enrich:
         logger.info("번역·요약 결과 %d건 반영", len(enrich))
         drop_duplicates(briefing, enrich)
