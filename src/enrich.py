@@ -5,7 +5,7 @@
 환경변수(true/false)로 켜고 끈다:
   TRANSLATE_TITLES    영어 등 한글이 없는 제목을 한국어로 번역 (한국어 제목은 그대로)
   SUMMARIZE_ARTICLES  기사별 쉬운 말 한 줄 요약 (HN 제외, RSS 발췌문 기준)
-  SUMMARIZE_HN        HN 글마다 상위 댓글을 읽고 "찬성 쪽은 ~ / 반대 쪽은 ~" 요약
+  SUMMARIZE_HN        HN 글마다 상위 댓글을 참고해 "무슨 일인지" 한 줄 + "찬성 쪽은 ~ / 반대 쪽은 ~" 요약
 
 하는 일:
   1. data/briefing.json의 각 기사에 짧은 id("eid")를 붙여 다시 저장
@@ -87,11 +87,17 @@ TASK_TEXT = {
 - `title`을 자연스러운 한국어 기사 제목으로 번역한다. 원문에 없는 내용을 더하지 않는다.
 - 회사·제품·사람 이름은 원어 그대로 두거나 널리 쓰는 한글 표기를 쓴다 (예: OpenAI, PostgreSQL, 구글).
 """,
-    "summary": """## summary — 쉬운 말 한 줄 요약
-- `title`과 `excerpt`(기사 앞부분 발췌)만 보고 무슨 일인지 한국어 한 문장(80자 안팎)으로 쓴다.
+    "summary": """## summary — "무슨 일인지" 쉬운 말 한 줄
+- 무슨 일인지 한국어 한 문장(80자 안팎)으로 쓴다.
+  - 일반 기사: `title`과 `excerpt`(기사 앞부분 발췌)를 근거로 쓴다.
+  - Hacker News 글(`excerpt` 없이 `comments`가 있는 원소): 본문이 없으니 `title`과 댓글 내용을 참고해서
+    글이 무엇을 다루는지 설명한다. 댓글 속 의견이 아니라 "무슨 일/무엇인지"를 쓴다.
+- 제목이 제품·회사·프로젝트 이름뿐이면 그게 무엇인지 풀어서 쓴다.
+  예: "Show HN: Muse Wonder" → "뮤즈 원더: ○○사가 새로 낸 AI 모델".
 - 전문용어는 풀어 쓴다. 예: "LLM" → "챗GPT 같은 대형 AI 모델", "레이턴시" → "응답 속도",
   "오픈소스" → "누구나 무료로 쓰고 고칠 수 있게 공개한", "기준금리" → "한국은행이 정하는 기본 금리".
-- 발췌문이 비어 있거나 부족하면 제목에서 알 수 있는 만큼만 쓰고, 추측해서 지어내지 않는다.
+- 발췌문·댓글이 비어 있거나 부족하면 제목에서 알 수 있는 만큼만 쓰고, 추측해서 지어내지 않는다.
+  제목·발췌문·댓글로도 무슨 내용인지 알 수 없으면 summary를 딱 "원문 확인 필요"라고만 쓴다.
 """,
     "debate": """## debate — HN 댓글 쟁점 (쉬운 말)
 - `comments`(Hacker News 상위 댓글)를 읽고 사람들이 무엇을 두고 의견이 갈렸는지 쉬운 한국어로 쓴다.
@@ -129,14 +135,16 @@ def prepare(translate, summarize, summarize_hn):
                 if summarize and not is_hn:
                     tasks.append("summary")
                 entry = {"id": item["eid"], "title": item["title"]}
-                if summarize_hn and is_hn and item.get("hn_id"):
-                    comments = fetch_hn_comments(item["hn_id"])
+                if summarize_hn and is_hn:
+                    # HN은 본문이 없으므로 상위 댓글을 근거로 "무슨 일인지" 설명 + 찬반 쟁점
+                    tasks.append("summary")
+                    comments = fetch_hn_comments(item["hn_id"]) if item.get("hn_id") else []
                     if comments:
                         tasks.append("debate")
                         entry["comments"] = comments
                 if not tasks:
                     continue
-                if "summary" in tasks:
+                if "summary" in tasks and not is_hn:
                     entry["excerpt"] = make_excerpt(item.get("excerpt", ""), SUMMARY_EXCERPT_CHARS)
                 entry["tasks"] = tasks
                 used_tasks.update(tasks)
