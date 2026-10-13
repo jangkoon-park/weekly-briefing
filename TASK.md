@@ -49,3 +49,59 @@
 - 작업 끝나면 브랜치에 push하고 무엇을 만들었는지, feeds.yaml에 어떤 사이트가 들어갔는지 알려줘
 
 - 이 지시 내용 전체를 저장소에 TASK.md로 저장해서 같이 push해줘
+
+---
+
+# 2차 변경: 데일리 + 주간 두 가지로 분리
+
+기존 발송 방식(지메일 SMTP, Secrets 3개 `GMAIL_USER` / `GMAIL_APP_PASSWORD` / `MAIL_TO`)은 그대로 유지.
+
+## 실행 일정
+- 데일리: 매일 한국시간 오전 8시 (cron은 UTC로 변환), 최근 24시간 기사
+- 주간: 매주 월요일 한국시간 오전 8시, 최근 7일 기사
+- 월요일에는 두 개를 따로 보내지 말고 한 통으로 합쳐서 발송 (위에 데일리, 아래에 주간)
+- 메일 제목: 평일은 "[데일리 브리핑] YYYY-MM-DD", 월요일은 "[데일리+주간 브리핑] YYYY-MM-DD"
+- workflow_dispatch 수동 실행에서 daily / weekly / both 중 고를 수 있게
+
+## 데일리 분야 (메일에 이 순서로 표시, 분야별 최대 5개)
+1) AI·데이터 도구 (기존 유지) + 추가: Simon Willison 블로그, Hugging Face 블로그, OpenAI 뉴스, Google DeepMind 블로그, AI타임스(국내)
+2) ML 논문: Hugging Face Daily Papers — 추천 많은 상위 3개
+3) 국내 경제·제도: 연합뉴스·한국경제 등 경제 섹션 RSS
+   - 제목에 다음 키워드가 있는 기사만: 금리, 기준금리, 환율, 코스피, 경기, 물가, 부동산, 전세, 재건축, 세법, 상속, 증여, 종합소득세, 프리랜서
+4) 국내 IT 정책·업계: 전자신문, 지디넷코리아, 블로터, 바이라인네트워크 등 IT RSS
+   - 제목에 다음 키워드가 있는 기사만: 공공 클라우드, 망분리, 클라우드 네이티브, AI 사업, 생성형 AI, 차세대, SI, 오라클, PostgreSQL, ERP, 데이터센터, 네이버, 카카오
+5) Hacker News: 최근 24시간 포인트 상위 5개 (100점 이상), 기사 링크 + 댓글 링크
+
+## 주간 분야 (메일에 이 순서로 표시, 따로 적지 않으면 분야별 최대 10개)
+1) DB·데이터 엔지니어링: Planet PostgreSQL, SQLBI, Power BI 공식 블로그, Oracle Database Insider 블로그, Data Engineering Weekly, 우아한형제들·토스·카카오 기술블로그
+2) 프리랜서·업워크 시장 (기존 유지) + 추가: Upwork Research Institute, Reddit r/Upwork(주간 상위 글만)
+3) 과학·수학: Quanta Magazine
+4) 생각·인문: Astral Codex Ten, Aeon, Psyche, Noema Magazine, LessWrong(큐레이티드 피드만)
+5) 책·서평: Five Books, 채널예스
+6) 미술
+   - 해외: Colossal, Hyperallergic(최대 5개), e-flux Journal(전시 공지 피드 말고 저널만), Artforum, Frieze
+   - 국내: 국립현대미술관(MMCA) 전시·소식, 아트인컬처, 월간미술 등 국내 미술 매체 중 RSS 있는 곳
+7) 건축·공간: Dezeen, ArchDaily — 설치·전시·공간 연출 관련 글 위주, 최대 5개
+
+## 삭제
+- 기존 "건설 IT·ERP" 분야와 그 피드는 제거
+
+## 공통 규칙
+- feeds.yaml에서 분야마다 daily / weekly를 지정할 수 있게 해서, 나중에 분야를 옮길 수 있게
+- RSS 주소는 직접 찾아서 실제로 동작하는지 확인
+- RSS가 없거나 최근 3개월간 글이 없는 사이트는 넣지 말고 목록으로 알려줘 (Edge.org, Ribbonfarm도 확인만 해서 같이 알려줘)
+- 키워드 필터와 분야별 최대 개수는 feeds.yaml에서 수정할 수 있게
+- 해당 기간에 글이 없는 분야는 섹션째 생략, 전 분야가 비면 메일 안 보냄
+
+## 메일 형식
+- 맨 위에 목차: 분야명 + 건수, 누르면 해당 섹션으로 이동
+- 지메일 102KB 잘림을 피하도록 HTML은 가볍게, 이미지 없이
+- 생성된 HTML 크기를 로그에 출력하고, 100KB를 넘으면 분야별 개수를 자동으로 줄여서 맞춤
+
+## 예약 실행 유지
+- 공개 저장소는 60일간 커밋이 없으면 예약 실행이 꺼지므로, 매월 1일 last_run.txt에 날짜를 기록해 커밋하는 keepalive 워크플로 추가 (permissions: contents: write)
+
+## 마무리
+- TASK.md에 이번 변경 내용 반영, README에 데일리/주간 구조와 분야 옮기는 법 정리
+- 수집 부분만 daily, weekly 각각 실행해서 분야별 건수와 메일 HTML 크기 확인
+- 브랜치에 push하고 최종 feeds.yaml 사이트 목록과 제외된 사이트를 알려줘
