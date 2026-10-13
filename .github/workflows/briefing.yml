@@ -70,7 +70,7 @@ jobs:
         uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          claude_args: '--model sonnet --max-turns 15 --allowedTools "Read,Write"'
+          claude_args: '--model sonnet --max-turns 25 --allowedTools "Read,Write"'
           prompt: |
             data/enrich_prompt.md 파일을 Read로 읽고, 그 지시대로 data/enrich_input.json을 처리해서
             결과를 data/enrich.json에 저장하라. 다른 파일은 수정하지 마라.
