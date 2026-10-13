@@ -2,26 +2,26 @@
  "areas": {
   "outer": {
    "kr": {
-    "text": "국내는 주가 급락과 금융권 정보 유출, 흉기 난동 같은 불안한 소식이 겹친 한 주였다.",
+    "text": "국내는 증시 급락과 강력범죄 대응 부실 논란으로 불안이 커진 한 주였다.",
     "links": [
      {
       "title": "코스피 연일 급락에 공포지수 19% 급등…시총 5천조원 깨져(종합)",
       "url": "https://www.yna.co.kr/view/AKR20261013101451008"
      },
      {
-      "title": "새마을금고, 400명대 고객정보 유출…\"피해발생시 전액보상\"(종합)",
-      "url": "https://www.yna.co.kr/view/AKR20261013155951002"
+      "title": "법무부, '인천 전자발찌 흉기난동'에 사과…\"감독체계 전면 재점검\"",
+      "url": "https://www.yna.co.kr/view/AKR20261013175400004"
      },
      {
-      "title": "인천 흉기난동에 경찰 긴급회의…다중 밀집장소 경찰력 배치 강화",
-      "url": "https://www.yna.co.kr/view/AKR20261013173900004"
+      "title": "[사설]국가 R&D 외국인 연구원 1021명 전원이 보안 심의 안 거쳤다",
+      "url": "https://www.donga.com/news/Opinion/article/all/20261012/134829555/2"
      }
     ],
     "change": null,
-    "basis": "세상·경제·산업·생활"
+    "basis": "세상·경제·산업"
    },
    "world": {
-    "text": "해외는 중동 충돌과 반도체주 급락, 산불 같은 위기가 세계 곳곳으로 번지는 모습이다.",
+    "text": "중동 전쟁 확산과 반도체주 급락이 겹치며 에너지·시장 불안이 번졌다.",
     "links": [
      {
       "title": "Saudi minister vows 'serious response' to Houthi attacks on airports",
@@ -32,36 +32,36 @@
       "url": "https://www.cnbc.com/2026/10/13/sk-hynix-softbank-samsung-electronics-shares-tech-stocks-fall.html"
      },
      {
-      "title": "Wildfires Are Unfightable Now",
-      "url": "https://www.nytimes.com/2026/10/12/opinion/wildfires-firefighters-climate-change.html"
+      "title": "Interactive: Tracking negotiating texts at the COP17 biodiversity summit",
+      "url": "https://www.carbonbrief.org/interactive-tracking-negotiating-texts-at-the-cop17-biodiversity-summit"
      }
     ],
     "change": null,
-    "basis": "세상·경제·산업·생활"
+    "basis": "세상·경제·산업"
    }
   },
   "techwork": {
    "kr": {
-    "text": "AI를 일상 서비스와 기업 현장에 실제로 붙이는 경쟁이 빨라지고, 보안 우려도 함께 커졌다.",
+    "text": "카카오 등 국내 기업이 AI 비서를 일상 서비스로 넓히며 실제 적용 경쟁에 들어갔다.",
     "links": [
      {
       "title": "5000만 사용자 국민 메신저 카톡, AI 에이전트 허브로 진화 조준",
       "url": "https://www.aitimes.com/news/articleView.html?idxno=216206"
      },
      {
-      "title": "AI 모델 다음은 ‘구현 전쟁’… 빅테크가 LG CNS 찾는 이유 [POWER COMPANY]",
-      "url": "https://www.dt.co.kr/article/12088867"
+      "title": "카카오톡에서 AI 비서 호출해 주문·예약까지…메신저 넘어 일상 통합 플랫폼으로 진화",
+      "url": "https://www.etnews.com/20261013000205"
      },
      {
-      "title": "韓 금융권 강타한 AI 공격... 시스코 “네트워크-보안 통합해 ‘가시성’ 확보해야”",
-      "url": "https://www.boannews.com/news/articleView.html?idxno=146356"
+      "title": "AI 모델 다음은 ‘구현 전쟁’… 빅테크가 LG CNS 찾는 이유 [POWER COMPANY]",
+      "url": "https://www.dt.co.kr/article/12088867"
      }
     ],
     "change": null,
     "basis": "AI·기술·일"
    },
    "world": {
-    "text": "메타의 새 AI 모델 공개와 기기·클라우드 소식이 이어지며 AI가 일과 도구 전반으로 퍼지고 있다.",
+    "text": "메타의 새 AI 모델 공개로 최상위 경쟁이 가열되고, 보안 사고는 현실 설비까지 번졌다.",
     "links": [
      {
       "title": "Introducing Muse Wonder and Muse Wonder Full: Frontier Models for Agents",
@@ -82,26 +82,26 @@
   },
   "mind": {
    "kr": {
-    "text": "국내는 전시와 미술 비평이 중심이었고, AI 시대의 사유를 다룬 글도 눈에 띄었다.",
+    "text": "전시와 공예, 건축 행사가 이어지며 미술계는 기념·기획전 중심으로 움직였다.",
     "links": [
      {
       "title": "토탈미술관 50주년 특별전…한국미술을 '0'에서 다시 묻다",
       "url": "https://www.yna.co.kr/view/AKR20261013118900005"
      },
      {
-      "title": "[장준석 미술평론] 무미(無味)한 듯하면서도 유미(有味)한 조형성-김민석 작가",
-      "url": "https://www.artkoreatv.com/news/articleView.html?idxno=105009"
+      "title": "신당창작아케이드 17기 입주작가 35명, 서울공예박물관서 전시",
+      "url": "https://www.newsis.com/view/NISX20261012_0003821587"
      },
      {
-      "title": "‘하정문학회’ AI 시대 심오한 사유 담은 ‘하정문학’ 제8호 발간",
-      "url": "https://www.readersnews.com/news/articleView.html?idxno=200749"
+      "title": "건축으로 만나는 인천의 미래와 변화…인천건축문화제 16일 개막",
+      "url": "http://www.ancnews.kr/news/articleView.html?idxno=21230"
      }
     ],
     "change": null,
-    "basis": "사고·지성·문학·미술"
+    "basis": "미술·사고·지성"
    },
    "world": {
-    "text": "해외는 AI를 어떻게 통제할지에 대한 논쟁과 유물 반환·사진 같은 예술 이야기가 함께 나왔다.",
+    "text": "AI 안전을 둘러싼 논쟁과 약탈 유물 반환 문제가 사유의 중심에 올랐다.",
     "links": [
      {
       "title": "OpenAI Can't Self-Police Because It Fires the People Raising the Alarm",
@@ -117,32 +117,32 @@
      }
     ],
     "change": null,
-    "basis": "사고·지성·문학·미술"
+    "basis": "사고·지성·미술"
    }
   }
  },
  "groups": {
   "thought": {
    "kr": {
-    "text": "정신건강 연구와 암 전이 연구, AI 규제 요구가 함께 다뤄졌다.",
+    "text": "AI 규제 의무화 요구와 암 전이 연구 등 사회적 책임과 과학 성과가 함께 나왔다.",
     "links": [
      {
-      "title": "정신병적 장애 환자에서 인지적·정서적 공감의 불일치가 의미하는 것",
-      "url": "http://www.psychiatricnews.net/news/articleView.html?idxno=36721"
+      "title": "MS 사장 \"세탁기·우유보다 못한 AI 규제…이제 법적 의무화 나설 때\"",
+      "url": "https://www.aitimes.com/news/articleView.html?idxno=216185"
      },
      {
       "title": "암세포에 압력 갑자기 증가하면 전이 빨라진다···IBS, MRI로 원리 규명",
       "url": "http://www.hellodd.com/news/articleView.html?idxno=113468"
      },
      {
-      "title": "MS 사장 \"세탁기·우유보다 못한 AI 규제…이제 법적 의무화 나설 때\"",
-      "url": "https://www.aitimes.com/news/articleView.html?idxno=216185"
+      "title": "정신병적 장애 환자에서 인지적·정서적 공감의 불일치가 의미하는 것",
+      "url": "http://www.psychiatricnews.net/news/articleView.html?idxno=36721"
      }
     ],
     "change": null
    },
    "world": {
-    "text": "AI를 통제할 책임과 속도 조절 방식을 두고 비판과 제안이 이어졌다.",
+    "text": "AI 회사의 자율 규제가 한계라는 주장과 과학상·우주 논의가 겹쳐 나왔다.",
     "links": [
      {
       "title": "OpenAI Can't Self-Police Because It Fires the People Raising the Alarm",
@@ -153,8 +153,8 @@
       "url": "https://www.alignmentforum.org/posts/ZWSstGSwmaxTjQ8W7/minimum-required-pacing-finish-aligning-it-before-you-train"
      },
      {
-      "title": "A critical look at Lean4",
-      "url": "https://www.lesswrong.com/posts/zHhGa3iQBQcdSifFL/a-critical-look-at-lean4-1"
+      "title": "Nobel prizes 2026: ‘ghost’ particles, mirror molecules and light switches in the brain",
+      "url": "https://www.nature.com/articles/d41586-026-03208-7"
      }
     ],
     "change": null
@@ -162,7 +162,7 @@
   },
   "literature": {
    "kr": {
-    "text": "국내에서는 문학 동인지 발간 소식이 나왔다.",
+    "text": "동인지 발간 등 작은 문학 모임의 활동이 소개됐다.",
     "links": [
      {
       "title": "‘하정문학회’ AI 시대 심오한 사유 담은 ‘하정문학’ 제8호 발간",
@@ -172,7 +172,7 @@
     "change": null
    },
    "world": {
-    "text": "신간 속 인상 깊은 구절과 소련 사회를 돌아본 글이 눈에 띄었다.",
+    "text": "신간 구절 모음과 소련 역사를 다룬 서평이 눈에 띄었다.",
     "links": [
      {
       "title": "Passages We Underlined This Fall",
@@ -188,7 +188,7 @@
   },
   "art": {
    "kr": {
-    "text": "미술관 기념 전시와 공예·초대전 등 전시 소식이 많았다.",
+    "text": "기념 특별전과 공예·초대전, 건축문화제 등 전시 소식이 몰렸다.",
     "links": [
      {
       "title": "토탈미술관 50주년 특별전…한국미술을 '0'에서 다시 묻다",
@@ -206,7 +206,7 @@
     "change": null
    },
    "world": {
-    "text": "문화재 약탈 문제와 사진·회화 전시가 함께 주목받았다.",
+    "text": "약탈 유물 반환 논란과 사진·회화 전시가 함께 소개됐다.",
     "links": [
      {
       "title": "The Trafficker Who Furnished the Museums of LA",
@@ -226,25 +226,25 @@
   },
   "tech": {
    "kr": {
-    "text": "카카오톡 AI 확대와 앤트로픽 신모델 시험, 금융권 AI 공격 대응이 화제였다.",
+    "text": "AI 비서가 메신저와 금융 보안 현장까지 파고든 한 주였다.",
     "links": [
      {
       "title": "5000만 사용자 국민 메신저 카톡, AI 에이전트 허브로 진화 조준",
       "url": "https://www.aitimes.com/news/articleView.html?idxno=216206"
      },
      {
-      "title": "\"오퍼스 5.5를 넘었다\"...앤트로픽, 차세대 모델 라우팅 테스트 포착",
-      "url": "https://www.aitimes.com/news/articleView.html?idxno=216200"
-     },
-     {
       "title": "韓 금융권 강타한 AI 공격... 시스코 “네트워크-보안 통합해 ‘가시성’ 확보해야”",
       "url": "https://www.boannews.com/news/articleView.html?idxno=146356"
+     },
+     {
+      "title": "모바일신분증, 은행 앱에서도 발급한다…기업·신한·우리·하나은행 합류",
+      "url": "https://zdnet.co.kr/view/?no=20261013151303"
      }
     ],
     "change": null
    },
    "world": {
-    "text": "메타 새 AI 모델과 냉장고 해킹, 휴대폰 악성코드 같은 보안 이슈가 겹쳤다.",
+    "text": "새 AI 모델 공개와 실제 설비를 노린 해킹이 동시에 부각됐다.",
     "links": [
      {
       "title": "Introducing Muse Wonder and Muse Wonder Full: Frontier Models for Agents",
@@ -264,15 +264,15 @@
   },
   "work": {
    "kr": {
-    "text": "기업이 AI를 실제 업무에 구현하는 능력과 물류 인수 소식이 나왔다.",
+    "text": "AI를 현장에 구현하는 능력과 기업 인수로 시스템·물류 업계가 움직였다.",
     "links": [
-     {
-      "title": "AI 모델 다음은 ‘구현 전쟁’… 빅테크가 LG CNS 찾는 이유 [POWER COMPANY]",
-      "url": "https://www.dt.co.kr/article/12088867"
-     },
      {
       "title": "삼성SDS, 항공 화물 전문기업 우정항공 인수…항공 물류 경쟁력 강화",
       "url": "https://www.itdaily.kr/news/articleView.html?idxno=242138"
+     },
+     {
+      "title": "AI 모델 다음은 ‘구현 전쟁’… 빅테크가 LG CNS 찾는 이유 [POWER COMPANY]",
+      "url": "https://www.dt.co.kr/article/12088867"
      },
      {
       "title": "광해광업공단, AI 활용에 윤리·책임 기준 세운다",
@@ -282,7 +282,7 @@
     "change": null
    },
    "world": {
-    "text": "프리랜서 시장에서 플랫폼과 의뢰인에 대한 불만이 쏟아졌다.",
+    "text": "프리랜서 플랫폼에 대한 불만과 제안서 도용 문제가 터져 나왔다.",
     "links": [
      {
       "title": "I made nearly $1M on this platform and am Expert-Vetted. I’m officially moving my business off Upwork. Here is why.",
@@ -298,33 +298,33 @@
   },
   "world": {
    "kr": {
-    "text": "금융정보 유출과 흉기 난동 등 안전 문제가 부각됐다.",
+    "text": "전자발찌 범죄와 약 부작용 신고, 일본의 원유 대책 등이 이어졌다.",
     "links": [
      {
-      "title": "새마을금고, 400명대 고객정보 유출…\"피해발생시 전액보상\"(종합)",
-      "url": "https://www.yna.co.kr/view/AKR20261013155951002"
+      "title": "법무부, '인천 전자발찌 흉기난동'에 사과…\"감독체계 전면 재점검\"",
+      "url": "https://www.yna.co.kr/view/AKR20261013175400004"
      },
      {
-      "title": "인천 흉기난동에 경찰 긴급회의…다중 밀집장소 경찰력 배치 강화",
-      "url": "https://www.yna.co.kr/view/AKR20261013173900004"
+      "title": "비만치료제 투여 후 시력 손상 의심…국내서도 1건 신고(종합)",
+      "url": "https://www.yna.co.kr/view/AKR20261013097651017"
      },
      {
-      "title": "[사설]국가 R&D 외국인 연구원 1021명 전원이 보안 심의 안 거쳤다",
-      "url": "https://www.donga.com/news/Opinion/article/all/20261012/134829555/2"
+      "title": "日, 원유조달처 다변화 법안 각의 결정…추가운송비 교부금 지원",
+      "url": "https://www.yna.co.kr/view/AKR20261013173100073"
      }
     ],
     "change": null
    },
    "world": {
-    "text": "사우디 공항 공격 등 중동 긴장과 산불 위기가 이어졌다.",
+    "text": "사우디 공항이 공격받으며 중동 긴장이 한층 높아졌다.",
     "links": [
      {
       "title": "Saudi minister vows 'serious response' to Houthi attacks on airports",
       "url": "https://www.bbc.co.uk/news/articles/cjly0zqq27e4o?at_medium=RSS&at_campaign=rss"
      },
      {
-      "title": "Wildfires Are Unfightable Now",
-      "url": "https://www.nytimes.com/2026/10/12/opinion/wildfires-firefighters-climate-change.html"
+      "title": "What if Political Polarization Is Not the Disease but the Cure?",
+      "url": "https://www.nytimes.com/2026/10/13/opinion/trump-democracy-political-polarization.html"
      }
     ],
     "change": null
@@ -332,7 +332,7 @@
   },
   "economy": {
    "kr": {
-    "text": "코스피가 연일 하락하고 변동성이 커져 시장 불안이 짙어졌다.",
+    "text": "코스피 급락 속에 삼성 일가 증여 소식이 나와 시장이 크게 흔들렸다.",
     "links": [
      {
       "title": "코스피 연일 급락에 공포지수 19% 급등…시총 5천조원 깨져(종합)",
@@ -343,22 +343,22 @@
       "url": "https://www.yna.co.kr/view/AKR20261013022900008"
      },
      {
-      "title": "삼성·LG전자, 'KES 2026'서 일상·산업 AI 혁신기술 선보여(종합)",
-      "url": "https://www.yna.co.kr/view/AKR20261013027701003"
+      "title": "[2보] 이재용, 홍라희 삼성전자 주식 2.6조 증여받아…지분율 0.17%p↑",
+      "url": "https://www.yna.co.kr/view/AKR20261013162951003"
      }
     ],
     "change": null
    },
    "world": {
-    "text": "미국 반도체주 급락이 아시아와 유럽으로 번졌다.",
+    "text": "미국 반도체주 하락이 아시아·유럽으로 번졌고 노동 소송 소식도 나왔다.",
     "links": [
      {
       "title": "Micron, SoftBank and ASML slide as Wall Street chip rout spreads",
       "url": "https://www.cnbc.com/2026/10/13/sk-hynix-softbank-samsung-electronics-shares-tech-stocks-fall.html"
      },
      {
-      "title": "FedEx worker’s 6 harassment reports not protected by Title VII, 5th Circuit says",
-      "url": "https://www.hrdive.com/news/fedex-worker-harassment-reports-not-protected-by-title-vii/832777/"
+      "title": "Whole Foods defeats bias suit after catching plaintiff faking time records",
+      "url": "https://www.hrdive.com/news/whole-foods-defeats-bias-suit-after-catching-plaintiff-faking-time-records/832779/"
      }
     ],
     "change": null
@@ -366,25 +366,25 @@
   },
   "life": {
    "kr": {
-    "text": "기후 침식과 치료제 개발, 교육 현장의 악성 민원 같은 생활 이슈가 나왔다.",
+    "text": "치료제 개발과 생물다양성, 교육·문화 행사 등 생활 소식이 고르게 나왔다.",
     "links": [
-     {
-      "title": "기후위기 덮친 '서핑 성지'...양양도 얼마 못간다",
-      "url": "https://www.newspenguin.com/news/articleView.html?idxno=22290"
-     },
      {
       "title": "현대바이오, SFTS 치료제 개발 도전…\"임상 2상 신속 진입\"(종합)",
       "url": "https://www.yna.co.kr/view/AKR20261013028451017"
      },
      {
-      "title": "악성 민원 학교 책임으로 남겨선 안돼",
-      "url": "http://www.hangyo.com/news/article.html?no=109644"
+      "title": "“항암제 70% 자연에서” 생물다양성, 제약사 생존 과제",
+      "url": "https://www.newspenguin.com/news/articleView.html?idxno=22284"
+     },
+     {
+      "title": "정성국 의원 만난 초등교장들 “퇴직 전 공로연수, 교원도 허용해야”",
+      "url": "https://www.edupress.kr/news/articleView.html?idxno=30523"
      }
     ],
     "change": null
    },
    "world": {
-    "text": "메타 합의금 사용처와 테슬라 화재 판결, 생물다양성 총회 준비가 주목받았다.",
+    "text": "메타 합의금 사용과 테슬라 화재 판결 등 기업 책임 문제가 눈에 띄었다.",
     "links": [
      {
       "title": "States Now Have to Decide How to Spend Meta’s Settlement Billions",
@@ -407,7 +407,7 @@
   "ideas": {
    "kr": null,
    "world": {
-    "text": "우간다 왕릉, 증명 도구 Lean4 비판, 책 서평 등 다양한 담론이 나왔다.",
+    "text": "아프리카 왕릉, 수학 증명 도구 비판, 서평 등 폭넓은 담론이 나왔다.",
     "links": [
      {
       "title": "Africa’s cultural landmarks: tombs of Buganda kings",
@@ -427,7 +427,7 @@
   },
   "cognition": {
    "kr": {
-    "text": "정신질환 환자의 공감 능력 차이를 풀어 설명한 글이 나왔다.",
+    "text": "정신질환 환자의 공감 능력이 어긋나는 양상을 설명한 글이 실렸다.",
     "links": [
      {
       "title": "정신병적 장애 환자에서 인지적·정서적 공감의 불일치가 의미하는 것",
@@ -437,7 +437,7 @@
     "change": null
    },
    "world": {
-    "text": "GLP-1 약의 노화 억제 가능성과 인종적 트라우마를 다룬 글이 이어졌다.",
+    "text": "GLP-1의 노화 억제 가능성과 흑인 남성의 트라우마가 다뤄졌다.",
     "links": [
      {
       "title": "Can GLP-1s Slow Aging?",
@@ -453,7 +453,7 @@
   },
   "ai_alignment": {
    "kr": {
-    "text": "MS 사장이 AI 안전 규제를 법으로 의무화하자고 촉구했다.",
+    "text": "MS 사장이 AI 안전 규제와 사고 보고의 법적 의무화를 촉구했다.",
     "links": [
      {
       "title": "MS 사장 \"세탁기·우유보다 못한 AI 규제…이제 법적 의무화 나설 때\"",
@@ -463,7 +463,7 @@
     "change": null
    },
    "world": {
-    "text": "오픈AI의 자체 감시 한계와 더 강한 AI를 만들기 전 안전 확보 요구가 나왔다.",
+    "text": "오픈AI의 자율 규제 한계와 훈련 속도 조절 기준이 논의됐다.",
     "links": [
      {
       "title": "OpenAI Can't Self-Police Because It Fires the People Raising the Alarm",
@@ -479,7 +479,7 @@
   },
   "science": {
    "kr": {
-    "text": "암세포에 가해지는 압력이 전이를 빠르게 한다는 연구가 나왔다.",
+    "text": "암세포 압력이 오르면 전이가 빨라진다는 연구가 발표됐다.",
     "links": [
      {
       "title": "암세포에 압력 갑자기 증가하면 전이 빨라진다···IBS, MRI로 원리 규명",
@@ -489,7 +489,7 @@
     "change": null
    },
    "world": {
-    "text": "올해 노벨 과학상 소식과 암흑물질 관측 방식 논의가 있었다.",
+    "text": "노벨 과학상 정리와 암흑물질 관측 방식 논의가 이어졌다.",
     "links": [
      {
       "title": "Nobel prizes 2026: ‘ghost’ particles, mirror molecules and light switches in the brain",
@@ -505,7 +505,7 @@
   },
   "literature": {
    "kr": {
-    "text": "하정문학회가 문학 동인지 제8호를 냈다.",
+    "text": "하정문학회가 동인지 제8호를 냈다.",
     "links": [
      {
       "title": "‘하정문학회’ AI 시대 심오한 사유 담은 ‘하정문학’ 제8호 발간",
@@ -515,7 +515,7 @@
     "change": null
    },
    "world": {
-    "text": "가을 신간 구절 모음과 소련 지식인의 봉쇄 경험을 다룬 글이 나왔다.",
+    "text": "가을 신간의 인상적 구절과 소련 봉쇄 시기 서평이 실렸다.",
     "links": [
      {
       "title": "Passages We Underlined This Fall",
@@ -531,7 +531,7 @@
   },
   "art_criticism": {
    "kr": {
-    "text": "김민석 작가의 조형성을 평한 미술평론이 실렸다.",
+    "text": "김민석 작가의 조형성을 다룬 미술 평론이 나왔다.",
     "links": [
      {
       "title": "[장준석 미술평론] 무미(無味)한 듯하면서도 유미(有味)한 조형성-김민석 작가",
@@ -541,7 +541,7 @@
     "change": null
    },
    "world": {
-    "text": "약탈 유물을 판 화랑 주인과 아즈텍 장식 반환 공약이 다뤄졌다.",
+    "text": "약탈 유물을 사고판 화랑 주인과 머리장식 반환 공약이 화제였다.",
     "links": [
      {
       "title": "The Trafficker Who Furnished the Museums of LA",
@@ -557,7 +557,7 @@
   },
   "art": {
    "kr": {
-    "text": "토탈미술관 50주년전과 공예작가 35명 전시, 초대전 소식이 이어졌다.",
+    "text": "토탈미술관 50주년전과 공예·초대전 등 전시가 잇따라 열린다.",
     "links": [
      {
       "title": "토탈미술관 50주년 특별전…한국미술을 '0'에서 다시 묻다",
@@ -578,7 +578,7 @@
   },
   "design_arch": {
    "kr": {
-    "text": "인천건축문화제 개막과 런던 애플뮤직 홀 소식이 전해졌다.",
+    "text": "인천건축문화제 개막과 애플뮤직 홀 등 공간 소식이 나왔다.",
     "links": [
      {
       "title": "건축으로 만나는 인천의 미래와 변화…인천건축문화제 16일 개막",
@@ -592,7 +592,7 @@
     "change": null
    },
    "world": {
-    "text": "푹신한 소파 등 새 가구 제품이 소개됐다.",
+    "text": "디진 쇼룸에 푹신한 소파 시리즈 등 신제품이 소개됐다.",
     "links": [
      {
       "title": "Profondo seating by Zenith Interiors among five new products on Dezeen Showroom",
@@ -605,7 +605,7 @@
   "photo_video": {
    "kr": null,
    "world": {
-    "text": "버려진 결혼 앨범 반환, 아프리카 사진가 전시, 프리드랜더 부부 이야기가 나왔다.",
+    "text": "잃어버린 결혼 앨범 반환과 사진가 전시 소식이 이어졌다.",
     "links": [
      {
       "title": "Man is Reunited With Parents’ 1950s Wedding Photo Album After Search",
@@ -626,7 +626,7 @@
   "visual_culture": {
    "kr": null,
    "world": {
-    "text": "색과 기억, 신성함을 다룬 작가들의 연작과 인터뷰가 소개됐다.",
+    "text": "명상적 사진 연작과 회화 전시, 작가 인터뷰가 소개됐다.",
     "links": [
      {
       "title": "Jonathan Knight’s Meditative Series ‘Exhale’ Invites Us to Slow Down and Practice Noticing",
@@ -646,17 +646,17 @@
   },
   "ai_industry": {
    "kr": {
-    "text": "앤트로픽이 아직 발표 전인 차세대 모델을 몰래 시험하는 정황이 포착됐다.",
+    "text": "앤트로픽이 차세대 모델을 몰래 시험 중인 정황이 포착됐다.",
     "links": [
      {
-      "title": "\"오퍼스 5.5를 넘었다\"...앤트로픽, 차세대 모델 라우팅 테스트 포착",
+      "title": "\"오퍼스 5.5 넘었다\"...앤트로픽, 차세대 모델 실전 라우팅 테스트 중",
       "url": "https://www.aitimes.com/news/articleView.html?idxno=216200"
      }
     ],
     "change": null
    },
    "world": {
-    "text": "메타가 새 AI 모델 뮤즈 원더 두 종류를 공개했다.",
+    "text": "메타가 최상위급을 겨냥한 새 AI 모델 두 종류를 공개했다.",
     "links": [
      {
       "title": "Introducing Muse Wonder and Muse Wonder Full: Frontier Models for Agents",
@@ -672,7 +672,7 @@
   },
   "ai_practice": {
    "kr": {
-    "text": "카카오톡의 AI 비서 계획과 부실 테스트를 잡는 도구가 나왔다.",
+    "text": "카카오 AI 비서 공개와 부실 테스트 탐지 도구가 소개됐다.",
     "links": [
      {
       "title": "5000만 사용자 국민 메신저 카톡, AI 에이전트 허브로 진화 조준",
@@ -686,7 +686,7 @@
     "change": null
    },
    "world": {
-    "text": "아마존 클라우드에서 AI 모델을 배포하는 방법이 소개됐다.",
+    "text": "아마존 클라우드에서 가벼운 AI 모델을 배포하는 방법이 안내됐다.",
     "links": [
      {
       "title": "Deploy decision models with llama.cpp on Amazon SageMaker AI",
@@ -699,7 +699,7 @@
   "hacker_news": {
    "kr": null,
    "world": {
-    "text": "유럽 슈퍼마켓 냉장고 해킹, 메타 AI 모델, 딜로이트 문서 위조 의혹이 화제였다.",
+    "text": "유럽 슈퍼마켓 냉장고 해킹과 메타 신모델, 딜로이트 의혹이 화제였다.",
     "links": [
      {
       "title": "Hackers activate automatic defrosting in supermarket fridges across Europe",
@@ -720,7 +720,7 @@
   "ml_papers": {
    "kr": null,
    "world": {
-    "text": "공간 이해, 이미지 생성 학습, 로봇 반응 제어에 관한 논문이 올라왔다.",
+    "text": "AI의 공간 이해, 이미지 모델 강화학습, 로봇 반응 제어 논문이 나왔다.",
     "links": [
      {
       "title": "S-Space: Exploring Spatial Workspace in Multimodal Language Models",
@@ -741,7 +741,7 @@
   "data_eng": {
    "kr": null,
    "world": {
-    "text": "EMR 데이터 품질 검사와 제조업·헬스 기업의 AI 활용 사례가 소개됐다.",
+    "text": "아마존 EMR 데이터 품질 기능과 제조·헬스 분야 AI 활용 글이 나왔다.",
     "links": [
      {
       "title": "Bring data quality to your Amazon EMR workloads with Amazon EMR Data Quality built on AWS Glue Data Quality",
@@ -761,7 +761,7 @@
   },
   "security": {
    "kr": {
-    "text": "금융권 AI 공격 대응과 AI 정보유출 방지 제품 소식이 나왔다.",
+    "text": "금융권 AI 해킹 사건의 권한 확인 허점과 보안 제품 수상이 전해졌다.",
     "links": [
      {
       "title": "韓 금융권 강타한 AI 공격... 시스코 “네트워크-보안 통합해 ‘가시성’ 확보해야”",
@@ -775,7 +775,7 @@
     "change": null
    },
    "world": {
-    "text": "저가 안드로이드 폰에 악성코드가 미리 깔려 있다는 보도가 나왔다.",
+    "text": "저가 안드로이드 폰에 악성코드가 미리 심겨 출하된 사실이 드러났다.",
     "links": [
      {
       "title": "Low-Cost Android Phones Ship With Preinstalled Malware That Turns Them Into Residential Proxies",
@@ -787,22 +787,22 @@
   },
   "gadgets": {
    "kr": {
-    "text": "모바일 신분증을 은행 앱에서도 발급하게 됐다.",
+    "text": "은행 앱 모바일신분증 확대와 카카오톡 AI 비서가 발표됐다.",
     "links": [
      {
       "title": "모바일신분증, 은행 앱에서도 발급한다…기업·신한·우리·하나은행 합류",
       "url": "https://zdnet.co.kr/view/?no=20261013151303"
+     },
+     {
+      "title": "카카오톡에서 AI 비서 호출해 주문·예약까지…메신저 넘어 일상 통합 플랫폼으로 진화",
+      "url": "https://www.etnews.com/20261013000205"
      }
     ],
     "change": null
    },
    "world": {
-    "text": "저가 안드로이드 폰 고르는 법과 구글북 사용 후기가 올라왔다.",
+    "text": "안드로이드 노트북 구글북의 첫 사용기가 나왔다.",
     "links": [
-     {
-      "title": "Don't buy a cheap Android phone without these non-negotiable features",
-      "url": "https://www.engadget.com/2281663/android-phone-dont-buy-cheap-without-non-negotiable-features/"
-     },
      {
       "title": "Android is the best and worst thing about Googlebooks",
       "url": "https://www.theverge.com/tech/1008750/googlebooks-android-best-worst-notifications-app-cast-file-sharing"
@@ -813,7 +813,7 @@
   },
   "construction_it": {
    "kr": {
-    "text": "광해광업공단이 AI 윤리 기준을 세웠다.",
+    "text": "광해광업공단이 AI 윤리 기준을 세우고 확인 마크를 받았다.",
     "links": [
      {
       "title": "광해광업공단, AI 활용에 윤리·책임 기준 세운다",
@@ -823,7 +823,7 @@
     "change": null
    },
    "world": {
-    "text": "공사 견적에 쓰이는 소프트웨어와 사람 경험의 관계를 다룬 글이 나왔다.",
+    "text": "공사비 산정에서 문서 밖 경험이 작용한다는 협찬 글이 실렸다.",
     "links": [
      {
       "title": "Every project runs on 2 models: The 1 in the software and the 1 in someone’s head",
@@ -835,7 +835,7 @@
   },
   "erp_si": {
    "kr": {
-    "text": "삼성SDS의 항공 화물 업체 인수와 LG CNS의 AI 구현력이 주목받았다.",
+    "text": "삼성SDS의 항공 화물 업체 인수와 LG CNS의 AI 구현 역량이 주목받았다.",
     "links": [
      {
       "title": "삼성SDS, 항공 화물 전문기업 우정항공 인수…항공 물류 경쟁력 강화",
@@ -853,7 +853,7 @@
   "freelance": {
    "kr": null,
    "world": {
-    "text": "업워크를 떠나는 프리랜서와 제안서를 빼앗긴 사례 등 불만이 이어졌다.",
+    "text": "업워크 이탈 선언과 제안서 도용 피해 하소연이 올라왔다.",
     "links": [
      {
       "title": "I made nearly $1M on this platform and am Expert-Vetted. I’m officially moving my business off Upwork. Here is why.",
@@ -869,15 +869,15 @@
   },
   "kr_top": {
    "kr": {
-    "text": "새마을금고 정보 유출과 인천 흉기 난동 대응이 주요 소식이었다.",
+    "text": "전자발찌 흉기난동에 법무부가 사과했고, 비만치료제 시력 손상 신고도 나왔다.",
     "links": [
      {
-      "title": "새마을금고, 400명대 고객정보 유출…\"피해발생시 전액보상\"(종합)",
-      "url": "https://www.yna.co.kr/view/AKR20261013155951002"
+      "title": "법무부, '인천 전자발찌 흉기난동'에 사과…\"감독체계 전면 재점검\"",
+      "url": "https://www.yna.co.kr/view/AKR20261013175400004"
      },
      {
-      "title": "인천 흉기난동에 경찰 긴급회의…다중 밀집장소 경찰력 배치 강화",
-      "url": "https://www.yna.co.kr/view/AKR20261013173900004"
+      "title": "비만치료제 투여 후 시력 손상 의심…국내서도 1건 신고(종합)",
+      "url": "https://www.yna.co.kr/view/AKR20261013097651017"
      }
     ],
     "change": null
@@ -886,7 +886,7 @@
   },
   "world_top": {
    "kr": {
-    "text": "일본이 중동 정세에 대비해 원유 수입처를 다양화하는 법안을 정했다.",
+    "text": "일본이 중동 불안에 맞춰 원유 조달처 다변화 법안을 결정했다.",
     "links": [
      {
       "title": "日, 원유조달처 다변화 법안 각의 결정…추가운송비 교부금 지원",
@@ -896,7 +896,7 @@
     "change": null
    },
    "world": {
-    "text": "후티 반군의 공항 공격에 사우디가 강하게 대응하겠다고 밝혔다.",
+    "text": "후티가 사우디 공항을 공격해 13명이 숨지고 사우디가 대응을 예고했다.",
     "links": [
      {
       "title": "Saudi minister vows 'serious response' to Houthi attacks on airports",
@@ -908,7 +908,7 @@
   },
   "opinion": {
    "kr": {
-    "text": "국가 R&D 외국인 연구원 보안 심의 부실을 지적하는 사설이 나왔다.",
+    "text": "국가 R&D 외국인 연구원의 보안 심의 공백을 비판하는 사설이 나왔다.",
     "links": [
      {
       "title": "[사설]국가 R&D 외국인 연구원 1021명 전원이 보안 심의 안 거쳤다",
@@ -918,11 +918,11 @@
     "change": null
    },
    "world": {
-    "text": "올해 산불은 예전처럼 끌 수 없는 수준이라는 진단이 나왔다.",
+    "text": "정치 양극화가 오히려 약일 수 있다는 학계 논쟁이 소개됐다.",
     "links": [
      {
-      "title": "Wildfires Are Unfightable Now",
-      "url": "https://www.nytimes.com/2026/10/12/opinion/wildfires-firefighters-climate-change.html"
+      "title": "What if Political Polarization Is Not the Disease but the Cure?",
+      "url": "https://www.nytimes.com/2026/10/13/opinion/trump-democracy-political-polarization.html"
      }
     ],
     "change": null
@@ -930,7 +930,7 @@
   },
   "market": {
    "kr": {
-    "text": "코스피가 연일 급락해 공포지수가 뛰었고 반등 여부가 관심이다.",
+    "text": "코스피가 연일 급락해 공포지수가 급등하고 반등 여부가 주목된다.",
     "links": [
      {
       "title": "코스피 연일 급락에 공포지수 19% 급등…시총 5천조원 깨져(종합)",
@@ -947,17 +947,17 @@
   },
   "industry": {
    "kr": {
-    "text": "삼성·LG전자가 KES 2026에서 AI 기술을 선보였다.",
+    "text": "이재용 회장이 홍라희 명예관장에게서 삼성전자 지분을 증여받는다.",
     "links": [
      {
-      "title": "삼성·LG전자, 'KES 2026'서 일상·산업 AI 혁신기술 선보여(종합)",
-      "url": "https://www.yna.co.kr/view/AKR20261013027701003"
+      "title": "[2보] 이재용, 홍라희 삼성전자 주식 2.6조 증여받아…지분율 0.17%p↑",
+      "url": "https://www.yna.co.kr/view/AKR20261013162951003"
      }
     ],
     "change": null
    },
    "world": {
-    "text": "월가 반도체 급락으로 마이크론·ASML 등이 내렸다.",
+    "text": "미국 반도체주 급락이 마이크론·ASML 등으로 번졌다.",
     "links": [
      {
       "title": "Micron, SoftBank and ASML slide as Wall Street chip rout spreads",
@@ -969,7 +969,7 @@
   },
   "labor": {
    "kr": {
-    "text": "반도체 기업 성과급이 임금인지 따져보는 글이 나왔다.",
+    "text": "반도체 기업 성과급이 임금에 해당하는지 법적 쟁점을 짚었다.",
     "links": [
      {
       "title": "반도체 기업의 경영성과급은 임금일까요",
@@ -979,11 +979,11 @@
     "change": null
    },
    "world": {
-    "text": "미국 법원이 페덱스 직원의 괴롭힘 신고를 보호 대상이 아니라고 봤다.",
+    "text": "홀푸드가 근무기록 조작을 적발해 차별 소송에서 이겼다.",
     "links": [
      {
-      "title": "FedEx worker’s 6 harassment reports not protected by Title VII, 5th Circuit says",
-      "url": "https://www.hrdive.com/news/fedex-worker-harassment-reports-not-protected-by-title-vii/832777/"
+      "title": "Whole Foods defeats bias suit after catching plaintiff faking time records",
+      "url": "https://www.hrdive.com/news/whole-foods-defeats-bias-suit-after-catching-plaintiff-faking-time-records/832779/"
      }
     ],
     "change": null
@@ -991,7 +991,7 @@
   },
   "health": {
    "kr": {
-    "text": "현대바이오가 SFTS 치료제 개발에 나선다.",
+    "text": "현대바이오가 SFTS 치료제 임상 2상 진입을 추진한다.",
     "links": [
      {
       "title": "현대바이오, SFTS 치료제 개발 도전…\"임상 2상 신속 진입\"(종합)",
@@ -1001,7 +1001,7 @@
     "change": null
    },
    "world": {
-    "text": "메타 합의금을 각 주가 어디에 쓸지 정해야 한다.",
+    "text": "메타 합의금 사용처를 두고 각 주가 고민에 빠졌다.",
     "links": [
      {
       "title": "States Now Have to Decide How to Spend Meta’s Settlement Billions",
@@ -1013,17 +1013,17 @@
   },
   "climate": {
    "kr": {
-    "text": "해수면 상승으로 양양 등 서핑 명소가 위협받는다는 진단이 나왔다.",
+    "text": "제약사들이 생물다양성 손실을 경영 위험으로 관리하기 시작했다.",
     "links": [
      {
-      "title": "기후위기 덮친 '서핑 성지'...양양도 얼마 못간다",
-      "url": "https://www.newspenguin.com/news/articleView.html?idxno=22290"
+      "title": "“항암제 70% 자연에서” 생물다양성, 제약사 생존 과제",
+      "url": "https://www.newspenguin.com/news/articleView.html?idxno=22284"
      }
     ],
     "change": null
    },
    "world": {
-    "text": "생물다양성 총회 COP17 협상문을 추적하는 자료가 나왔다.",
+    "text": "다음 주 생물다양성 회의의 협상 문안을 추적하는 자료가 나왔다.",
     "links": [
      {
       "title": "Interactive: Tracking negotiating texts at the COP17 biodiversity summit",
@@ -1035,7 +1035,7 @@
   },
   "mobility": {
    "kr": {
-    "text": "현대차·기아가 독일 콘퍼런스에서 전동화와 수소 기술을 소개했다.",
+    "text": "현대차·기아가 유럽 콘퍼런스에서 전동화·수소 기술을 선보였다.",
     "links": [
      {
       "title": "현대차 기아, 유럽 대표 자동차 기술 콘퍼런스에서 전동화, 수소 기술 경쟁력 소",
@@ -1057,17 +1057,17 @@
   },
   "education": {
    "kr": {
-    "text": "초등교장협의회가 악성 민원 책임을 학교에 떠넘기지 말라고 요청했다.",
+    "text": "초등교장들이 교원도 퇴직 전 공로연수를 받게 해 달라고 요구했다.",
     "links": [
      {
-      "title": "악성 민원 학교 책임으로 남겨선 안돼",
-      "url": "http://www.hangyo.com/news/article.html?no=109644"
+      "title": "정성국 의원 만난 초등교장들 “퇴직 전 공로연수, 교원도 허용해야”",
+      "url": "https://www.edupress.kr/news/articleView.html?idxno=30523"
      }
     ],
     "change": null
    },
    "world": {
-    "text": "일자리가 바뀌는 만큼 고등학교도 달라져야 하는지 묻는 칼럼이 나왔다.",
+    "text": "일자리와 대학이 바뀌는 만큼 고교 교육도 변해야 하는지 묻는 칼럼이 나왔다.",
     "links": [
      {
       "title": "COLUMN: As careers, college and the workforce change rapidly, should high schools evolve? Help us find out",
@@ -1079,7 +1079,7 @@
   },
   "travel": {
    "kr": {
-    "text": "교원투어가 기업 인센티브 여행 브랜드를 내놨다.",
+    "text": "교원투어가 기업 대상 인센티브 여행 브랜드를 선보였다.",
     "links": [
      {
       "title": "30년 쌓은 기업 인센티브 노하우, 밖으로 꺼낸다는 여행사",
@@ -1089,7 +1089,7 @@
     "change": null
    },
    "world": {
-    "text": "포스트카드 호텔이 클럽을 결합해 인도 도시로 진출한다.",
+    "text": "포스트카드 호텔이 클럽형 호텔로 인도 도시에 진출한다.",
     "links": [
      {
       "title": "Postcard Hotel Is Bringing Its Brand to India’s Cities, With a Club-First Twist: Exclusive",
@@ -1101,7 +1101,7 @@
   },
   "sports": {
    "kr": {
-    "text": "서울올림픽레거시포럼이 개막했다.",
+    "text": "서울올림픽레거시포럼이 개막해 1988년의 유산을 짚는다.",
     "links": [
      {
       "title": "'포용적 미래 위한 1988의 유산'…서울올림픽레거시포럼 개막",
@@ -1111,11 +1111,11 @@
     "change": null
    },
    "world": {
-    "text": "남아공과 호주의 크리켓 테스트 경기가 마지막 날을 맞았다.",
+    "text": "리야드 미사일 경보로 경기가 지연됐으나 호날두가 득점했다.",
     "links": [
      {
-      "title": "South Africa attempt to deny Australia on final day - Test scorecard",
-      "url": "https://www.bbc.co.uk/sport/cricket/scorecard/e-236997?at_medium=RSS&at_campaign=rss"
+      "title": "Ronaldo scores after match delayed by missile alert",
+      "url": "https://www.bbc.co.uk/sport/football/articles/c6kgq5j5d7qro?at_medium=RSS&at_campaign=rss"
      }
     ],
     "change": null
@@ -1123,21 +1123,21 @@
   },
   "entertainment": {
    "kr": {
-    "text": "마마 어워즈 1차 출연진이 공개됐다.",
+    "text": "NCT 위시가 신보 발매 하루 만에 밀리언셀러를 달성했다.",
     "links": [
      {
-      "title": "[방송소식] 코르티스·NCT 위시, '2026 마마 어워즈' 출연",
-      "url": "https://www.yna.co.kr/view/AKR20261013074300005"
+      "title": "[가요소식] NCT 위시, 신보 발매 하루 만에 밀리언셀러",
+      "url": "https://www.yna.co.kr/view/AKR20261013168900005"
      }
     ],
     "change": null
    },
    "world": {
-    "text": "단테 『신곡』을 바탕으로 한 호러 영화의 첫 장면이 공개됐다.",
+    "text": "영화 '멋진 인생' 80주년 기념 박스세트가 나왔다.",
     "links": [
      {
-      "title": "Horror Adaptation of Dante’s ‘The Divine Comedy,’ by ‘Invoking Yell’ Director Patricio Valladares, Gets First Look From Skincrawl Studios",
-      "url": "https://variety.com/2026/film/global/patricio-valladares-the-divine-comedy-skincrawl-studios-1236909263/"
+      "title": "‘It’s a Wonderful Life’ 80th Anniversary Box Set Includes 4K Remaster, Limited-Edition Keepsakes",
+      "url": "https://www.hollywoodreporter.com/lifestyle/shopping/its-a-wonderful-life-80th-anniversary-box-set-buy-online-1236728551/"
      }
     ],
     "change": null
@@ -1145,17 +1145,17 @@
   },
   "culture_books": {
    "kr": {
-    "text": "정전 73주년 기념공연이 부산에서 열린다.",
+    "text": "제17회 두산연강예술상 수상자가 발표됐다.",
     "links": [
      {
-      "title": "'피란수도 부산의 노래' 한국전쟁 정전 73주년 기념공연",
-      "url": "https://www.yna.co.kr/view/AKR20261013169200051"
+      "title": "제17회 두산연강예술상에 김상훈 연출·조익정 작가",
+      "url": "https://www.yna.co.kr/view/AKR20261013172200005"
      }
     ],
     "change": null
    },
    "world": {
-    "text": "출산율 격차의 원인을 다룬 책 서평이 나왔다.",
+    "text": "출산율 격차의 원인을 다룬 신간 서평이 실렸다.",
     "links": [
      {
       "title": "Generation Maybe by Camilla Cavendish review – what’s really behind the fertility gap?",
