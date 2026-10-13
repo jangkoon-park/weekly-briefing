@@ -18,20 +18,32 @@ def _esc(text):
     return html.escape(text or "", quote=True)
 
 
-def _item_html(item, summary):
+def _item_html(item, extra):
+    """extra: data/enrich.json의 이 기사 항목 ({title_ko, summary, debate}, 없으면 {})."""
     meta = [_esc(item.get("source")), _esc(item.get("published", "")[:16])]
     if item.get("meta"):
         meta.append(_esc(item["meta"]))
-    for extra in item.get("extra_links", []):
-        meta.append(f'<a href="{_esc(extra["url"])}" style="color:#666">{_esc(extra["label"])}</a>')
+    for link in item.get("extra_links", []):
+        meta.append(f'<a href="{_esc(link["url"])}" style="color:#555">{_esc(link["label"])}</a>')
+
+    title_ko = extra.get("title_ko")
     out = (
-        f'<li style="margin:0 0 10px"><a href="{_esc(item["link"])}" style="color:#1a0dab;'
-        f'text-decoration:none;font-weight:600">{_esc(item["title"])}</a>'
-        f'<br><span style="font-size:12px;color:#888">{" · ".join(meta)}</span>'
+        f'<li style="margin:0 0 16px"><a href="{_esc(item["link"])}" style="color:#1a0dab;'
+        f'text-decoration:none;font-weight:600;font-size:18px">{_esc(title_ko or item["title"])}</a>'
     )
-    if summary:
-        out += f'<br><span style="font-size:13px;color:#444">{_esc(summary).replace(chr(10), "<br>")}</span>'
+    if title_ko:
+        # 번역 제목 아래에 원제를 작게
+        out += f'<br><span style="font-size:14px;color:#777">{_esc(item["title"])}</span>'
+    out += f'<br><span style="font-size:14px;color:#888">{" · ".join(meta)}</span>'
+    for key in ("summary", "debate"):
+        if extra.get(key):
+            out += f'<br><span style="color:#333">{_esc(extra[key]).replace(chr(10), "<br>")}</span>'
     return out + "</li>"
+
+
+def _extra(enrich, item):
+    value = enrich.get(item.get("eid")) if item.get("eid") else None
+    return value if isinstance(value, dict) else {}
 
 
 def _visible(briefing):
@@ -48,9 +60,8 @@ def total_items(briefing):
     return sum(len(c["items"]) for s in briefing["sections"] for c in s["categories"])
 
 
-def build_html(briefing, heading, date_label, summaries=None, hn_summaries=None):
-    summaries = summaries or {}
-    hn_summaries = hn_summaries or {}
+def build_html(briefing, heading, date_label, enrich=None):
+    enrich = enrich or {}
     visible = _visible(briefing)
 
     toc_parts = []
@@ -64,32 +75,33 @@ def build_html(briefing, heading, date_label, summaries=None, hn_summaries=None)
         toc_parts.append(f'<p style="margin:4px 0"><b>{_esc(section["title"])}</b><br>{toc_links}</p>')
 
         body_parts.append(
-            f'<h2 style="margin:28px 0 0;padding:6px 10px;background:#111;color:#fff;font-size:16px">'
+            f'<h2 style="margin:28px 0 0;padding:6px 10px;background:#111;color:#fff;font-size:20px">'
             f'{_esc(section["title"])}</h2>'
         )
         for c in cats:
             anchor = f'{sid}-{_esc(c["key"])}'
             items = "".join(
-                _item_html(i, hn_summaries.get(i.get("hn_id")) or summaries.get(i["link"]))
+                _item_html(i, _extra(enrich, i))
                 for i in c["items"]
             )
             body_parts.append(
-                f'<h3 id="{anchor}" style="margin:20px 0 8px;font-size:15px;border-bottom:2px solid #111">'
+                f'<h3 id="{anchor}" style="margin:24px 0 10px;font-size:20px;border-bottom:2px solid #111">'
                 f'<a name="{anchor}"></a>{_esc(c["name"])} ({len(c["items"])})</h3>'
-                f'<ul style="margin:0;padding-left:18px">{items}</ul>'
+                f'<ul style="margin:0;padding-left:20px">{items}</ul>'
             )
 
     return (
         '<!doctype html><html lang="ko"><head><meta charset="utf-8">'
         '<meta name="viewport" content="width=device-width,initial-scale=1">'
         f"<title>{_esc(heading)}</title></head>"
-        f'<body style="margin:0;padding:12px;font-family:{FONT};font-size:14px;line-height:1.45;color:#222">'
-        '<div style="max-width:640px;margin:0 auto">'
-        f'<h1 style="margin:0;font-size:19px">{_esc(heading)}</h1>'
-        f'<div style="color:#888;font-size:12px">{_esc(date_label)}</div>'
-        f'<div style="margin:12px 0;padding:8px 10px;background:#f4f4f4;font-size:13px">{"".join(toc_parts)}</div>'
+        '<body style="margin:0;padding:12px">'
+        # 지메일은 body 스타일을 지우므로 기본 글꼴·크기는 감싸는 div에 둔다
+        f'<div style="max-width:640px;margin:0 auto;font-family:{FONT};font-size:16px;line-height:1.55;color:#222">'
+        f'<h1 style="margin:0;font-size:24px">{_esc(heading)}</h1>'
+        f'<div style="color:#888;font-size:14px">{_esc(date_label)}</div>'
+        f'<div style="margin:12px 0;padding:8px 10px;background:#f4f4f4;font-size:16px;line-height:1.7">{"".join(toc_parts)}</div>'
         f'{"".join(body_parts)}'
-        '<p style="margin-top:24px;color:#aaa;font-size:11px">feeds.yaml에서 분야·피드·개수를 바꿀 수 있습니다.</p>'
+        '<p style="margin-top:24px;color:#aaa;font-size:13px">feeds.yaml에서 분야·피드·개수를 바꿀 수 있습니다.</p>'
         "</div></body></html>"
     )
 

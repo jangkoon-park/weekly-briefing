@@ -3,7 +3,7 @@
 관심 분야 뉴스의 제목·링크·출처·날짜를 모아 지메일로 보내는 자동화입니다.
 **데일리**(매일 아침, 최근 24시간)와 **주간**(월요일 아침, 최근 7일) 두 가지가 있고,
 월요일에는 둘을 한 통으로 합쳐 보냅니다. RSS(공식 피드만), Hugging Face Daily Papers API,
-Hacker News(Algolia API)만 사용하며 사이트를 크롤링하지 않습니다. 요약은 기본적으로 꺼져 있습니다.
+Hacker News(Algolia API)만 사용하며 사이트를 크롤링하지 않습니다. 제목 번역과 요약은 기본적으로 꺼져 있습니다.
 
 ## 발송 일정
 
@@ -97,6 +97,7 @@ categories:
 
 - 맨 위에 **목차**(분야명 + 건수). 누르면 해당 섹션으로 이동합니다.
 - 기간 안에 글이 없는 분야는 섹션째 생략, **모든 분야가 비면 메일을 보내지 않습니다.**
+- 휴대폰에서 읽기 편하도록 본문 16px, 기사 제목 18px, 분야 제목 20px.
 - 이미지 없이 최소한의 인라인 스타일만 씁니다. 지메일은 HTML이 102KB를 넘으면 뒷부분을 잘라 보여주므로,
   생성된 HTML 크기를 로그에 출력하고 `settings.max_html_kb`(기본 100KB)를 넘으면 글이 가장 많은 분야부터
   하나씩 줄여서 맞춥니다(줄인 결과도 로그에 남김).
@@ -120,23 +121,33 @@ categories:
 
 세 값이 모두 있어야 실제 발송이 일어납니다. 하나라도 없으면 `data/preview.html`만 만들고 발송은 건너뜁니다.
 
-## 요약 옵션 (기본 꺼짐)
+## 번역·요약 옵션 (기본 꺼짐)
 
 API 키 없이 Claude Pro/Max **구독** 토큰(`claude setup-token`)으로 GitHub Actions에서 Claude Code를 실행해
-요약을 붙일 수 있습니다([Claude Code GitHub Actions](https://code.claude.com/docs/en/github-actions)).
+제목 번역과 요약을 붙일 수 있습니다([Claude Code GitHub Actions](https://code.claude.com/docs/en/github-actions)).
+세 가지는 각각 따로 켜고 끕니다.
+
+| 변수 | 내용 |
+| --- | --- |
+| `TRANSLATE_TITLES` | 한글이 없는 제목(영어 등)을 한국어로 번역해 링크로 보여주고, 원제는 그 아래 작은 글씨로 표시. 한국어 제목은 번역하지 않음 |
+| `SUMMARIZE_ARTICLES` | Hacker News를 뺀 모든 글에 비개발자도 이해할 수 있는 쉬운 말 한 줄 요약 (전문용어는 풀어서) |
+| `SUMMARIZE_HN` | HN 글마다 상위 댓글 20개를 읽고 "찬성 쪽은 ~ / 반대 쪽은 ~" 두 줄로 쉽게 요약 |
 
 1. 로컬에서 `claude setup-token` → 출력된 토큰을 Secret `CLAUDE_CODE_OAUTH_TOKEN`으로 등록
 2. 켜기
-   - 수동 실행: Run workflow 화면의 `summarize_articles`, `summarize_hn` 체크박스
-   - 예약 실행: **Settings → Secrets and variables → Actions → Variables**에 `SUMMARIZE_ARTICLES`,
-     `SUMMARIZE_HN`을 `true`로 등록
+   - 수동 실행: Run workflow 화면의 `translate_titles`, `summarize_articles`, `summarize_hn` 체크박스
+   - 예약 실행: **Settings → Secrets and variables → Actions → Variables**에 위 변수를 `true`로 등록
 
-| 요약 | 내용 |
-| --- | --- |
-| `SUMMARIZE_ARTICLES` | Hacker News를 뺀 모든 글에 한국어 한 줄 요약 |
-| `SUMMARIZE_HN` | HN 글마다 상위 댓글 20~30개를 읽고 쟁점·주요 반론 3~4줄 요약 |
+**동작 방식 (Claude 호출은 실행당 한 번)**
 
-이제 매일 실행되므로, 요약을 켜면 구독 사용량도 매일 소모됩니다. 둘 다 꺼져 있으면 토큰은 전혀 쓰이지 않습니다.
+1. `python -m src.enrich`가 켜진 옵션에 맞춰 필요한 기사만 골라 `data/enrich_input.json`과 지시문
+   `data/enrich_prompt.md`를 만듭니다. 요약은 RSS에 들어 있는 기사 앞부분 발췌문을, HN 요약은 여기서 미리
+   받아 둔 상위 댓글을 근거로 하므로 Claude가 웹에 접속할 필요가 없습니다.
+2. Claude Code가 **한 번** 실행되어 파일만 읽고(`Read`) 번역·요약·댓글 요약을 모두 `data/enrich.json`에 씁니다.
+3. 발송 단계가 결과를 메일에 반영합니다. Claude 단계가 실패해도 메일은 번역·요약 없이 그대로 발송됩니다.
+
+세 옵션이 모두 꺼져 있거나 대상 기사가 없으면 Claude 단계는 아예 실행되지 않습니다(구독 사용량 소모 없음).
+매일 실행되므로, 켜 두면 구독 사용량이 매일 조금씩 소모됩니다.
 
 ## 로컬 실행
 

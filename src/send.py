@@ -48,13 +48,19 @@ def main():
     title = SUBJECT_PREFIX[briefing["mode"]]
     subject = f"[{title}] {now_kst.strftime('%Y-%m-%d')}"
     date_label = now_kst.strftime("%Y-%m-%d (%a) %H:%M KST")
-    summaries = _load_json(DATA_DIR / "summaries.json", {})
-    hn_summaries = _load_json(DATA_DIR / "hn_summaries.json", {})
+    # (선택) Claude 번역·요약 결과. 없거나 깨져 있으면 원문 그대로 보냄
+    try:
+        enrich = _load_json(DATA_DIR / "enrich.json", {})
+    except ValueError as exc:
+        logger.warning("data/enrich.json을 읽을 수 없어 번역·요약 없이 보냅니다: %s", exc)
+        enrich = {}
+    if enrich:
+        logger.info("번역·요약 결과 %d건 반영", len(enrich))
 
     max_bytes = int(float(config.get("settings", {}).get("max_html_kb", 100)) * 1024)
     html_body, _ = fit_to_size(
         briefing,
-        lambda b: build_html(b, title, date_label, summaries, hn_summaries),
+        lambda b: build_html(b, title, date_label, enrich),
         max_bytes,
     )
 

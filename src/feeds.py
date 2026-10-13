@@ -1,5 +1,6 @@
 """feeds.yaml 기반 수집: RSS 분야, Hugging Face Daily Papers, Hacker News."""
 import calendar
+import html
 import logging
 import re
 import time
@@ -92,6 +93,16 @@ def fetch_feed(url, user_agent=None):
     return parsed
 
 
+EXCERPT_CHARS = 500
+
+
+def make_excerpt(text, limit=EXCERPT_CHARS):
+    """HTML 태그를 지우고 공백을 정리해 limit자 이내로 자른 발췌문 (요약용 입력)."""
+    text = re.sub(r"<[^>]+>", " ", text or "")
+    text = " ".join(html.unescape(text).split())
+    return text if len(text) <= limit else text[:limit].rsplit(" ", 1)[0] + "…"
+
+
 def _normalize_title(title):
     return re.sub(r"\W+", "", title).lower()
 
@@ -164,6 +175,7 @@ def collect_rss_category(category, hours_back, max_items, now_epoch):
                     "link": link,
                     "source": feed_name,
                     "published_epoch": published_epoch,
+                    "excerpt": make_excerpt(entry.get("summary") or entry.get("description")),
                 }
             )
 
@@ -233,6 +245,7 @@ def collect_hf_papers(category, hours_back, max_items, now_epoch):
                     "published_epoch": published_epoch,
                     "meta": f"추천 {upvotes}",
                     "extra_links": [{"label": "arXiv", "url": f"https://arxiv.org/abs/{paper_id}"}],
+                    "excerpt": make_excerpt(paper.get("summary") or entry.get("summary")),
                     "_score": upvotes,
                 }
             )
