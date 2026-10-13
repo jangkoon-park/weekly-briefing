@@ -5,6 +5,7 @@ import logging
 import re
 import time
 from pathlib import Path
+from urllib.parse import urlparse
 
 import feedparser
 import requests
@@ -70,14 +71,30 @@ def _entry_published_epoch(entry):
     return None
 
 
+# 요청 제한이 빡빡한 호스트는 요청 사이 간격을 둔다 (초)
+HOST_MIN_INTERVAL = {"www.reddit.com": 15}
+_last_request = {}
+
+
+def _wait_for_host(url):
+    host = urlparse(url).netloc
+    interval = HOST_MIN_INTERVAL.get(host)
+    if interval:
+        elapsed = time.time() - _last_request.get(host, 0)
+        if elapsed < interval:
+            time.sleep(interval - elapsed)
+        _last_request[host] = time.time()
+
+
 def _get(url, retries=2, **kwargs):
     """GET + 429/5xx면 잠깐 쉬었다가 재시도 (Reddit 등 요청 제한 대응)."""
     for attempt in range(retries + 1):
+        _wait_for_host(url)
         response = requests.get(url, timeout=REQUEST_TIMEOUT, **kwargs)
         if response.status_code != 429 and response.status_code < 500:
             return response
         if attempt < retries:
-            wait = 10 * (attempt + 1)
+            wait = 15 * (attempt + 1)
             logger.info("  HTTP %d, %d초 후 재시도: %s", response.status_code, wait, url)
             time.sleep(wait)
     return response
@@ -107,29 +124,140 @@ def _normalize_title(title):
     return re.sub(r"\W+", "", title).lower()
 
 
-def _round_robin(per_feed_items, limit):
-    """피드별 최신순 목록에서 한 개씩 번갈아 뽑아 limit개를 고른 뒤 전체를 최신순으로 정렬한다.
-
-    기사가 많은 피드 하나가 분야 전체를 차지하지 않게 하기 위함.
-    """
+def _round_robin(per_feed_items):
+    """피드별 최신순 목록에서 한 개씩 번갈아 꺼낸 순서 (한 피드가 분야를 독차지하지 않게)."""
     queues = [list(items) for items in per_feed_items if items]
-    picked = []
-    while queues and len(picked) < limit:
+    ordered = []
+    while queues:
         next_round = []
         for queue in queues:
-            if len(picked) >= limit:
-                break
-            picked.append(queue.pop(0))
+            ordered.append(queue.pop(0))
             if queue:
                 next_round.append(queue)
         queues = next_round
-    picked.sort(key=lambda x: x["published_epoch"], reverse=True)
-    return picked
+    return ordered
 
 
-def collect_rss_category(category, hours_back, max_items, now_epoch):
+# ---------------------------------------------------------------------------
+# 같은 사건 판별 (제목 유사도)
+# ---------------------------------------------------------------------------
+
+DEFAULT_SIMILARITY = 0.5
+
+
+def title_key(title):
+    """[속보]·(종합) 같은 꼬리표를 지우고 소문자 단어 목록으로 만든 비교용 제목 (공백으로 이어 붙인 문자열)."""
+    title = re.sub(r"\[[^\]]*\]|\([^)]*\)|【[^】]*】|<[^>]*>", " ", title)
+    return " ".join(re.findall(r"[0-9a-z가-힣]+", title.lower()))
+
+
+def _bigrams(key):
+    key = key.replace(" ", "")
+    return {key[i:i + 2] for i in range(len(key) - 1)} or {key}
+
+
+# 같은 주어로 시작하는 서로 다른 기사에도 흔히 나오는 말 (공통 단어로 치지 않음)
+GENERIC_WORDS = set("""
+대통령 정부 장관 국회 여당 야당 발표 개최 실적 사업 추진 확대 강화 국내 최초 글로벌 종합 속보 단독 출시 공개 선정
+기업 시장 서비스 기술 관련 지원 협력 체결 위해 대한 올해 내년 오늘 이번 지난 신규 사상 최대 최고 전년 대비 영업이익
+매출 분기 예정 계획 가능 논란 의혹 입장 결정 확인 진행 참석 주재 회의 행사 업계 산업 정책 투자 협약 기념 성료 마무리
+the a an and or of to in on for with by at from as is are was were be its his her their this that these those
+how why what who when new first more than after over into about says said will can could may not no
+""".split())
+
+
+def _salient_words(words):
+    return [w for w in words if len(w) >= 2 and not w.isdigit() and w not in GENERIC_WORDS]
+
+
+def _shared_count(words_a, words_b):
+    """조사·복수형 차이는 무시하고(앞부분 일치) 함께 쓰인 단어 수."""
+    count = 0
+    for wa in set(words_a):
+        if any((wa.startswith(wb) or wb.startswith(wa)) and min(len(wa), len(wb)) >= 2 for wb in set(words_b)):
+            count += 1
+    return count
+
+
+def is_same_story(key_a, key_b, threshold=DEFAULT_SIMILARITY):
+    """두 제목(title_key 결과)이 같은 사건인지 대략 판별한다.
+
+    1) (한글 제목) 첫 단어(대개 주어)가 같고, 흔한 말이 아닌 단어를 하나 이상 함께 쓰면 같은 사건
+       ("코스피 6%대 급락…" / "코스피 장중 4%대 급락…", "삼성SDS 우정항공 인수" / "삼성SDS가 우정항공 택한 이유")
+    2) 주어가 달라도 흔하지 않은 단어를 여러 개 함께 쓰고 글자도 꽤 겹치면 같은 사건 (영어는 더 엄격)
+    3) 아니면 글자 2-gram 겹침(Dice 계수)이 threshold 이상일 때. 단, 첫 단어가 다르면
+       ("삼성전자 3분기 실적" / "LG전자 3분기 실적") 거의 똑같은 제목(0.85 이상)만.
+    표현이 많이 다르거나 언어가 다른 중복은 Claude 단계(dup_of)에서 한 번 더 걸러낸다.
+    """
+    if not key_a or not key_b:
+        return False
+    if key_a == key_b:
+        return True
+    words_a, words_b = key_a.split(" "), key_b.split(" ")
+    first_a, first_b = words_a[0], words_b[0]
+    same_subject = (first_a.startswith(first_b) or first_b.startswith(first_a)) and min(
+        len(first_a), len(first_b)
+    ) >= 2 and first_a not in GENERIC_WORDS
+    # 영어 제목은 큰 고유명사(NASA, Trump, Russia…)가 여러 기사에 겹쳐 나오므로 단어 규칙을 쓰지 않고
+    # 글자 겹침만 보수적으로 본다. 표현이 다른 영어 중복은 Claude 단계(dup_of)가 거른다.
+    korean = bool(re.search(r"[가-힣]", key_a)) and bool(re.search(r"[가-힣]", key_b))
+    if same_subject and korean:
+        # 주어가 여러 단어("LG CNS")일 수 있으니 앞에서부터 같은 단어는 모두 떼고 나머지끼리 비교
+        n = 1
+        while n < min(len(words_a), len(words_b)) and words_a[n] == words_b[n]:
+            n += 1
+        if _shared_count(_salient_words(words_a[n:]), _salient_words(words_b[n:])) >= 1:
+            return True
+    a, b = _bigrams(key_a), _bigrams(key_b)
+    dice = 2 * len(a & b) / (len(a) + len(b))
+    # 주어가 달라도 흔하지 않은 단어를 여러 개 함께 쓰면 같은 사건
+    # ("토탈미술관 50주년 특별전…" / "개관 50주년 토탈미술관 특별전…")
+    shared = _shared_count(_salient_words(words_a), _salient_words(words_b))
+    if korean and ((shared >= 3 and dice >= 0.3) or (shared >= 2 and dice >= 0.4)):
+        return True
+    if not korean and shared >= 3 and dice >= 0.5:
+        return True
+    return dice >= (threshold if same_subject else max(threshold, 0.85))
+
+
+def _rank_by_coverage(per_feed_items, threshold):
+    """여러 매체가 함께 다룬 사건일수록 앞에 오도록 묶어서 정렬한다.
+
+    같은 사건 묶음에서는 feeds.yaml에서 먼저 적힌 피드의 기사를 대표로 쓰고, "N개 매체 보도"를 붙인다.
+    """
+    clusters = []  # [{"items": [...], "keys": [...]}]
+    for feed_items in per_feed_items:          # 피드 순서 = 우선순위
+        for item in feed_items:
+            key = title_key(item["title"])
+            for cluster in clusters:
+                if any(is_same_story(key, k, threshold) for k in cluster["keys"]):
+                    cluster["items"].append(item)
+                    cluster["keys"].append(key)
+                    break
+            else:
+                clusters.append({"items": [item], "keys": [key]})
+
+    ranked = []
+    for cluster in clusters:
+        rep = dict(cluster["items"][0])
+        sources = {i["source"] for i in cluster["items"]}
+        rep["_coverage"] = len(sources)
+        rep["_latest"] = max(i["published_epoch"] for i in cluster["items"])
+        if len(sources) >= 2:
+            rep["meta"] = f"{len(sources)}개 매체 보도"
+        ranked.append(rep)
+    ranked.sort(key=lambda x: (x["_coverage"], x["_latest"]), reverse=True)
+    for rep in ranked:
+        rep.pop("_coverage")
+        rep.pop("_latest")
+    return ranked
+
+
+def collect_rss_category(category, hours_back, now_epoch):
+    """분야의 후보 기사 목록(우선순위 순)을 돌려준다. 개수 제한·분야 간 중복 제거는 select_items에서."""
     cutoff_epoch = now_epoch - hours_back * 3600
     category_pattern = compile_keywords(category.get("keywords"))
+    category_exclude = compile_keywords(category.get("exclude_keywords"))
     seen_links = set()
     seen_titles = set()
     per_feed_items = []
@@ -140,6 +268,11 @@ def collect_rss_category(category, hours_back, max_items, now_epoch):
         # 피드에 keywords가 있으면 분야 keywords 대신 그것을 쓴다.
         pattern = (
             compile_keywords(feed_cfg["keywords"]) if "keywords" in feed_cfg else category_pattern
+        )
+        exclude = (
+            compile_keywords(feed_cfg["exclude_keywords"])
+            if "exclude_keywords" in feed_cfg
+            else category_exclude
         )
         try:
             parsed = fetch_feed(feed_url, feed_cfg.get("user_agent"))
@@ -164,6 +297,8 @@ def collect_rss_category(category, hours_back, max_items, now_epoch):
             in_range += 1
             if not _matches(pattern, title):
                 continue
+            if exclude is not None and exclude.search(title):
+                continue
             norm = _normalize_title(title)
             if link in seen_links or norm in seen_titles:
                 continue
@@ -187,7 +322,10 @@ def collect_rss_category(category, hours_back, max_items, now_epoch):
         )
         per_feed_items.append(feed_items)
 
-    return _round_robin(per_feed_items, max_items)
+    if category.get("rank") == "coverage":
+        threshold = float(category.get("similarity", DEFAULT_SIMILARITY))
+        return _rank_by_coverage(per_feed_items, threshold)
+    return _round_robin(per_feed_items)
 
 
 # ---------------------------------------------------------------------------
@@ -198,7 +336,7 @@ def _iso_to_epoch(value):
     return calendar.timegm(time.strptime(value[:19], "%Y-%m-%dT%H:%M:%S"))
 
 
-def collect_hf_papers(category, hours_back, max_items, now_epoch):
+def collect_hf_papers(category, hours_back, now_epoch):
     """HF Daily Papers API에서 기간 내 Daily Papers에 올라온 논문을 추천(upvotes) 많은 순으로 max_items개.
 
     Daily Papers는 날짜(UTC) 단위 목록이라, 그날의 절반 이상이 기간 안에 들어가는 날짜만 포함한다
@@ -251,14 +389,14 @@ def collect_hf_papers(category, hours_back, max_items, now_epoch):
             )
     items.sort(key=lambda x: x["_score"], reverse=True)
     logger.info("  HF Daily Papers: 기간 내 %d건", len(items))
-    return items[:max_items]
+    return items
 
 
 # ---------------------------------------------------------------------------
 # Hacker News (Algolia API)
 # ---------------------------------------------------------------------------
 
-def collect_hacker_news(category, hours_back, max_items, now_epoch):
+def collect_hacker_news(category, hours_back, now_epoch):
     """기간 내 points >= min_points인 글을 포인트 높은 순으로 max_items개."""
     min_points = int(category.get("min_points", 100))
     cutoff_epoch = int(now_epoch - hours_back * 3600)
@@ -294,9 +432,7 @@ def collect_hacker_news(category, hours_back, max_items, now_epoch):
                 "hn_id": object_id,
             }
         )
-        if len(items) >= max_items:
-            break
-    logger.info("  Hacker News: %d건 (points>=%d)", len(items), min_points)
+    logger.info("  Hacker News: 후보 %d건 (points>=%d)", len(items), min_points)
     return items
 
 
@@ -307,10 +443,40 @@ COLLECTORS = {
 }
 
 
-def collect_schedule(config, schedule, now_epoch=None):
+# rss(라운드로빈)는 고른 뒤 최신순으로 보여주고, 나머지(점수·보도량 순)는 순위 그대로 보여준다.
+SORT_BY_DATE = {"rss": True, "hf_papers": False, "hacker_news": False}
+
+
+def select_items(candidates, max_items, seen, threshold=DEFAULT_SIMILARITY):
+    """후보를 앞에서부터 보면서 이미 고른 기사(다른 분야 포함)와 링크가 같거나 같은 사건이면 건너뛰고 max_items개를 고른다.
+
+    seen: {"links": set, "keys": list} — 한 번 실행(메일 한 통) 안에서 모든 분야가 공유한다.
+    """
+    picked = []
+    skipped = 0
+    for item in candidates:
+        if len(picked) >= max_items:
+            break
+        key = title_key(item["title"])
+        if item["link"] in seen["links"] or any(is_same_story(key, k, threshold) for k in seen["keys"]):
+            skipped += 1
+            continue
+        seen["links"].add(item["link"])
+        seen["keys"].append(key)
+        picked.append(item)
+    return picked, skipped
+
+
+def new_seen():
+    return {"links": set(), "keys": []}
+
+
+def collect_schedule(config, schedule, now_epoch=None, seen=None):
     """schedule(daily/weekly)에 속한 분야만 수집해서 분야 리스트를 feeds.yaml 순서대로 돌려준다."""
     if now_epoch is None:
         now_epoch = time.time()
+    if seen is None:
+        seen = new_seen()
     sched_cfg = config["schedules"][schedule]
     hours_back = sched_cfg.get("hours_back", 24)
     default_max = sched_cfg.get("default_max_items", 10)
@@ -322,7 +488,13 @@ def collect_schedule(config, schedule, now_epoch=None):
         ctype = category.get("type", "rss")
         max_items = int(category.get("max_items", default_max))
         logger.info("[%s] %s (type=%s, 최근 %d시간, 최대 %d개)", schedule, category["name"], ctype, hours_back, max_items)
-        items = COLLECTORS[ctype](category, hours_back, max_items, now_epoch)
+        candidates = COLLECTORS[ctype](category, hours_back, now_epoch)
+        threshold = float(category.get("similarity", DEFAULT_SIMILARITY))
+        items, skipped = select_items(candidates, max_items, seen, threshold)
+        if skipped:
+            logger.info("  같은 사건/중복 %d건 제외", skipped)
+        if SORT_BY_DATE[ctype] and category.get("rank") != "coverage":
+            items.sort(key=lambda x: x["published_epoch"], reverse=True)
         for item in items:
             item.pop("_score", None)
         results.append({"key": category["key"], "name": category["name"], "type": ctype, "items": items})

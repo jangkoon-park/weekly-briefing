@@ -27,6 +27,8 @@ def _item_html(item, extra):
         meta.append(f'<a href="{_esc(link["url"])}" style="color:#555">{_esc(link["label"])}</a>')
 
     title_ko = extra.get("title_ko")
+    if title_ko and title_ko.strip() == item["title"].strip():
+        title_ko = None
     out = (
         f'<li style="margin:0 0 16px"><a href="{_esc(item["link"])}" style="color:#1a0dab;'
         f'text-decoration:none;font-weight:600;font-size:18px">{_esc(title_ko or item["title"])}</a>'

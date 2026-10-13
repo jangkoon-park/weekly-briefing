@@ -3,7 +3,7 @@
   python -m src.enrich
 
 환경변수(true/false)로 켜고 끈다:
-  TRANSLATE_TITLES    영어 등 한글이 없는 제목을 한국어로 번역 (한국어 제목은 그대로)
+  TRANSLATE_TITLES    영어 등 한글이 없는 제목을 한국어로 번역 (한국어 제목은 이름뿐일 때만 풀어 쓰기)
   SUMMARIZE_ARTICLES  기사별 쉬운 말 한 줄 요약 (HN 제외, RSS 발췌문 기준)
   SUMMARIZE_HN        HN 글마다 상위 댓글을 참고해 "무슨 일인지" 한 줄 + "찬성 쪽은 ~ / 반대 쪽은 ~" 요약
 
@@ -36,16 +36,8 @@ HN_TOP_COMMENTS = 20
 HN_COMMENT_CHARS = 300
 SUMMARY_EXCERPT_CHARS = 300
 
-HANGUL = re.compile(r"[가-힣]")
-
-
 def _flag(name):
     return os.environ.get(name, "false").strip().lower() == "true"
-
-
-def needs_translation(title):
-    """한글이 하나도 없고 영문자가 있는 제목만 번역 대상."""
-    return not HANGUL.search(title) and bool(re.search(r"[A-Za-z]", title))
 
 
 def fetch_hn_comments(story_id, limit=HN_TOP_COMMENTS):
@@ -83,8 +75,11 @@ PROMPT_HEAD = """# 메일 브리핑 번역·요약 작업
 """
 
 TASK_TEXT = {
-    "title_ko": """## title_ko — 제목 번역
-- `title`을 자연스러운 한국어 기사 제목으로 번역한다. 원문에 없는 내용을 더하지 않는다.
+    "title_ko": """## title_ko — 쉬운 한국어 제목
+- 한글이 없는 제목(영어 등): 자연스러운 한국어 기사 제목으로 번역한다. 원문에 없는 내용을 더하지 않는다.
+- 한글 제목: 그대로 두고 title_ko를 넣지 않는다. 단, 제목이 제품·회사·프로젝트 이름뿐이라 무슨 내용인지
+  안 드러나면 내용이 드러나게 풀어 쓴 제목을 title_ko에 넣는다 (예: "뮤즈 원더" → "뮤즈 원더: 메타가 새로 낸 AI 모델").
+- 영어 제목이 이름뿐인 경우도 같은 방식으로 풀어 쓴다 (예: "Show HN: Foo" → "Foo: 개인 개발자가 만든 ○○ 도구").
 - 회사·제품·사람 이름은 원어 그대로 두거나 널리 쓰는 한글 표기를 쓴다 (예: OpenAI, PostgreSQL, 구글).
 """,
     "summary": """## summary — "무슨 일인지" 쉬운 말 한 줄
@@ -107,10 +102,16 @@ TASK_TEXT = {
 """,
 }
 
+DUP_TEXT = """## dup_of — 같은 사건 중복 표시
+- `items`는 메일에 나오는 순서다. 어떤 원소가 앞에 나온 다른 원소와 **같은 사건**을 다룬다면
+  (매체·언어·표현이 달라도) 그 원소에 "dup_of": "<앞 원소의 id>"를 넣는다. 그 원소는 메일에서 빠진다.
+- 같은 주제라도 서로 다른 사건(예: 다른 회사의 실적, 다른 날의 발표)이면 표시하지 않는다. 애매하면 표시하지 않는다.
+"""
+
 PROMPT_TAIL = """## 결과 저장
 결과를 `data/enrich.json`에 Write로 저장한다. 구조:
-{ "<id>": { "title_ko": "...", "summary": "...", "debate": "..." }, ... }
-- 각 id에는 그 원소의 `tasks`에 있는 키만 넣는다.
+{ "<id>": { "title_ko": "...", "summary": "...", "debate": "...", "dup_of": "..." }, ... }
+- 각 id에는 그 원소의 `tasks`에 있는 키와 (해당할 때만) dup_of만 넣는다. 넣을 게 없는 id는 빼도 된다.
 - 반드시 유효한 JSON만 저장한다. 마크다운 코드블록이나 설명을 붙이지 않는다.
 - data/enrich.json 외의 파일은 만들거나 고치지 않는다.
 """
@@ -130,7 +131,8 @@ def prepare(translate, summarize, summarize_hn):
                 counter += 1
                 item["eid"] = f"i{counter}"
                 tasks = []
-                if translate and needs_translation(item["title"]):
+                if translate:
+                    # 영어 제목은 번역, 한글 제목은 이름뿐일 때만 풀어 쓰기 (판단은 Claude가)
                     tasks.append("title_ko")
                 if summarize and not is_hn:
                     tasks.append("summary")
@@ -160,6 +162,7 @@ def prepare(translate, summarize, summarize_hn):
         json.dumps({"items": inputs}, ensure_ascii=False, indent=1), encoding="utf-8"
     )
     prompt = PROMPT_HEAD + "".join(TASK_TEXT[t] for t in ("title_ko", "summary", "debate") if t in used_tasks)
+    prompt += DUP_TEXT
     (DATA_DIR / "enrich_prompt.md").write_text(prompt + PROMPT_TAIL, encoding="utf-8")
     counts = {t: sum(t in e["tasks"] for e in inputs) for t in sorted(used_tasks)}
     logger.info("Claude 입력 준비: 기사 %d건, 작업 %s", len(inputs), counts)

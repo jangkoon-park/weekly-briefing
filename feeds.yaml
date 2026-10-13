@@ -7,15 +7,22 @@
 #     type: rss                 # rss(기본) | hf_papers | hacker_news
 #     max_items: 5              # 분야별 최대 개수 (생략하면 schedules.<daily|weekly>.default_max_items)
 #     keywords: [금리, 환율]     # (선택) 제목에 이 중 하나라도 들어간 글만. 생략하면 필터 없음
+#     exclude_keywords: [연예]   # (선택) 제목에 이 중 하나라도 들어가면 제외
+#     rank: coverage            # (선택) 여러 매체가 함께 다룬 사건을 앞에 ("N개 매체 보도" 표시)
+#     similarity: 0.5           # (선택) 같은 사건으로 볼 제목 유사도 (0~1, 기본 0.5)
 #     feeds:
 #       - name: "출처 이름"       # 메일에 출처로 표시
 #         url: "RSS/Atom 주소"
 #         max_items: 5          # (선택) 이 피드에서 가져올 최대 개수
 #         keywords: [...]       # (선택) 이 피드에만 적용할 키워드 (분야 keywords 대신 사용)
+#         exclude_keywords: [...] # (선택) 이 피드에만 적용할 제외 키워드
 #         user_agent: "..."     # (선택) 기본 User-Agent를 막는 사이트용 (예: 한국경제)
 #
 # ■ 메일에는 이 파일에 적힌 순서대로 분야가 표시됩니다(데일리가 위, 주간이 아래).
 # ■ 한 분야 안에서는 여러 피드에서 번갈아 골라(한 피드가 독차지하지 않게) 최신순으로 보여줍니다.
+#   rank: coverage인 분야는 여러 매체가 다룬 사건 순으로 보여줍니다.
+# ■ 같은 기사·같은 사건은 메일 한 통에서 한 번만 나옵니다(위쪽 분야가 우선). 제목 유사도로 1차로 거르고,
+#   번역·요약 옵션이 켜져 있으면 Claude가 표현·언어가 다른 중복을 한 번 더 거릅니다.
 # ■ 기간 안에 글이 없는 분야는 메일에서 섹션째 빠지고, 모든 분야가 비면 메일을 보내지 않습니다.
 # ■ 공식 RSS만 넣습니다(크롤링 없음). 죽은 피드는 경고 로그만 남기고 건너뜁니다.
 #
@@ -33,43 +40,76 @@ schedules:
   weekly:
     title: "주간 브리핑"
     hours_back: 168       # 최근 7일
-    default_max_items: 10
+    default_max_items: 7
+
+# 연예·스포츠 기사 제외용 (YAML 앵커로 여러 분야에서 재사용)
+x-exclude-entertainment: &exclude_entertainment
+  [연예, 스포츠, 야구, 축구, 배구, 농구, 골프, 프로야구, KBO, MLB, K리그, EPL, NBA, 아이돌, 드라마, 예능, 컴백,
+   열애, 결혼식, 걸그룹, 보이그룹, 가수, 배우, 시구, 감독 선임, 홈런, 결승골, 운세, 날씨, 오늘의]
 
 categories:
   # =========================================================================
-  # 데일리
+  # 데일리 (매일 아침 8시, 최근 24시간, 섹션당 최대 5개)
   # =========================================================================
-  - key: ai_data
-    name: "AI·데이터 도구"
+  - key: kr_top
+    name: "국내 주요뉴스"
     schedule: daily
     max_items: 5
+    rank: coverage          # 여러 매체가 함께 다룬 사건 = 큰 줄기
+    exclude_keywords: *exclude_entertainment
     feeds:
-      - name: "GeekNews"
-        url: "https://news.hada.io/rss/news"
-      - name: "Simon Willison"
-        url: "https://simonwillison.net/atom/everything/"
-      - name: "Hugging Face Blog"
-        url: "https://huggingface.co/blog/feed.xml"
-      - name: "OpenAI News"
-        url: "https://openai.com/news/rss.xml"
-      - name: "Google DeepMind"
-        url: "https://deepmind.google/blog/rss.xml"
-      - name: "AI타임스"
-        url: "https://www.aitimes.com/rss/allArticle.xml"
-      - name: "AWS Big Data Blog"
-        url: "https://aws.amazon.com/blogs/big-data/feed/"
+      - name: "연합뉴스 정치"
+        url: "https://www.yna.co.kr/rss/politics.xml"
+      - name: "연합뉴스 사회"
+        url: "https://www.yna.co.kr/rss/society.xml"
+      - name: "연합뉴스 경제"
+        url: "https://www.yna.co.kr/rss/economy.xml"
+      - name: "SBS 정치"
+        url: "https://news.sbs.co.kr/news/SectionRssFeed.do?sectionId=01"
+      - name: "SBS 사회"
+        url: "https://news.sbs.co.kr/news/SectionRssFeed.do?sectionId=03"
+      - name: "한국경제 정치"
+        url: "https://www.hankyung.com/feed/politics"
+        user_agent: "curl/8.5.0"
+      - name: "경향신문"
+        url: "https://www.khan.co.kr/rss/rssdata/total_news.xml"
+      - name: "동아일보"
+        url: "https://rss.donga.com/total.xml"
+      - name: "조선일보"
+        url: "https://www.chosun.com/arc/outboundfeeds/rss/?outputType=xml"
 
-  - key: ml_papers
-    name: "ML 논문 (HF Daily Papers)"
-    schedule: daily
-    type: hf_papers       # Hugging Face Daily Papers API, 추천(upvotes) 많은 순
-    max_items: 3
-
-  - key: kr_economy
-    name: "국내 경제·제도"
+  - key: world_top
+    name: "해외 주요뉴스"
     schedule: daily
     max_items: 5
-    keywords: [금리, 기준금리, 환율, 코스피, 경기, 물가, 부동산, 전세, 재건축, 세법, 상속, 증여, 종합소득세, 프리랜서]
+    rank: coverage
+    exclude_keywords: [sport, football, soccer, NBA, NFL, tennis, cricket, golf, jersey, celebrity, actor, actress, singer, rapper,
+                       Oscar, Grammy, quiz, crossword, "Wordle"]
+    feeds:
+      - name: "BBC World"
+        url: "https://feeds.bbci.co.uk/news/world/rss.xml"
+      - name: "Guardian World"
+        url: "https://www.theguardian.com/world/rss"
+      - name: "NYT World"
+        url: "https://rss.nytimes.com/services/xml/rss/nyt/World.xml"
+      - name: "NPR World"
+        url: "https://feeds.npr.org/1004/rss.xml"
+      - name: "Al Jazeera"
+        url: "https://www.aljazeera.com/xml/rss/all.xml"
+      - name: "BBC Business"
+        url: "https://feeds.bbci.co.uk/news/business/rss.xml"
+      - name: "NYT Business"
+        url: "https://rss.nytimes.com/services/xml/rss/nyt/Business.xml"
+      - name: "연합뉴스 국제"
+        url: "https://www.yna.co.kr/rss/international.xml"
+
+  - key: market
+    name: "경제·시장"
+    schedule: daily
+    max_items: 5
+    rank: coverage
+    keywords: [금리, 기준금리, 환율, 달러, 원화, 코스피, 코스닥, 증시, 주가, 국채, 채권, 부동산, 집값, 아파트, 전세, 월세,
+               분양, 재건축, 물가, 연준, Fed, FOMC]
     feeds:
       - name: "연합뉴스 경제"
         url: "https://www.yna.co.kr/rss/economy.xml"
@@ -90,12 +130,116 @@ categories:
       - name: "매일경제 부동산"
         url: "https://www.mk.co.kr/rss/50300009/"
 
-  - key: kr_it
-    name: "국내 IT 정책·업계"
+  - key: ai_industry
+    name: "AI 업계 소식"
     schedule: daily
     max_items: 5
-    keywords: [공공 클라우드, 망분리, 클라우드 네이티브, AI 사업, 생성형 AI, 차세대, SI, 오라클, PostgreSQL, ERP, 데이터센터, 네이버, 카카오]
     feeds:
+      - name: "OpenAI News"
+        url: "https://openai.com/news/rss.xml"
+      - name: "Google DeepMind"
+        url: "https://deepmind.google/blog/rss.xml"
+      - name: "Meta Newsroom"
+        url: "https://about.fb.com/news/feed/"
+        keywords: [AI, Llama, Muse, superintelligence, model, models]
+      # Anthropic은 공식 RSS가 없어 아래 기술 매체에서 관련 기사로 대신 다룹니다.
+      - name: "TechCrunch AI"
+        url: "https://techcrunch.com/category/artificial-intelligence/feed/"
+        keywords: &big_ai [OpenAI, ChatGPT, GPT, Sora, DeepMind, Gemini, Google, Meta, Llama, Muse, Anthropic, Claude]
+      - name: "The Verge AI"
+        url: "https://www.theverge.com/rss/ai-artificial-intelligence/index.xml"
+        keywords: *big_ai
+      - name: "AI타임스"
+        url: "https://www.aitimes.com/rss/allArticle.xml"
+
+  - key: hacker_news
+    name: "Hacker News"
+    schedule: daily
+    type: hacker_news     # Algolia HN API, 기간 내 포인트 높은 순
+    min_points: 100
+    max_items: 5
+
+  - key: ml_papers
+    name: "ML 논문 (HF Daily Papers)"
+    schedule: daily
+    type: hf_papers       # Hugging Face Daily Papers API, 추천(upvotes) 많은 순
+    max_items: 3
+
+  # =========================================================================
+  # 주간 (월요일 데일리와 합쳐서, 최근 7일, 섹션당 최대 7개)
+  # =========================================================================
+  - key: data_eng
+    name: "데이터 엔지니어링"
+    schedule: weekly
+    exclude_keywords: [Brickster Voices, Meet, webinar, podcast, "Customer Story Spotlight"]
+    feeds:
+      - name: "Databricks Blog"
+        url: "https://www.databricks.com/feed"
+      - name: "dbt Labs Blog"
+        url: "https://www.getdbt.com/blog/feed.xml"
+      - name: "Snowflake Blog"
+        url: "https://www.snowflake.com/feed/"
+      - name: "AWS Big Data Blog"
+        url: "https://aws.amazon.com/blogs/big-data/feed/"
+      - name: "Data Engineering Weekly"
+        url: "https://www.dataengineeringweekly.com/feed"
+
+  - key: ai_practice
+    name: "AI 실무 활용"
+    schedule: weekly
+    # RAG, 에이전트, 기업 도입 사례
+    keywords: [RAG, retrieval, agent, agents, agentic, 에이전트, MCP, "case study", customer, customers, enterprise,
+               deploy, deploys, production, 도입, 사례, 구축, 적용]
+    feeds:
+      - name: "AWS Machine Learning Blog"
+        url: "https://aws.amazon.com/blogs/machine-learning/feed/"
+      - name: "Google Cloud AI Blog"
+        url: "https://cloudblog.withgoogle.com/products/ai-machine-learning/rss/"
+      - name: "Microsoft Cloud Blog"
+        url: "https://www.microsoft.com/en-us/microsoft-cloud/blog/feed/"
+      - name: "GeekNews"
+        url: "https://news.hada.io/rss/news"
+        keywords: [RAG, 에이전트, Agent, Agents, MCP, 도입 사례, 사례]
+      - name: "AI타임스"
+        url: "https://www.aitimes.com/rss/allArticle.xml"
+        keywords: [에이전트, RAG, 도입, 사례, 구축, 적용]
+
+  - key: construction_it
+    name: "건설 IT·스마트건설"
+    schedule: weekly
+    keywords: [스마트건설, 스마트 건설, 스마트 안전, BIM, 디지털트윈, 디지털 트윈, 드론, 로봇, AI, 인공지능, 모듈러, OSC, 탈현장,
+               자동화, 건설기술, 디지털, 플랫폼, 데이터, 콘테크, 프롭테크, 무인]
+    feeds:
+      # 국내 건설 전문지 3곳은 https 인증서가 깨져 있어 http 주소를 씁니다(공식 RSS 주소, 읽기 전용).
+      - name: "국토일보"
+        url: "http://www.ikld.kr/rss/allArticle.xml"
+      - name: "한국건설신문"
+        url: "http://www.conslove.co.kr/rss/allArticle.xml"
+      - name: "건설이코노미뉴스"
+        url: "http://www.cenews.co.kr/rss/allArticle.xml"
+      - name: "건설타임즈"
+        url: "https://www.constimes.co.kr/rss/allArticle.xml"
+      - name: "Construction Dive (Technology)"
+        url: "https://www.constructiondive.com/feeds/topic/technology/"
+        keywords: []          # 기술 토픽 피드라 필터 없음
+      - name: "ENR"
+        url: "https://www.enr.com/rss/articles"
+        keywords: [technology, tech, BIM, AI, robot, robots, robotics, drone, drones, digital, software, automation,
+                   data, contech, startup, "digital twin", modular]
+
+  - key: erp_si
+    name: "ERP·SI 업계"
+    schedule: weekly
+    keywords: [SI, ERP, IT서비스, IT 서비스, 삼성SDS, LG CNS, SK AX, SK C&C, 현대오토에버, 포스코DX, 롯데이노베이트,
+               CJ올리브네트웍스, 신세계I&C, 대우정보시스템, 아이티센, 쌍용정보통신, 공공 SW, 공공SW, SAP, 오라클,
+               더존, 영림원, 시스템 통합, 클라우드 전환, 디지털 전환, 망분리, 차세대 시스템, 차세대 프로젝트]
+    feeds:
+      - name: "전자신문"
+        url: "https://www.etnews.com/rss/Section901.xml"
+      - name: "디지털타임스 ICT"
+        url: "https://www.dt.co.kr/rss/google/ict"
+      - name: "아이티데일리"
+        url: "https://www.itdaily.kr/rss/allArticle.xml"
       - name: "지디넷코리아"
         url: "https://feeds.feedburner.com/zdkorea"
       - name: "블로터"
@@ -106,100 +250,61 @@ categories:
         url: "https://www.hankyung.com/feed/it"
         user_agent: "curl/8.5.0"
 
-  - key: hacker_news
-    name: "Hacker News"
-    schedule: daily
-    type: hacker_news     # Algolia HN API, 기간 내 포인트 높은 순
-    min_points: 100
-    max_items: 5
-
-  # =========================================================================
-  # 주간
-  # =========================================================================
-  - key: db_data_eng
-    name: "DB·데이터 엔지니어링"
-    schedule: weekly
-    feeds:
-      - name: "Planet PostgreSQL"
-        url: "https://planet.postgresql.org/rss20.xml"
-      - name: "SQLBI"
-        url: "https://www.sqlbi.com/feed/"
-      - name: "Power BI Blog"
-        url: "https://community.fabric.microsoft.com/t5/s/rss/board?board.id=fbc_pbiupdatesblog"
-      - name: "Data Engineering Weekly"
-        url: "https://www.dataengineeringweekly.com/feed"
-      - name: "토스 기술블로그"
-        url: "https://toss.tech/rss.xml"
-      - name: "카카오 기술블로그"
-        url: "https://tech.kakao.com/blog/feed"
-
   - key: freelance
-    name: "프리랜서·업워크 시장"
+    name: "프리랜서·원격근무 시장"
     schedule: weekly
     feeds:
       - name: "Freelancers Union Blog"
         url: "https://blog.freelancersunion.org/rss/"
       - name: "Reddit r/Upwork (주간 상위)"
         url: "https://www.reddit.com/r/Upwork/top/.rss?t=week"
-        max_items: 5
-
-  - key: science_math
-    name: "과학·수학"
-    schedule: weekly
-    feeds:
-      - name: "Quanta Magazine"
-        url: "https://www.quantamagazine.org/feed/"
-
-  - key: ideas
-    name: "생각·인문"
-    schedule: weekly
-    feeds:
-      - name: "Astral Codex Ten"
-        url: "https://www.astralcodexten.com/feed"
-      - name: "Aeon"
-        url: "https://aeon.co/feed.rss"
-      - name: "Psyche"
-        url: "https://psyche.co/feed.rss"
-      - name: "Noema Magazine"
-        url: "https://www.noemamag.com/feed/"
-      - name: "LessWrong (Curated)"
-        url: "https://www.lesswrong.com/feed.xml?view=curated-rss"
-
-  - key: books
-    name: "책·서평"
-    schedule: weekly
-    feeds:
-      - name: "Five Books"
-        url: "https://fivebooks.com/feed/"
+        max_items: 3
+      - name: "Reddit r/freelance (주간 상위)"
+        url: "https://www.reddit.com/r/freelance/top/.rss?t=week"
+        max_items: 2
+      - name: "Reddit r/remotework (주간 상위)"
+        url: "https://www.reddit.com/r/remotework/top/.rss?t=week"
+        max_items: 2
 
   - key: art
-    name: "미술"
+    name: "전시·미술"
     schedule: weekly
+    rank: coverage
+    keywords: [전시, 개인전, 기획전, 단체전, 미술관, 갤러리, 비엔날레, 아트페어, 미술, 작가전, 회고전]
+    exclude_keywords: [공연, 뮤지컬, 연극, 콘서트, 영화]
     feeds:
-      - name: "Colossal"
-        url: "https://www.thisiscolossal.com/feed/"
-      - name: "Hyperallergic"
-        url: "https://hyperallergic.com/rss/"
-        max_items: 5
-      - name: "Artforum"
-        url: "https://www.artforum.com/feed/"
-      # 국내
+      - name: "연합뉴스 문화"
+        url: "https://www.yna.co.kr/rss/culture.xml"
+      - name: "뉴시스 문화"
+        url: "https://www.newsis.com/RSS/culture.xml"
+      - name: "서울문화투데이"
+        url: "https://www.sctoday.co.kr/rss/allArticle.xml"
       - name: "아트코리아방송"
         url: "https://www.artkoreatv.com/rss/allArticle.xml"
-        max_items: 5
-      - name: "아트인사이트"          # 문화 전반 매체라 미술 관련 제목만
-        url: "https://www.artinsight.co.kr/rss/"
         max_items: 3
-        keywords: [전시, 미술, 작가, 갤러리, 미술관, 비엔날레, 아트페어, 회화, 조각, 설치]
+      - name: "아트인사이트"
+        url: "https://www.artinsight.co.kr/rss/"
+        max_items: 2
 
-  - key: architecture
-    name: "건축·공간"
+  - key: science
+    name: "과학 일반"
     schedule: weekly
-    max_items: 5
-    # 설치·전시·공간 연출 관련 글 위주
-    keywords: [installation, exhibition, pavilion, scenography, immersive, biennale, triennale, museum, gallery, "design week", set design, spatial, interior]
+    rank: coverage          # 여러 매체가 다룬 발견 = 큰 발견
+    exclude_keywords: [correction, corrections, podcast, quiz, crossword, review, fiction, "book review", APOD, "daily briefing",
+                       newsletter, webinar, 부고, 인사, 동정, 게시판, 포토]
     feeds:
-      - name: "Dezeen"
-        url: "https://www.dezeen.com/feed/"
-      - name: "ArchDaily"
-        url: "https://feeds.feedburner.com/Archdaily"
+      - name: "Nature"
+        url: "https://www.nature.com/nature.rss"
+      - name: "Science"
+        url: "https://www.science.org/rss/news_current.xml"
+      - name: "New Scientist"
+        url: "https://www.newscientist.com/feed/home/"
+      - name: "Quanta Magazine"
+        url: "https://www.quantamagazine.org/feed/"
+      - name: "Scientific American"
+        url: "https://www.scientificamerican.com/platform/syndication/rss/"
+      - name: "NASA"
+        url: "https://www.nasa.gov/news-release/feed/"
+      - name: "헬로디디"
+        url: "https://www.hellodd.com/rss/allArticle.xml"
+        keywords: [발견, 규명, 세계 최초, 우주, 위성, 블랙홀, 은하, 행성, 유전자, 세포, 뇌, 양자, 물리, 신소재, 연구팀]
