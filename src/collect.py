@@ -12,7 +12,7 @@ import logging
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-from src.feeds import collect_schedule, load_config
+from src.feeds import collect_schedule, load_config, new_seen
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
 logger = logging.getLogger(__name__)
@@ -46,8 +46,9 @@ def _format_item(item):
 def collect(mode, config=None):
     config = config or load_config(ROOT / "feeds.yaml")
     sections = []
+    seen = new_seen()  # 메일 한 통 안에서 같은 기사·같은 사건은 한 번만 (데일리+주간 합본 포함)
     for schedule in schedules_for(mode):
-        categories = collect_schedule(config, schedule)
+        categories = collect_schedule(config, schedule, seen=seen)
         sections.append(
             {
                 "schedule": schedule,

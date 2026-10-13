@@ -30,6 +30,26 @@ def _load_json(path, default):
         return json.load(f)
 
 
+def drop_duplicates(briefing, enrich):
+    """Claude가 dup_of(앞 기사와 같은 사건)로 표시한 기사를 뺀다. 가리키는 기사가 실제로 앞에 있을 때만."""
+    kept_ids = set()
+    removed = 0
+    for section in briefing["sections"]:
+        for cat in section["categories"]:
+            kept = []
+            for item in cat["items"]:
+                info = enrich.get(item.get("eid"))
+                dup_of = info.get("dup_of") if isinstance(info, dict) else None
+                if dup_of and dup_of in kept_ids:
+                    removed += 1
+                    continue
+                kept.append(item)
+                kept_ids.add(item.get("eid"))
+            cat["items"] = kept
+    if removed:
+        logger.info("같은 사건 중복 %d건 제외 (Claude 판단)", removed)
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--dry-run", action="store_true", help="발송하지 않고 미리보기만 저장")
@@ -56,6 +76,10 @@ def main():
         enrich = {}
     if enrich:
         logger.info("번역·요약 결과 %d건 반영", len(enrich))
+        drop_duplicates(briefing, enrich)
+        if total_items(briefing) == 0:
+            logger.warning("모든 분야에 새 글이 없어 메일을 보내지 않습니다.")
+            return
 
     max_bytes = int(float(config.get("settings", {}).get("max_html_kb", 100)) * 1024)
     html_body, _ = fit_to_size(
