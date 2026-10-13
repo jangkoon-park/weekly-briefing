@@ -314,6 +314,7 @@ def collect_rss_category(category, hours_back, now_epoch):
                     "title": title,
                     "link": link,
                     "source": feed_name,
+                    "region": feed_region(feed_cfg),
                     "published_epoch": published_epoch,
                     "excerpt": make_excerpt(entry.get("summary") or entry.get("description")),
                 }
@@ -385,6 +386,7 @@ def collect_hf_papers(category, hours_back, now_epoch):
                     "title": " ".join(title.split()),
                     "link": f"https://huggingface.co/papers/{paper_id}",
                     "source": "HF Daily Papers",
+                    "region": "world",
                     "published_epoch": published_epoch,
                     "meta": f"추천 {upvotes}",
                     "extra_links": [{"label": "arXiv", "url": f"https://arxiv.org/abs/{paper_id}"}],
@@ -431,6 +433,7 @@ def collect_hacker_news(category, hours_back, now_epoch):
                 "title": title,
                 "link": hit.get("url") or hn_link,
                 "source": "Hacker News",
+                "region": "world",
                 "published_epoch": hit.get("created_at_i") or int(now_epoch),
                 "meta": f"▲{hit.get('points', 0)} · 댓글 {hit.get('num_comments', 0) or 0}",
                 "extra_links": [{"label": "HN 댓글", "url": hn_link}],
@@ -450,69 +453,127 @@ COLLECTORS = {
 
 # rss(라운드로빈)는 고른 뒤 최신순으로 보여주고, 나머지(점수·보도량 순)는 순위 그대로 보여준다.
 SORT_BY_DATE = {"rss": True, "hf_papers": False, "hacker_news": False}
+POOL_LIMIT = 60  # 섹션마다 중복 검사를 거친 후보를 이만큼까지만 본다 (속도)
 
 
-def select_items(candidates, max_items, seen, threshold=DEFAULT_SIMILARITY):
-    """후보를 앞에서부터 보면서 이미 고른 기사(다른 분야 포함)와 링크가 같거나 같은 사건이면 건너뛰고 max_items개를 고른다.
+def feed_region(feed_cfg):
+    """피드의 지역: feeds.yaml의 region(kr|world), 없으면 이름에 한글이 있으면 kr."""
+    region = feed_cfg.get("region")
+    if region in ("kr", "world"):
+        return region
+    return "kr" if re.search(r"[가-힣]", feed_cfg.get("name", "")) else "world"
 
-    seen: {"links": set, "keys": list} — 한 번 실행(메일 한 통) 안에서 모든 분야가 공유한다.
+
+def _is_seen(item, key, seen, extra_keys, threshold):
+    if item["link"] in seen["links"] or item["link"] in seen["history_links"]:
+        return True
+    if key and key in seen["history_keys"]:
+        return True
+    return any(is_same_story(key, k, threshold) for k in seen["keys"]) or any(
+        is_same_story(key, k, threshold) for k in extra_keys
+    )
+
+
+def select_items(candidates, max_items, seen, threshold=DEFAULT_SIMILARITY, balance=True):
+    """후보(우선순위 순)에서 max_items개를 고른다.
+
+    - 이번 메일에서 이미 고른 기사(다른 섹션 포함)와 같은 링크·같은 사건이면 건너뛴다.
+    - 최근 발송 기록(history)에 있는 링크·제목이면 건너뛴다 (매일 같은 글이 반복되지 않게).
+    - balance: 국내(kr) 1개 + 해외(world) 1개를 먼저 고르고, 남은 자리는 순위대로 채운다.
+      한쪽만 있으면 있는 쪽에서 채운다.
+
+    seen: new_seen() 결과 — 메일 한 통 안에서 모든 섹션이 공유한다.
     """
-    picked = []
+    pool = []
+    pool_keys = []
     skipped = 0
     for item in candidates:
-        if len(picked) >= max_items:
+        if len(pool) >= POOL_LIMIT:
             break
         key = title_key(item["title"])
-        if item["link"] in seen["links"] or any(is_same_story(key, k, threshold) for k in seen["keys"]):
+        if _is_seen(item, key, seen, pool_keys, threshold):
             skipped += 1
             continue
-        seen["links"].add(item["link"])
-        seen["keys"].append(key)
-        picked.append(item)
+        pool.append(item)
+        pool_keys.append(key)
+
+    picked_idx = []
+    if balance:
+        for region in ("kr", "world"):
+            for i, item in enumerate(pool):
+                if item.get("region") == region and i not in picked_idx:
+                    picked_idx.append(i)
+                    break
+            if len(picked_idx) >= max_items:
+                break
+    for i in range(len(pool)):
+        if len(picked_idx) >= max_items:
+            break
+        if i not in picked_idx:
+            picked_idx.append(i)
+    picked_idx = sorted(picked_idx[:max_items])  # 원래 순위 순서 유지
+
+    picked = [pool[i] for i in picked_idx]
+    for i in picked_idx:
+        seen["links"].add(pool[i]["link"])
+        seen["keys"].append(pool_keys[i])
     return picked, skipped
 
 
-def new_seen():
-    return {"links": set(), "keys": []}
+def new_seen(history_links=None, history_keys=None):
+    return {
+        "links": set(),
+        "keys": [],
+        "history_links": set(history_links or ()),
+        "history_keys": set(history_keys or ()),
+    }
 
 
-def collect_schedule(config, schedule, now_epoch=None, seen=None):
-    """schedule(daily/weekly)에 속한 분야만 수집해서 분야 리스트를 feeds.yaml 순서대로 돌려준다."""
+def collect_all(config, now_epoch=None, seen=None):
+    """feeds.yaml의 groups 순서대로, 각 분야(group)에 속한 섹션을 파일에 적힌 순서대로 수집한다.
+
+    반환: [{"key", "name", "categories": [{"key","name","type","items",...}]}]
+    """
     if now_epoch is None:
         now_epoch = time.time()
     if seen is None:
         seen = new_seen()
-    sched_cfg = config["schedules"][schedule]
-    hours_back = sched_cfg.get("hours_back", 24)
-    default_max = sched_cfg.get("default_max_items", 10)
+    settings = config.get("settings", {})
+    default_hours = float(settings.get("default_hours_back", 36))
 
-    results = []
-    for category in config.get("categories", []):
-        if category.get("schedule") != schedule:
-            continue
-        ctype = category.get("type", "rss")
-        max_items = int(category.get("max_items", default_max))
-        logger.info("[%s] %s (type=%s, 최근 %d시간, 최대 %d개)", schedule, category["name"], ctype, hours_back, max_items)
-        category = {**category, "_global_exclude": config.get("settings", {}).get("exclude_keywords")}
-        candidates = COLLECTORS[ctype](category, hours_back, now_epoch)
-        threshold = float(category.get("similarity", DEFAULT_SIMILARITY))
-        items, skipped = select_items(candidates, max_items, seen, threshold)
-        if skipped:
-            logger.info("  같은 사건/중복 %d건 제외", skipped)
-        if SORT_BY_DATE[ctype] and category.get("rank") != "coverage":
-            items.sort(key=lambda x: x["published_epoch"], reverse=True)
-        for item in items:
-            item.pop("_score", None)
-        result = {"key": category["key"], "name": category["name"], "type": ctype, "items": items}
-        if category.get("summary_style"):
-            result["summary_style"] = category["summary_style"]
-        results.append(result)
-    return results
+    groups = []
+    for group in config["groups"]:
+        cats = []
+        for category in config.get("categories", []):
+            if category.get("group") != group["key"]:
+                continue
+            ctype = category.get("type", "rss")
+            max_items = int(category.get("max_items", group.get("max_items", 2)))
+            hours_back = float(category.get("hours_back", group.get("hours_back", default_hours)))
+            logger.info(
+                "[%s] %s (type=%s, 최근 %d시간, 최대 %d개)", group["name"], category["name"], ctype, hours_back, max_items
+            )
+            category = {**category, "_global_exclude": settings.get("exclude_keywords")}
+            candidates = COLLECTORS[ctype](category, hours_back, now_epoch)
+            threshold = float(category.get("similarity", DEFAULT_SIMILARITY))
+            items, skipped = select_items(candidates, max_items, seen, threshold, balance=category.get("balance", True))
+            if skipped:
+                logger.info("  이미 보냈거나 같은 사건/중복 %d건 제외", skipped)
+            if SORT_BY_DATE[ctype] and category.get("rank") != "coverage":
+                items.sort(key=lambda x: x["published_epoch"], reverse=True)
+            for item in items:
+                item.pop("_score", None)
+            result = {"key": category["key"], "name": category["name"], "type": ctype, "items": items}
+            if category.get("summary_style"):
+                result["summary_style"] = category["summary_style"]
+            cats.append(result)
+        groups.append({"key": group["key"], "name": group["name"], "categories": cats})
+    return groups
 
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     cfg = load_config(Path(__file__).resolve().parent.parent / "feeds.yaml")
-    for sched in cfg["schedules"]:
-        for cat in collect_schedule(cfg, sched):
-            print(sched, cat["name"], len(cat["items"]))
+    for g in collect_all(cfg):
+        for cat in g["categories"]:
+            print(g["name"], cat["name"], len(cat["items"]))
