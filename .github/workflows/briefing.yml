@@ -7,6 +7,10 @@ on:
     - cron: "0 23 * * *"
   workflow_dispatch:
     inputs:
+      test_mail:
+        description: "테스트 메일 1통만 보내기 (체크하면 기사 수집·Claude·발송 기록 없이 발송 확인만)"
+        type: boolean
+        default: false
       weekly_trend:
         description: "이번 주 흐름 (auto = 한국시간 월요일에만)"
         type: choice
@@ -46,7 +50,32 @@ env:
   SUMMARIZE_HN: ${{ (github.event_name == 'workflow_dispatch' && github.event.inputs.summarize_hn) || vars.SUMMARIZE_HN || 'false' }}
 
 jobs:
+  # 수동 실행에서 test_mail을 체크하면 이 job만 돈다: GMAIL_USER → MAIL_TO로 짧은 테스트 메일 1통.
+  # 기사 수집·Claude 단계·발송 기록(data/history) 커밋은 하지 않는다.
+  test-mail:
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.test_mail == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Send test mail
+        env:
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          MAIL_TO: ${{ secrets.MAIL_TO }}
+        run: python -m src.test_mail
+
   briefing:
+    # 예약 실행이나 test_mail을 체크하지 않은 수동 실행일 때만
+    if: github.event_name != 'workflow_dispatch' || github.event.inputs.test_mail != 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: write   # 발송 기록(data/history)·주간 흐름(data/trends)을 저장소에 커밋
