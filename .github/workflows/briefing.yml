@@ -29,6 +29,11 @@ on:
         type: boolean
         default: false
 
+# 발송 기록(data/history)·주간 흐름(data/trends)을 저장소에 커밋하므로 쓰기 권한 필요
+permissions:
+  contents: write
+  id-token: write
+
 env:
   # 이번 주 흐름: 스케줄 실행은 auto(한국시간 월요일), 수동 실행은 선택한 값.
   # 저장소 Variables에 WEEKLY_TREND=false를 넣으면 월요일에도 만들지 않습니다(기본 true).
@@ -93,10 +98,26 @@ jobs:
       # 매일 커밋이 생기므로 60일 무활동으로 예약 실행이 꺼지는 일도 없다.
       - name: Commit history
         if: env.DRY_RUN != 'true'
+        env:
+          PUSH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          # 앞 단계의 Claude Code 액션이 git 인증 설정(extraheader·원격 URL 등)을 자기 토큰으로 바꿔 두고,
+          # 그 토큰은 액션이 끝나면 무효가 된다. 인증 설정을 모두 지우고 이 워크플로의 GITHUB_TOKEN으로 다시 맞춘다.
+          for scope in --local --global; do
+            git config $scope --unset-all http.https://github.com/.extraheader || true
+            for key in $(git config $scope --name-only --get-regexp '^url\..*\.insteadof$' 2>/dev/null); do
+              git config $scope --unset-all "$key" || true
+            done
+          done
+          git config --local --unset-all credential.helper || true
+          git remote set-url origin "https://x-access-token:${PUSH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A data/history data/trends 2>/dev/null || true
+          # 아직 없는 폴더(예: 첫 월요일 전의 data/trends)를 같이 넘기면 git add 전체가 실패하므로 있는 것만
+          for dir in data/history data/trends; do
+            if [ -d "$dir" ]; then git add -A "$dir"; fi
+          done
           if git diff --cached --quiet; then
             echo "커밋할 기록 없음"
             exit 0
