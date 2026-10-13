@@ -1,0 +1,28 @@
+name: Keepalive
+
+# 공개 저장소는 60일간 커밋이 없으면 예약(schedule) 워크플로가 자동으로 꺼집니다.
+# 매월 1일에 last_run.txt에 날짜를 기록해 커밋해서 브리핑 예약 실행이 꺼지지 않게 합니다.
+on:
+  schedule:
+    # 매월 1일 UTC 00:00 = 한국시간 09:00
+    - cron: "0 0 1 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  keepalive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Record date and commit
+        run: |
+          TZ=Asia/Seoul date '+%Y-%m-%d %H:%M KST' > last_run.txt
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add last_run.txt
+          git commit -m "keepalive: $(cat last_run.txt)"
+          git push

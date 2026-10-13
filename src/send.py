@@ -1,37 +1,79 @@
-"""2단계: HTML 메일을 만들고, Secrets가 있으면 발송, 없으면 로컬에 저장만 한다(dry-run)."""
+"""2단계: data/briefing.json으로 HTML 메일을 만들고, Secrets가 있으면 발송, 없으면 미리보기만 저장(dry-run).
+
+  python -m src.send             # Secrets가 있으면 발송
+  python -m src.send --dry-run   # 발송하지 않고 data/preview.html만 생성
+"""
+import argparse
+import json
 import logging
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-from src.email_template import build_html
+from src.email_template import build_html, fit_to_size, total_items
+from src.feeds import load_config
 from src.mailer import get_credentials_from_env, send_html_mail
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
 logger = logging.getLogger(__name__)
 
 ROOT = Path(__file__).resolve().parent.parent
+DATA_DIR = ROOT / "data"
 KST = timezone(timedelta(hours=9))
+
+SUBJECT_PREFIX = {"daily": "데일리 브리핑", "weekly": "주간 브리핑", "both": "데일리+주간 브리핑"}
+
+
+def _load_json(path, default):
+    if not path.exists():
+        return default
+    with open(path, "r", encoding="utf-8") as f:
+        return json.load(f)
 
 
 def main():
-    now_kst = datetime.now(KST)
-    date_label = now_kst.strftime("%Y-%m-%d (%a) 기준")
-    html_body = build_html(date_label)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--dry-run", action="store_true", help="발송하지 않고 미리보기만 저장")
+    args = parser.parse_args()
 
-    preview_path = ROOT / "data" / "preview.html"
+    config = load_config(ROOT / "feeds.yaml")
+    briefing = _load_json(DATA_DIR / "briefing.json", None)
+    if briefing is None:
+        raise SystemExit("data/briefing.json이 없습니다. 먼저 python -m src.collect를 실행하세요.")
+
+    if total_items(briefing) == 0:
+        logger.warning("모든 분야에 새 글이 없어 메일을 보내지 않습니다.")
+        return
+
+    now_kst = datetime.now(KST)
+    title = SUBJECT_PREFIX[briefing["mode"]]
+    subject = f"[{title}] {now_kst.strftime('%Y-%m-%d')}"
+    date_label = now_kst.strftime("%Y-%m-%d (%a) %H:%M KST")
+    summaries = _load_json(DATA_DIR / "summaries.json", {})
+    hn_summaries = _load_json(DATA_DIR / "hn_summaries.json", {})
+
+    max_bytes = int(float(config.get("settings", {}).get("max_html_kb", 100)) * 1024)
+    html_body, _ = fit_to_size(
+        briefing,
+        lambda b: build_html(b, title, date_label, summaries, hn_summaries),
+        max_bytes,
+    )
+
+    preview_path = DATA_DIR / "preview.html"
     preview_path.write_text(html_body, encoding="utf-8")
-    logger.info("미리보기 저장: %s", preview_path)
+    logger.info("미리보기 저장: %s (%.1fKB)", preview_path, len(html_body.encode("utf-8")) / 1024)
+
+    if args.dry_run:
+        logger.info("--dry-run: 발송하지 않습니다. 제목: %s", subject)
+        return
 
     creds = get_credentials_from_env()
     if creds is None:
         logger.warning(
-            "GMAIL_USER / GMAIL_APP_PASSWORD / MAIL_TO 중 일부가 없어 발송을 건너뜁니다 "
-            "(dry-run). %s 파일을 열어 결과를 확인하세요.",
-            preview_path,
+            "GMAIL_USER / GMAIL_APP_PASSWORD / MAIL_TO 중 일부가 없어 발송을 건너뜁니다 (dry-run). 제목: %s",
+            subject,
         )
         return
 
-    subject = f"[주간 뉴스 브리핑] {now_kst.strftime('%Y-%m-%d')}"
     plain_fallback = "HTML을 지원하는 메일 클라이언트로 열어주세요."
     send_html_mail(subject, html_body, plain_fallback, creds)
 

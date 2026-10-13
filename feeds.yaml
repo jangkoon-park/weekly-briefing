@@ -1,64 +1,205 @@
-# 주간 뉴스 브리핑에 사용할 RSS 피드 목록.
-# 분야(category)를 추가/삭제하거나, 각 분야의 feeds 목록에 피드를 추가/삭제해서 자유롭게 구성하세요.
+# 데일리/주간 브리핑 설정.
 #
-# 피드 한 개의 형식:
-#   - name: "표시용 이름 (출처로 메일에 표시됨)"
-#     url: "RSS/Atom 피드 URL"
-#     lang: ko | en   # 참고용, 동작에는 영향 없음
+# ■ 분야(category) 하나의 형식
+#   - key: ai_data              # 영문 식별자 (목차 링크에 사용)
+#     name: "AI·데이터 도구"      # 메일에 표시되는 분야명
+#     schedule: daily           # daily 또는 weekly  ← 이 값만 바꾸면 분야가 데일리/주간 사이를 옮겨갑니다
+#     type: rss                 # rss(기본) | hf_papers | hacker_news
+#     max_items: 5              # 분야별 최대 개수 (생략하면 schedules.<daily|weekly>.default_max_items)
+#     keywords: [금리, 환율]     # (선택) 제목에 이 중 하나라도 들어간 글만. 생략하면 필터 없음
+#     feeds:
+#       - name: "출처 이름"       # 메일에 출처로 표시
+#         url: "RSS/Atom 주소"
+#         max_items: 5          # (선택) 이 피드에서 가져올 최대 개수
+#         keywords: [...]       # (선택) 이 피드에만 적용할 키워드 (분야 keywords 대신 사용)
+#         user_agent: "..."     # (선택) 기본 User-Agent를 막는 사이트용 (예: 한국경제)
 #
-# 주의: 여기에는 "공식 RSS 피드"만 넣습니다. RSS가 없는 사이트를 넣으면 수집 단계에서
-# 에러 없이 조용히 건너뛰고 경고만 로그에 남습니다(크롤링은 하지 않습니다).
+# ■ 메일에는 이 파일에 적힌 순서대로 분야가 표시됩니다(데일리가 위, 주간이 아래).
+# ■ 한 분야 안에서는 여러 피드에서 번갈아 골라(한 피드가 독차지하지 않게) 최신순으로 보여줍니다.
+# ■ 기간 안에 글이 없는 분야는 메일에서 섹션째 빠지고, 모든 분야가 비면 메일을 보내지 않습니다.
+# ■ 공식 RSS만 넣습니다(크롤링 없음). 죽은 피드는 경고 로그만 남기고 건너뜁니다.
+#
+# 키워드 매칭 규칙: 영문/숫자로만 된 키워드(SI, ERP, PostgreSQL 등)는 대소문자 무시 + 단어 경계 기준
+# ("SI"가 "ASIA" 안에서 걸리지 않음), 한글이 섞인 키워드는 제목에 포함되어 있으면 통과.
 
 settings:
-  days_back: 7          # 최근 며칠치 기사까지 포함할지
-  max_items_per_category: 10
+  max_html_kb: 100        # 메일 HTML이 이 크기를 넘으면 분야별 개수를 자동으로 줄임 (지메일은 102KB부터 잘림)
+
+schedules:
+  daily:
+    title: "데일리 브리핑"
+    hours_back: 24        # 최근 24시간
+    default_max_items: 5
+  weekly:
+    title: "주간 브리핑"
+    hours_back: 168       # 최근 7일
+    default_max_items: 10
 
 categories:
+  # =========================================================================
+  # 데일리
+  # =========================================================================
   - key: ai_data
     name: "AI·데이터 도구"
+    schedule: daily
+    max_items: 5
     feeds:
-      # 필수 요청 피드
       - name: "GeekNews"
         url: "https://news.hada.io/rss/news"
-        lang: ko
-      # Anthropic 공지(anthropic.com/news)는 공식 RSS가 없어서 포함하지 못했습니다.
-      # (아래 README "조사 결과" 참고)
-
-      # 추가로 고른 영어/한국어 공식 RSS
-      - name: "OpenAI News"
-        url: "https://openai.com/news/rss.xml"
-        lang: en
+      - name: "Simon Willison"
+        url: "https://simonwillison.net/atom/everything/"
       - name: "Hugging Face Blog"
         url: "https://huggingface.co/blog/feed.xml"
-        lang: en
+      - name: "OpenAI News"
+        url: "https://openai.com/news/rss.xml"
+      - name: "Google DeepMind"
+        url: "https://deepmind.google/blog/rss.xml"
+      - name: "AI타임스"
+        url: "https://www.aitimes.com/rss/allArticle.xml"
       - name: "AWS Big Data Blog"
         url: "https://aws.amazon.com/blogs/big-data/feed/"
-        lang: en
-      - name: "Simon Willison's Weblog (LLM)"
-        url: "https://simonwillison.net/tags/llms.atom"
-        lang: en
+
+  - key: ml_papers
+    name: "ML 논문 (HF Daily Papers)"
+    schedule: daily
+    type: hf_papers       # Hugging Face Daily Papers API, 추천(upvotes) 많은 순
+    max_items: 3
+
+  - key: kr_economy
+    name: "국내 경제·제도"
+    schedule: daily
+    max_items: 5
+    keywords: [금리, 기준금리, 환율, 코스피, 경기, 물가, 부동산, 전세, 재건축, 세법, 상속, 증여, 종합소득세, 프리랜서]
+    feeds:
+      - name: "연합뉴스 경제"
+        url: "https://www.yna.co.kr/rss/economy.xml"
+      - name: "연합뉴스 마켓"
+        url: "https://www.yna.co.kr/rss/market.xml"
+      # 한국경제는 브라우저형 User-Agent를 403으로 막아서 curl User-Agent로 요청합니다.
+      - name: "한국경제 경제"
+        url: "https://www.hankyung.com/feed/economy"
+        user_agent: "curl/8.5.0"
+      - name: "한국경제 금융"
+        url: "https://www.hankyung.com/feed/finance"
+        user_agent: "curl/8.5.0"
+      - name: "한국경제 부동산"
+        url: "https://www.hankyung.com/feed/realestate"
+        user_agent: "curl/8.5.0"
+      - name: "매일경제 경제"
+        url: "https://www.mk.co.kr/rss/30100041/"
+      - name: "매일경제 부동산"
+        url: "https://www.mk.co.kr/rss/50300009/"
+
+  - key: kr_it
+    name: "국내 IT 정책·업계"
+    schedule: daily
+    max_items: 5
+    keywords: [공공 클라우드, 망분리, 클라우드 네이티브, AI 사업, 생성형 AI, 차세대, SI, 오라클, PostgreSQL, ERP, 데이터센터, 네이버, 카카오]
+    feeds:
+      - name: "지디넷코리아"
+        url: "https://feeds.feedburner.com/zdkorea"
+      - name: "블로터"
+        url: "https://www.bloter.net/rss/allArticle.xml"
+      - name: "바이라인네트워크"
+        url: "https://byline.network/feed/"
+      - name: "한국경제 IT"
+        url: "https://www.hankyung.com/feed/it"
+        user_agent: "curl/8.5.0"
+
+  - key: hacker_news
+    name: "Hacker News"
+    schedule: daily
+    type: hacker_news     # Algolia HN API, 기간 내 포인트 높은 순
+    min_points: 100
+    max_items: 5
+
+  # =========================================================================
+  # 주간
+  # =========================================================================
+  - key: db_data_eng
+    name: "DB·데이터 엔지니어링"
+    schedule: weekly
+    feeds:
+      - name: "Planet PostgreSQL"
+        url: "https://planet.postgresql.org/rss20.xml"
+      - name: "SQLBI"
+        url: "https://www.sqlbi.com/feed/"
+      - name: "Power BI Blog"
+        url: "https://community.fabric.microsoft.com/t5/s/rss/board?board.id=fbc_pbiupdatesblog"
+      - name: "Data Engineering Weekly"
+        url: "https://www.dataengineeringweekly.com/feed"
+      - name: "토스 기술블로그"
+        url: "https://toss.tech/rss.xml"
+      - name: "카카오 기술블로그"
+        url: "https://tech.kakao.com/blog/feed"
 
   - key: freelance
     name: "프리랜서·업워크 시장"
+    schedule: weekly
     feeds:
-      # Upwork 블로그는 공식 RSS가 없어(2024-08 RSS 전면 종료) 포함하지 못했습니다.
-      # (아래 README "조사 결과" 참고)
       - name: "Freelancers Union Blog"
-        url: "https://blog.freelancersunion.org/rss"
-        lang: en
+        url: "https://blog.freelancersunion.org/rss/"
+      - name: "Reddit r/Upwork (주간 상위)"
+        url: "https://www.reddit.com/r/Upwork/top/.rss?t=week"
+        max_items: 5
 
-  - key: construction_erp
-    name: "건설IT·ERP"
+  - key: science_math
+    name: "과학·수학"
+    schedule: weekly
     feeds:
-      - name: "Engineering News-Record (ENR)"
-        url: "https://www.enr.com/rss/articles"
-        lang: en
-      - name: "Construction Dive"
-        url: "https://www.constructiondive.com/feeds/news/"
-        lang: en
+      - name: "Quanta Magazine"
+        url: "https://www.quantamagazine.org/feed/"
 
-# Hacker News는 RSS가 아니라 Algolia HN API로 별도 수집합니다 (아래 설정 사용).
-hacker_news:
-  min_points: 200
-  days_back: 7
-  max_items: 5
+  - key: ideas
+    name: "생각·인문"
+    schedule: weekly
+    feeds:
+      - name: "Astral Codex Ten"
+        url: "https://www.astralcodexten.com/feed"
+      - name: "Aeon"
+        url: "https://aeon.co/feed.rss"
+      - name: "Psyche"
+        url: "https://psyche.co/feed.rss"
+      - name: "Noema Magazine"
+        url: "https://www.noemamag.com/feed/"
+      - name: "LessWrong (Curated)"
+        url: "https://www.lesswrong.com/feed.xml?view=curated-rss"
+
+  - key: books
+    name: "책·서평"
+    schedule: weekly
+    feeds:
+      - name: "Five Books"
+        url: "https://fivebooks.com/feed/"
+
+  - key: art
+    name: "미술"
+    schedule: weekly
+    feeds:
+      - name: "Colossal"
+        url: "https://www.thisiscolossal.com/feed/"
+      - name: "Hyperallergic"
+        url: "https://hyperallergic.com/rss/"
+        max_items: 5
+      - name: "Artforum"
+        url: "https://www.artforum.com/feed/"
+      # 국내
+      - name: "아트코리아방송"
+        url: "https://www.artkoreatv.com/rss/allArticle.xml"
+        max_items: 5
+      - name: "아트인사이트"          # 문화 전반 매체라 미술 관련 제목만
+        url: "https://www.artinsight.co.kr/rss/"
+        max_items: 3
+        keywords: [전시, 미술, 작가, 갤러리, 미술관, 비엔날레, 아트페어, 회화, 조각, 설치]
+
+  - key: architecture
+    name: "건축·공간"
+    schedule: weekly
+    max_items: 5
+    # 설치·전시·공간 연출 관련 글 위주
+    keywords: [installation, exhibition, pavilion, scenography, immersive, biennale, triennale, museum, gallery, "design week", set design, spatial, interior]
+    feeds:
+      - name: "Dezeen"
+        url: "https://www.dezeen.com/feed/"
+      - name: "ArchDaily"
+        url: "https://feeds.feedburner.com/Archdaily"

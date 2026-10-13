@@ -1,156 +1,126 @@
-"""data/articles.json, data/hn.json (+ 선택적 요약 파일)을 모바일 친화적 HTML 메일로 변환."""
+"""data/briefing.json (+ 선택적 요약 파일)을 가벼운 HTML 메일로 변환.
+
+- 이미지 없음, 스타일은 꼭 필요한 인라인 스타일만 (지메일은 HTML 102KB를 넘으면 메일을 잘라서 보여줌)
+- 맨 위 목차: 분야명 + 건수, 누르면 해당 섹션으로 이동
+- 글이 없는 분야는 섹션째 생략
+- fit_to_size(): HTML이 한도를 넘으면 분야별 개수를 하나씩 줄여서 맞춘다
+"""
+import copy
 import html
-import json
-from pathlib import Path
+import logging
 
-ROOT = Path(__file__).resolve().parent.parent
-DATA_DIR = ROOT / "data"
+logger = logging.getLogger(__name__)
 
-
-def _load_json(path, default):
-    if not path.exists():
-        return default
-    with open(path, "r", encoding="utf-8") as f:
-        return json.load(f)
+FONT = "-apple-system,'Segoe UI',Roboto,'Apple SD Gothic Neo','Malgun Gothic',sans-serif"
 
 
 def _esc(text):
-    return html.escape(text or "")
+    return html.escape(text or "", quote=True)
 
 
-def _article_row(item, summary):
-    title = _esc(item["title"])
-    link = _esc(item["link"])
-    source = _esc(item["source"])
-    published = _esc(item["published"])
-    summary_html = ""
-    if summary:
-        summary_html = (
-            f'<div style="margin-top:4px;font-size:13px;color:#444;line-height:1.5;">{_esc(summary)}</div>'
-        )
-    return f"""
-    <tr>
-      <td style="padding:10px 0;border-bottom:1px solid #eee;">
-        <a href="{link}" style="font-size:15px;font-weight:600;color:#1a0dab;text-decoration:none;line-height:1.4;">{title}</a>
-        <div style="margin-top:2px;font-size:12px;color:#888;">{source} · {published}</div>
-        {summary_html}
-      </td>
-    </tr>
-    """
-
-
-def _category_section(category, summaries):
-    items = category["items"]
-    if not items:
-        rows = '<tr><td style="padding:10px 0;color:#999;font-size:13px;">최근 7일 내 수집된 기사가 없습니다.</td></tr>'
-    else:
-        rows = "".join(
-            _article_row(item, summaries.get(item["link"])) for item in items
-        )
-    return f"""
-    <tr>
-      <td style="padding:20px 16px 4px 16px;">
-        <h2 style="margin:0 0 4px 0;font-size:17px;color:#111;">{_esc(category["name"])}</h2>
-      </td>
-    </tr>
-    <tr>
-      <td style="padding:0 16px;">
-        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
-          {rows}
-        </table>
-      </td>
-    </tr>
-    """
-
-
-def _hn_row(item, hn_summary):
-    title = _esc(item["title"])
-    url = _esc(item["url"])
-    hn_link = _esc(item["hn_link"])
-    points = item.get("points", 0)
-    comments = item.get("num_comments", 0)
-    summary_html = ""
-    if hn_summary:
-        summary_html = (
-            '<div style="margin-top:6px;font-size:13px;color:#444;line-height:1.6;'
-            'background:#f7f7f7;border-radius:6px;padding:8px 10px;">'
-            f"{_esc(hn_summary).replace(chr(10), '<br>')}</div>"
-        )
-    return f"""
-    <tr>
-      <td style="padding:10px 0;border-bottom:1px solid #eee;">
-        <a href="{url}" style="font-size:15px;font-weight:600;color:#1a0dab;text-decoration:none;line-height:1.4;">{title}</a>
-        <div style="margin-top:2px;font-size:12px;color:#888;">
-          ▲ {points}점 · 댓글 {comments}개 ·
-          <a href="{hn_link}" style="color:#888;">HN 댓글 보기</a>
-        </div>
-        {summary_html}
-      </td>
-    </tr>
-    """
-
-
-def _hn_section(hn_items, hn_summaries):
-    if not hn_items:
-        rows = '<tr><td style="padding:10px 0;color:#999;font-size:13px;">조건(최근 7일, 200점 이상)을 만족하는 글이 없습니다.</td></tr>'
-    else:
-        rows = "".join(_hn_row(item, hn_summaries.get(item["id"])) for item in hn_items)
-    return f"""
-    <tr>
-      <td style="padding:20px 16px 4px 16px;">
-        <h2 style="margin:0 0 4px 0;font-size:17px;color:#111;">Hacker News Top {len(hn_items)}</h2>
-        <div style="font-size:12px;color:#888;">최근 7일 · 200점 이상</div>
-      </td>
-    </tr>
-    <tr>
-      <td style="padding:0 16px;">
-        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
-          {rows}
-        </table>
-      </td>
-    </tr>
-    """
-
-
-def build_html(date_label):
-    articles = _load_json(DATA_DIR / "articles.json", {"categories": []})
-    hn = _load_json(DATA_DIR / "hn.json", {"items": []})
-    summaries = _load_json(DATA_DIR / "summaries.json", {})
-    hn_summaries = _load_json(DATA_DIR / "hn_summaries.json", {})
-
-    sections = "".join(
-        _category_section(cat, summaries.get(cat["key"], {})) for cat in articles["categories"]
+def _item_html(item, summary):
+    meta = [_esc(item.get("source")), _esc(item.get("published", "")[:16])]
+    if item.get("meta"):
+        meta.append(_esc(item["meta"]))
+    for extra in item.get("extra_links", []):
+        meta.append(f'<a href="{_esc(extra["url"])}" style="color:#666">{_esc(extra["label"])}</a>')
+    out = (
+        f'<li style="margin:0 0 10px"><a href="{_esc(item["link"])}" style="color:#1a0dab;'
+        f'text-decoration:none;font-weight:600">{_esc(item["title"])}</a>'
+        f'<br><span style="font-size:12px;color:#888">{" · ".join(meta)}</span>'
     )
-    hn_section = _hn_section(hn["items"], hn_summaries)
+    if summary:
+        out += f'<br><span style="font-size:13px;color:#444">{_esc(summary).replace(chr(10), "<br>")}</span>'
+    return out + "</li>"
 
-    return f"""<!doctype html>
-<html lang="ko">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>주간 뉴스 브리핑</title>
-</head>
-<body style="margin:0;padding:0;background:#f2f2f2;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;">
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f2f2f2;">
-    <tr>
-      <td align="center" style="padding:16px 0;">
-        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-radius:8px;overflow:hidden;">
-          <tr>
-            <td style="padding:20px 16px;background:#111;">
-              <h1 style="margin:0;color:#fff;font-size:19px;">주간 뉴스 브리핑</h1>
-              <div style="color:#ccc;font-size:12px;margin-top:4px;">{_esc(date_label)}</div>
-            </td>
-          </tr>
-          {sections}
-          {hn_section}
-          <tr>
-            <td style="padding:16px;color:#aaa;font-size:11px;text-align:center;">
-              feeds.yaml을 수정하면 수집 대상을 바꿀 수 있습니다.
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-  </table>
-</body>
-</html>"""
+
+def _visible(briefing):
+    """글이 있는 분야만 남긴 (section, [categories]) 목록."""
+    result = []
+    for section in briefing["sections"]:
+        cats = [c for c in section["categories"] if c["items"]]
+        if cats:
+            result.append((section, cats))
+    return result
+
+
+def total_items(briefing):
+    return sum(len(c["items"]) for s in briefing["sections"] for c in s["categories"])
+
+
+def build_html(briefing, heading, date_label, summaries=None, hn_summaries=None):
+    summaries = summaries or {}
+    hn_summaries = hn_summaries or {}
+    visible = _visible(briefing)
+
+    toc_parts = []
+    body_parts = []
+    for section, cats in visible:
+        sid = section["schedule"]
+        toc_links = " · ".join(
+            f'<a href="#{sid}-{_esc(c["key"])}" style="color:#1a0dab">{_esc(c["name"])}</a> {len(c["items"])}'
+            for c in cats
+        )
+        toc_parts.append(f'<p style="margin:4px 0"><b>{_esc(section["title"])}</b><br>{toc_links}</p>')
+
+        body_parts.append(
+            f'<h2 style="margin:28px 0 0;padding:6px 10px;background:#111;color:#fff;font-size:16px">'
+            f'{_esc(section["title"])}</h2>'
+        )
+        for c in cats:
+            anchor = f'{sid}-{_esc(c["key"])}'
+            items = "".join(
+                _item_html(i, hn_summaries.get(i.get("hn_id")) or summaries.get(i["link"]))
+                for i in c["items"]
+            )
+            body_parts.append(
+                f'<h3 id="{anchor}" style="margin:20px 0 8px;font-size:15px;border-bottom:2px solid #111">'
+                f'<a name="{anchor}"></a>{_esc(c["name"])} ({len(c["items"])})</h3>'
+                f'<ul style="margin:0;padding-left:18px">{items}</ul>'
+            )
+
+    return (
+        '<!doctype html><html lang="ko"><head><meta charset="utf-8">'
+        '<meta name="viewport" content="width=device-width,initial-scale=1">'
+        f"<title>{_esc(heading)}</title></head>"
+        f'<body style="margin:0;padding:12px;font-family:{FONT};font-size:14px;line-height:1.45;color:#222">'
+        '<div style="max-width:640px;margin:0 auto">'
+        f'<h1 style="margin:0;font-size:19px">{_esc(heading)}</h1>'
+        f'<div style="color:#888;font-size:12px">{_esc(date_label)}</div>'
+        f'<div style="margin:12px 0;padding:8px 10px;background:#f4f4f4;font-size:13px">{"".join(toc_parts)}</div>'
+        f'{"".join(body_parts)}'
+        '<p style="margin-top:24px;color:#aaa;font-size:11px">feeds.yaml에서 분야·피드·개수를 바꿀 수 있습니다.</p>'
+        "</div></body></html>"
+    )
+
+
+def html_size(text):
+    return len(text.encode("utf-8"))
+
+
+def fit_to_size(briefing, render, max_bytes):
+    """render(briefing) 결과가 max_bytes 이하가 될 때까지 가장 많은 분야부터 한 개씩 줄인다.
+
+    반환: (html, 줄인 briefing)
+    """
+    trimmed = copy.deepcopy(briefing)
+    html_text = render(trimmed)
+    size = html_size(html_text)
+    logger.info("HTML 크기: %.1fKB (한도 %.1fKB)", size / 1024, max_bytes / 1024)
+    steps = 0
+    while size > max_bytes:
+        cats = [c for s in trimmed["sections"] for c in s["categories"] if len(c["items"]) > 1]
+        if not cats:
+            logger.warning("더 줄일 수 있는 분야가 없습니다. %.1fKB 그대로 보냅니다.", size / 1024)
+            break
+        biggest = max(cats, key=lambda c: len(c["items"]))
+        biggest["items"].pop()
+        steps += 1
+        html_text = render(trimmed)
+        size = html_size(html_text)
+    if steps:
+        logger.info("한도 초과로 %d개를 줄여 %.1fKB로 맞췄습니다.", steps, size / 1024)
+        for s in trimmed["sections"]:
+            for c in s["categories"]:
+                logger.info("  %s | %s | %d건", s["schedule"], c["name"], len(c["items"]))
+    return html_text, trimmed

@@ -1,11 +1,21 @@
-name: Weekly News Briefing
+name: Daily + Weekly Briefing
 
 on:
   schedule:
-    # 매주 월요일 한국시간(KST, UTC+9) 오전 8:00 = 일요일 UTC 23:00
-    - cron: "0 23 * * 0"
+    # 매일 한국시간(KST, UTC+9) 오전 8:00 = 전날 UTC 23:00
+    # 한국시간 월요일(= UTC 일요일 23:00) 실행은 auto 모드에서 데일리+주간을 한 통으로 합쳐 보냅니다.
+    - cron: "0 23 * * *"
   workflow_dispatch:
     inputs:
+      mode:
+        description: "보낼 브리핑 종류"
+        type: choice
+        options: [daily, weekly, both]
+        default: daily
+      dry_run:
+        description: "발송하지 않고 미리보기(아티팩트)만 만들기"
+        type: boolean
+        default: false
       summarize_articles:
         description: "일반 기사 한 줄 요약 사용 (Claude Pro 구독 사용)"
         type: boolean
@@ -16,8 +26,10 @@ on:
         default: false
 
 env:
-  # workflow_dispatch로 수동 실행하면 입력값을, 스케줄 실행이면 저장소 Variables(Settings > Actions > Variables)의
-  # SUMMARIZE_ARTICLES / SUMMARIZE_HN 값을 사용합니다(기본값 false).
+  # 스케줄 실행은 auto(한국시간 월요일이면 both, 그 외 daily), 수동 실행은 선택한 값
+  MODE: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.mode || 'auto' }}
+  DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.dry_run || 'false' }}
+  # 수동 실행이면 입력값, 스케줄 실행이면 저장소 Variables의 SUMMARIZE_ARTICLES / SUMMARIZE_HN (기본 false)
   SUMMARIZE_ARTICLES: ${{ (github.event_name == 'workflow_dispatch' && github.event.inputs.summarize_articles) || vars.SUMMARIZE_ARTICLES || 'false' }}
   SUMMARIZE_HN: ${{ (github.event_name == 'workflow_dispatch' && github.event.inputs.summarize_hn) || vars.SUMMARIZE_HN || 'false' }}
 
@@ -39,25 +51,25 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Collect RSS + Hacker News
-        run: python -m src.collect
+      - name: Collect (${{ env.MODE }})
+        run: python -m src.collect --mode "$MODE"
 
       - name: Summarize articles (optional, Claude Pro subscription)
         if: env.SUMMARIZE_ARTICLES == 'true'
         uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          claude_args: '--model claude-sonnet-5 --max-turns 15 --allowedTools "Read,Write,WebFetch"'
+          claude_args: '--model claude-sonnet-5 --max-turns 30 --allowedTools "Read,Write,WebFetch"'
           prompt: |
-            data/articles.json 파일을 읽어라. 이 파일은 다음과 같은 구조다:
-            { "categories": [ { "key": "...", "name": "...", "items": [ { "title": "...", "link": "...", "source": "...", "published": "YYYY-MM-DD" }, ... ] }, ... ] }
+            data/briefing.json 파일을 읽어라. 구조는 다음과 같다:
+            { "sections": [ { "schedule": "daily|weekly", "categories": [ { "key": "...", "name": "...", "type": "rss|hf_papers|hacker_news", "items": [ { "title": "...", "link": "...", "source": "..." }, ... ] } ] } ] }
 
-            각 category의 각 item에 대해:
+            type이 "hacker_news"가 아닌 모든 분야의 각 item에 대해:
             1. item.link를 WebFetch로 열어 본문을 확인한다 (열리지 않으면 title만으로 판단한다).
             2. 기사 내용을 한국어 한 문장(한 줄, 80자 이내)으로 요약한다. 과장하지 말고 핵심 사실만 담는다.
 
             결과를 아래 구조의 JSON으로 만들어 data/summaries.json에 저장하라 (Write 도구 사용):
-            { "<category.key>": { "<item.link>": "한 줄 요약", ... }, ... }
+            { "<item.link>": "한 줄 요약", ... }
 
             반드시 유효한 JSON만 저장하고, 마크다운 코드블록이나 추가 설명은 절대 포함하지 마라.
             data/summaries.json 외의 다른 파일은 수정하지 마라.
@@ -69,16 +81,15 @@ jobs:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           claude_args: '--model claude-sonnet-5 --max-turns 15 --allowedTools "Read,Write,WebFetch"'
           prompt: |
-            data/hn.json 파일을 읽어라. 구조는 다음과 같다:
-            { "items": [ { "id": "...", "title": "...", "url": "...", "hn_link": "...", "points": 0, "num_comments": 0 }, ... ] }
+            data/briefing.json 파일을 읽어라. type이 "hacker_news"인 분야의 items에는 "hn_id" 필드가 있다.
 
-            각 item에 대해:
-            1. https://hn.algolia.com/api/v1/items/<item.id> 를 WebFetch로 열어서 댓글 트리를 확인한다.
+            그 각 item에 대해:
+            1. https://hn.algolia.com/api/v1/items/<item.hn_id> 를 WebFetch로 열어서 댓글 트리를 확인한다.
             2. 댓글 중 상위(점수/깊이 기준으로 주요) 20~30개 정도를 읽는다.
             3. "어떤 쟁점으로 의견이 갈렸는지"와 "주요 반론은 무엇인지"를 중심으로 한국어 3~4줄로 요약한다.
 
             결과를 아래 구조의 JSON으로 만들어 data/hn_summaries.json에 저장하라 (Write 도구 사용):
-            { "<item.id>": "3~4줄 한국어 요약 (줄바꿈은 \n 사용)", ... }
+            { "<item.hn_id>": "3~4줄 한국어 요약 (줄바꿈은 \n 사용)", ... }
 
             반드시 유효한 JSON만 저장하고, 마크다운 코드블록이나 추가 설명은 절대 포함하지 마라.
             data/hn_summaries.json 외의 다른 파일은 수정하지 마라.
@@ -88,7 +99,12 @@ jobs:
           GMAIL_USER: ${{ secrets.GMAIL_USER }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
           MAIL_TO: ${{ secrets.MAIL_TO }}
-        run: python -m src.send
+        run: |
+          if [ "$DRY_RUN" = "true" ]; then
+            python -m src.send --dry-run
+          else
+            python -m src.send
+          fi
 
       - name: Upload preview HTML
         if: always()
@@ -96,7 +112,7 @@ jobs:
         with:
           name: briefing-preview
           path: |
-            data/articles.json
-            data/hn.json
+            data/briefing.json
             data/preview.html
+          if-no-files-found: ignore
           retention-days: 14
