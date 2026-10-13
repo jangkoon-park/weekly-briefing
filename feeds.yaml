@@ -1,11 +1,12 @@
-# 데일리/주간 브리핑 설정.
+# 데일리 브리핑 설정 (8개 분야 · 34개 섹션, 매일 오전 8시 발송, 월요일엔 맨 위에 "이번 주 흐름").
 #
-# ■ 분야(category) 하나의 형식
+# ■ 섹션(category) 하나의 형식
 #   - key: ai_data              # 영문 식별자 (목차 링크에 사용)
-#     name: "AI·데이터 도구"      # 메일에 표시되는 분야명
-#     schedule: daily           # daily 또는 weekly  ← 이 값만 바꾸면 분야가 데일리/주간 사이를 옮겨갑니다
+#     name: "AI·데이터 도구"      # 메일에 표시되는 섹션명
+#     group: tech               # 속한 분야 (아래 groups의 key) ← 이 값만 바꾸면 섹션이 다른 분야로 옮겨갑니다
 #     type: rss                 # rss(기본) | hf_papers | hacker_news
-#     max_items: 5              # 분야별 최대 개수 (생략하면 schedules.<daily|weekly>.default_max_items)
+#     max_items: 3              # (선택) 섹션 최대 개수 (생략하면 분야의 max_items)
+#     hours_back: 48            # (선택) 최근 몇 시간 글까지 볼지 (생략하면 분야의 hours_back)
 #     keywords: [금리, 환율]     # (선택) 제목에 이 중 하나라도 들어간 글만. 생략하면 필터 없음
 #     exclude_keywords: [연예]   # (선택) 제목에 이 중 하나라도 들어가면 제외
 #     rank: coverage            # (선택) 여러 매체가 함께 다룬 사건을 앞에 ("N개 매체 보도" 표시)
@@ -17,48 +18,408 @@
 #         keywords: [...]       # (선택) 이 피드에만 적용할 키워드 (분야 keywords 대신 사용)
 #         exclude_keywords: [...] # (선택) 이 피드에만 적용할 제외 키워드
 #         user_agent: "..."     # (선택) 기본 User-Agent를 막는 사이트용 (예: 한국경제)
+#         region: kr | world    # (선택) 🇰🇷 국내 / 🌍 세계 표시. 생략하면 이름에 한글이 있으면 kr
 #
-# ■ 메일에는 이 파일에 적힌 순서대로 분야가 표시됩니다(데일리가 위, 주간이 아래).
-# ■ 한 분야 안에서는 여러 피드에서 번갈아 골라(한 피드가 독차지하지 않게) 최신순으로 보여줍니다.
-#   rank: coverage인 분야는 여러 매체가 다룬 사건 순으로 보여줍니다.
-# ■ 같은 기사·같은 사건은 메일 한 통에서 한 번만 나옵니다(위쪽 분야가 우선). 제목 유사도로 1차로 거르고,
+# ■ 메일에는 groups 순서대로 분야가, 분야 안에서는 이 파일에 적힌 순서대로 섹션이 표시됩니다.
+# ■ 섹션마다 국내 1개 + 해외 1개를 먼저 고르고 남은 자리를 채웁니다(한쪽만 있으면 있는 쪽에서).
+# ■ 최근 history_days일 안에 보낸 글은 다시 싣지 않습니다(data/history).
+# ■ 한 섹션 안에서는 여러 피드에서 번갈아 골라(한 피드가 독차지하지 않게) 최신순으로 보여줍니다.
+#   rank: coverage인 섹션은 여러 매체가 다룬 사건 순으로 보여줍니다.
+# ■ 같은 기사·같은 사건은 메일 한 통에서 한 번만 나옵니다(위쪽 섹션이 우선). 제목 유사도로 1차로 거르고,
 #   번역·요약 옵션이 켜져 있으면 Claude가 표현·언어가 다른 중복을 한 번 더 거릅니다.
-# ■ 기간 안에 글이 없는 분야는 메일에서 섹션째 빠지고, 모든 분야가 비면 메일을 보내지 않습니다.
+# ■ 새 글이 없는 섹션은 "새 소식 없음" 한 줄로 표시하고, 모든 섹션이 비면 메일을 보내지 않습니다.
 # ■ 공식 RSS만 넣습니다(크롤링 없음). 죽은 피드는 경고 로그만 남기고 건너뜁니다.
 #
 # 키워드 매칭 규칙: 영문/숫자로만 된 키워드(SI, ERP, PostgreSQL 등)는 대소문자 무시 + 단어 경계 기준
 # ("SI"가 "ASIA" 안에서 걸리지 않음), 한글이 섞인 키워드는 제목에 포함되어 있으면 통과.
 
 settings:
+  history_days: 35        # 발송 기록 보관 기간 (5주). 이 기간 안에 보낸 글은 다시 싣지 않고, 주간 흐름 재료로 씀
+  default_hours_back: 36  # 분야·섹션에 hours_back이 없을 때 볼 기간 (시간)
   max_html_kb: 100        # 메일 HTML이 이 크기를 넘으면 분야별 개수를 자동으로 줄임 (지메일은 102KB부터 잘림)
   # 모든 RSS 분야에 공통으로 적용하는 제외 키워드 (광고성·보도자료성 표시가 붙은 글).
   # 번역·요약 옵션이 켜져 있으면 Claude가 광고·보도자료성 글을 한 번 더 거릅니다(ad).
   exclude_keywords: ["[광고]", "[AD]", "[PR]", "[협찬]", "[보도자료]", "[알림]", "[부고]", "[인사]", "[포토]", "[게시판]",
                      Sponsored, "Partner Content", "Paid Post", "Advertorial"]
 
-schedules:
-  daily:
-    title: "데일리 브리핑"
-    hours_back: 24        # 최근 24시간
-    default_max_items: 5
-  weekly:
-    title: "주간 브리핑"
-    hours_back: 168       # 최근 7일
-    default_max_items: 7
+# 분야: 메일 안 배치 순서 = 이 순서. max_items는 섹션당 최대 개수, hours_back은 기본으로 볼 기간(시간).
+# 글이 드문 분야는 기간을 길게 잡되, 이미 보낸 글은 history로 걸러서 매일 반복되지 않게 한다.
+groups:
+  - {key: thought,    name: "사고·지성", max_items: 3, hours_back: 168}
+  - {key: literature, name: "문학",      max_items: 3, hours_back: 336}
+  - {key: art,        name: "미술",      max_items: 3, hours_back: 168}
+  - {key: tech,       name: "AI·기술",   max_items: 3, hours_back: 48}
+  - {key: work,       name: "일",        max_items: 2, hours_back: 168}
+  - {key: world,      name: "세상",      max_items: 2, hours_back: 36}
+  - {key: economy,    name: "경제·산업", max_items: 2, hours_back: 36}
+  - {key: life,       name: "생활",      max_items: 2, hours_back: 72}
 
-# 연예·스포츠 기사 제외용 (YAML 앵커로 여러 분야에서 재사용)
+# 월요일 "이번 주 흐름"의 큰 방향 3줄이 묶는 분야
+trend_areas:
+  - {key: outer,   name: "바깥 세상", groups: [world, economy, life]}
+  - {key: techwork, name: "기술과 일", groups: [tech, work]}
+  - {key: mind,    name: "사유와 예술", groups: [thought, literature, art]}
+
 x-exclude-entertainment: &exclude_entertainment
   [연예, 스포츠, 야구, 축구, 배구, 농구, 골프, 프로야구, KBO, MLB, K리그, EPL, NBA, 아이돌, 드라마, 예능, 컴백,
    열애, 결혼식, 걸그룹, 보이그룹, 가수, 배우, 시구, 감독 선임, 홈런, 결승골, 운세, 날씨, 오늘의]
 
 categories:
-  # =========================================================================
-  # 데일리 (매일 아침 8시, 최근 24시간, 섹션당 최대 5개)
-  # =========================================================================
+  # ========================= 사고·지성 =========================
+
+  - key: ideas
+    name: "철학·담론"
+    group: thought
+    summary_style: essay      # 한 줄 설명을 "무슨 주장·내용인지" 위주로
+    feeds:
+      - name: "Astral Codex Ten"
+        url: "https://www.astralcodexten.com/feed"
+        exclude_keywords: [Open Thread, Links For, Highlights From The Comments, Meetups]
+      - name: "LessWrong (Curated)"
+        url: "https://www.lesswrong.com/feed.xml?view=curated-rss"
+      - name: "Aeon"
+        url: "https://aeon.co/feed.rss"
+      # Ribbonfarm(RSS 없음), Edge.org(마지막 글 2023-11)는 README "후보 없음" 참고
+
+  - key: cognition
+    name: "인지·심리"
+    group: thought
+    summary_style: essay
+    feeds:
+      - name: "Psyche"
+        url: "https://psyche.co/feed.rss"
+      - name: "Nautilus"
+        url: "https://nautil.us/feed/"
+      - name: "PsyPost"
+        url: "https://www.psypost.org/feed/"
+      - name: "정신의학신문"
+        url: "https://www.psychiatricnews.net/rss/allArticle.xml"
+        keywords: [심리, 마음, 뇌, 인지, 기억, 감정, 우울, 불안, 스트레스, 수면, 중독, 연구, 정신건강]
+
+  - key: ai_alignment
+    name: "AI 윤리·정렬"
+    group: thought
+    summary_style: essay
+    feeds:
+      - name: "Alignment Forum"
+        url: "https://www.alignmentforum.org/feed.xml"
+      - name: "AI Safety Newsletter"
+        url: "https://newsletter.safe.ai/feed"
+      - name: "AI as Normal Technology (AI Snake Oil)"
+        url: "https://www.aisnakeoil.com/feed"
+      - name: "AI타임스 (윤리·안전)"
+        url: "https://www.aitimes.com/rss/allArticle.xml"
+        keywords: [윤리, 안전, 정렬, 규제, AI 기본법, AI기본법, 편향, 저작권, 딥페이크, 책임, 위험, 거버넌스]
+
+  - key: science
+    name: "과학 일반"
+    group: thought
+    rank: coverage          # 여러 매체가 다룬 발견 = 큰 발견
+    exclude_keywords: [correction, corrections, podcast, quiz, crossword, review, fiction, "book review", APOD, "daily briefing",
+                       newsletter, webinar, 부고, 인사, 동정, 게시판, 포토]
+    feeds:
+      - name: "Nature"
+        url: "https://www.nature.com/nature.rss"
+      - name: "Science"
+        url: "https://www.science.org/rss/news_current.xml"
+      - name: "New Scientist"
+        url: "https://www.newscientist.com/feed/home/"
+      - name: "Quanta Magazine"
+        url: "https://www.quantamagazine.org/feed/"
+      - name: "Scientific American"
+        url: "https://www.scientificamerican.com/platform/syndication/rss/"
+      - name: "NASA"
+        url: "https://www.nasa.gov/news-release/feed/"
+      - name: "헬로디디"
+        url: "https://www.hellodd.com/rss/allArticle.xml"
+        keywords: [발견, 규명, 세계 최초, 우주, 위성, 블랙홀, 은하, 행성, 유전자, 세포, 뇌, 양자, 물리, 신소재, 연구팀]
+
+  # ========================= 문학 =========================
+
+  - key: literature
+    name: "문학·비평"
+    group: literature
+    summary_style: essay
+    feeds:
+      - name: "The Paris Review"
+        url: "https://www.theparisreview.org/blog/feed/"
+      # LRB·NYRB는 격주간지라 기사가 몰려서 올라오므로 최근 3주까지 본다
+      - name: "London Review of Books"
+        url: "https://www.lrb.co.uk/feeds/rss"
+        hours_back: 504
+      - name: "The New York Review of Books"
+        url: "https://feeds.feedburner.com/nybooks"
+        hours_back: 504
+      # 국내 문학 웹진·문예지는 RSS가 있는 곳을 찾지 못해(README 참고) 출판 전문지의 문학 기사로 대신
+      - name: "독서신문"
+        url: "https://www.readersnews.com/rss/allArticle.xml"
+        keywords: [문학, 소설, 시집, 시인, 소설가, 작가, 문예지, 비평, 평론, 문학상, 등단]
+        max_items: 2
+
+  # ========================= 미술 =========================
+
+  - key: art_criticism
+    name: "현대미술 비평"
+    group: art
+    summary_style: essay
+    feeds:
+      - name: "Artforum"
+        url: "https://www.artforum.com/feed/"
+      - name: "Hyperallergic"
+        url: "https://hyperallergic.com/rss/"
+      # 국내: 미술 평론 기사 (아트코리아방송의 평론 연재)
+      - name: "아트코리아방송 (평론)"
+        url: "https://www.artkoreatv.com/rss/allArticle.xml"
+        keywords: [평론, 비평, 미술평론]
+      # e-flux Journal, The Brooklyn Rail은 공식 RSS 없음 (README 참고)
+
+  - key: art
+    name: "전시·미술"
+    group: art
+    rank: coverage
+    keywords: [전시, 개인전, 기획전, 단체전, 미술관, 갤러리, 비엔날레, 아트페어, 미술, 작가전, 회고전]
+    exclude_keywords: [공연, 뮤지컬, 연극, 콘서트, 영화]
+    feeds:
+      - name: "연합뉴스 문화"
+        url: "https://www.yna.co.kr/rss/culture.xml"
+      - name: "뉴시스 문화"
+        url: "https://www.newsis.com/RSS/culture.xml"
+      - name: "서울문화투데이"
+        url: "https://www.sctoday.co.kr/rss/allArticle.xml"
+      - name: "아트코리아방송"
+        url: "https://www.artkoreatv.com/rss/allArticle.xml"
+        max_items: 3
+      - name: "아트인사이트"
+        url: "https://www.artinsight.co.kr/rss/"
+        max_items: 2
+
+  - key: design_arch
+    name: "디자인·건축"
+    group: art
+    feeds:
+      - name: "에이앤씨뉴스 (건축)"
+        url: "https://www.ancnews.kr/rss/allArticle.xml"
+      - name: "월간 디자인"
+        url: "https://design.co.kr/feed/"
+      - name: "Dezeen"
+        url: "https://www.dezeen.com/feed/"
+      - name: "designboom"
+        url: "https://www.designboom.com/feed/"
+      - name: "ArchDaily"
+        url: "https://feeds.feedburner.com/Archdaily"
+
+  - key: photo_video
+    name: "사진·영상"
+    group: art
+    feeds:
+      - name: "Aperture"
+        url: "https://aperture.org/feed/"
+      - name: "British Journal of Photography"
+        url: "https://www.1854.photography/feed/"
+      - name: "PetaPixel"
+        url: "https://petapixel.com/feed/"
+        exclude_keywords: [deal, deals, "% off", sale, review, hands-on, giveaway, sponsored, "Black Friday"]
+      # 국내 사진 매체(월간사진, 사진예술)는 RSS가 없거나 응답 없음 (README 참고)
+
+  - key: visual_culture
+    name: "시각문화 아카이브"
+    group: art
+    feeds:
+      - name: "Colossal"
+        url: "https://www.thisiscolossal.com/feed/"
+      - name: "Are.na Editorial"
+        url: "https://www.are.na/editorial/feed/rss"
+        hours_back: 504       # 한 달에 몇 편만 올라와서 3주까지 본다
+      # It's Nice That은 공식 RSS 응답 없음 (README 참고)
+
+  # ========================= AI·기술 =========================
+
+  - key: ai_industry
+    name: "AI 업계 소식"
+    group: tech
+    feeds:
+      - name: "OpenAI News"
+        url: "https://openai.com/news/rss.xml"
+      - name: "Google DeepMind"
+        url: "https://deepmind.google/blog/rss.xml"
+      - name: "Meta Newsroom"
+        url: "https://about.fb.com/news/feed/"
+        keywords: [AI, Llama, Muse, superintelligence, model, models]
+      # Anthropic은 공식 RSS가 없어 아래 기술 매체에서 관련 기사로 대신 다룹니다.
+      - name: "TechCrunch AI"
+        url: "https://techcrunch.com/category/artificial-intelligence/feed/"
+        keywords: &big_ai [OpenAI, ChatGPT, GPT, Sora, DeepMind, Gemini, Google, Meta, Llama, Muse, Anthropic, Claude]
+      - name: "The Verge AI"
+        url: "https://www.theverge.com/rss/ai-artificial-intelligence/index.xml"
+        keywords: *big_ai
+      - name: "AI타임스"
+        url: "https://www.aitimes.com/rss/allArticle.xml"
+
+  - key: ai_practice
+    name: "AI 실무 활용"
+    group: tech
+    # RAG, 에이전트, 기업 도입 사례
+    keywords: [RAG, retrieval, agent, agents, agentic, 에이전트, MCP, "case study", customer, customers, enterprise,
+               deploy, deploys, production, 도입, 사례, 구축, 적용]
+    feeds:
+      - name: "AWS Machine Learning Blog"
+        url: "https://aws.amazon.com/blogs/machine-learning/feed/"
+      - name: "Google Cloud AI Blog"
+        url: "https://cloudblog.withgoogle.com/products/ai-machine-learning/rss/"
+      - name: "Microsoft Cloud Blog"
+        url: "https://www.microsoft.com/en-us/microsoft-cloud/blog/feed/"
+      - name: "GeekNews"
+        url: "https://news.hada.io/rss/news"
+        region: kr
+        keywords: [RAG, 에이전트, Agent, Agents, MCP, 도입 사례, 사례]
+      - name: "AI타임스"
+        url: "https://www.aitimes.com/rss/allArticle.xml"
+        keywords: [에이전트, RAG, 도입, 사례, 구축, 적용]
+
+  - key: hacker_news
+    name: "Hacker News"
+    group: tech
+    type: hacker_news     # Algolia HN API, 기간 내 포인트 높은 순
+    min_points: 100
+    hours_back: 24        # HN은 하루치 상위 글
+
+  - key: ml_papers
+    name: "ML 논문 (HF Daily Papers)"
+    group: tech
+    type: hf_papers       # Hugging Face Daily Papers API, 추천(upvotes) 많은 순
+    hours_back: 24
+
+  - key: data_eng
+    name: "데이터 엔지니어링"
+    group: tech
+    exclude_keywords: [Brickster Voices, Meet, webinar, podcast, "Customer Story Spotlight"]
+    feeds:
+      - name: "Databricks Blog"
+        url: "https://www.databricks.com/feed"
+      - name: "dbt Labs Blog"
+        url: "https://www.getdbt.com/blog/feed.xml"
+      - name: "Snowflake Blog"
+        url: "https://www.snowflake.com/feed/"
+      - name: "AWS Big Data Blog"
+        url: "https://aws.amazon.com/blogs/big-data/feed/"
+      - name: "Data Engineering Weekly"
+        url: "https://www.dataengineeringweekly.com/feed"
+
+  - key: security
+    name: "보안·해킹"
+    group: tech
+    # 주요 해킹·유출 사건, 보안 취약점 (행사·제품 홍보 제외, 여러 매체가 다룬 사건 순)
+    rank: coverage
+    keywords: [해킹, 해커, 유출, 개인정보, 랜섬웨어, 악성코드, 취약점, 제로데이, 침해, 공격, 피싱, 스미싱, 디도스, DDoS, 보안 사고, breach, breached, hack, hacked, hackers, leak, leaked, ransomware, malware, vulnerability, vulnerabilities, zero-day, 0-day, exploit, exploited, CVE, phishing, attack, attacks, stolen]
+    exclude_keywords: [웨비나, 컨퍼런스, 세미나, 개최, 출시, 인증 획득, 협약, MOU, webinar, sponsored, "Weekly Recap"]
+    feeds:
+      - name: "보안뉴스"
+        url: "https://cdn.boannews.com/rss/gn_rss_allArticle.xml"
+      - name: "데일리시큐"
+        url: "https://www.dailysecu.com/rss/allArticle.xml"
+      - name: "BleepingComputer"
+        url: "https://www.bleepingcomputer.com/feed/"
+      - name: "The Hacker News"
+        url: "https://feeds.feedburner.com/TheHackersNews"
+      - name: "Krebs on Security"
+        url: "https://krebsonsecurity.com/feed/"
+      - name: "The Record"
+        url: "https://therecord.media/feed"
+
+  - key: gadgets
+    name: "IT 기기·서비스"
+    group: tech
+    # 스마트폰·앱·통신 등 생활 IT (할인·딜 기사 제외)
+    keywords: [스마트폰, 갤럭시, 아이폰, 폴더블, 태블릿, 워치, 이어폰, 노트북, 앱, 앱스토어, 카카오톡, 통신, 이통, 5G, 6G, 요금제, 알뜰폰, SKT, SK텔레콤, KT, LG유플러스, 단말기, iPhone, iPad, Galaxy, Pixel, Android, iOS, app, apps, smartphone, phone, phones, watch, earbuds, laptop, carrier, carriers]
+    exclude_keywords: [deal, deals, "% off", sale, coupon, "best buy", giveaway, 할인, 특가, 사전예약 혜택]
+    feeds:
+      - name: "전자신문"
+        url: "https://www.etnews.com/rss/Section901.xml"
+      - name: "지디넷코리아"
+        url: "https://feeds.feedburner.com/zdkorea"
+      - name: "블로터"
+        url: "https://www.bloter.net/rss/allArticle.xml"
+      - name: "The Verge"
+        url: "https://www.theverge.com/rss/index.xml"
+      - name: "Engadget"
+        url: "https://www.engadget.com/rss.xml"
+      - name: "9to5Mac"
+        url: "https://9to5mac.com/feed/"
+      - name: "Android Authority"
+        url: "https://www.androidauthority.com/feed/"
+
+  # ========================= 일 =========================
+
+  - key: construction_it
+    name: "건설 IT·스마트건설"
+    group: work
+    keywords: [스마트건설, 스마트 건설, 스마트 안전, BIM, 디지털트윈, 디지털 트윈, 드론, 로봇, AI, 인공지능, 모듈러, OSC, 탈현장,
+               자동화, 건설기술, 디지털, 플랫폼, 데이터, 콘테크, 프롭테크, 무인]
+    feeds:
+      # 국내 건설 전문지 3곳은 https 인증서가 깨져 있어 http 주소를 씁니다(공식 RSS 주소, 읽기 전용).
+      - name: "국토일보"
+        url: "http://www.ikld.kr/rss/allArticle.xml"
+      - name: "한국건설신문"
+        url: "http://www.conslove.co.kr/rss/allArticle.xml"
+      - name: "건설이코노미뉴스"
+        url: "http://www.cenews.co.kr/rss/allArticle.xml"
+      - name: "건설타임즈"
+        url: "https://www.constimes.co.kr/rss/allArticle.xml"
+      - name: "Construction Dive (Technology)"
+        url: "https://www.constructiondive.com/feeds/topic/technology/"
+        keywords: []          # 기술 토픽 피드라 필터 없음
+      - name: "ENR"
+        url: "https://www.enr.com/rss/articles"
+        keywords: [technology, tech, BIM, AI, robot, robots, robotics, drone, drones, digital, software, automation,
+                   data, contech, startup, "digital twin", modular]
+
+  - key: erp_si
+    name: "ERP·SI 업계"
+    group: work
+    keywords: [SI, ERP, IT서비스, IT 서비스, 삼성SDS, LG CNS, SK AX, SK C&C, 현대오토에버, 포스코DX, 롯데이노베이트,
+               CJ올리브네트웍스, 신세계I&C, 대우정보시스템, 아이티센, 쌍용정보통신, 공공 SW, 공공SW, SAP, 오라클,
+               더존, 영림원, 시스템 통합, 클라우드 전환, 디지털 전환, 망분리, 차세대 시스템, 차세대 프로젝트]
+    feeds:
+      - name: "전자신문"
+        url: "https://www.etnews.com/rss/Section901.xml"
+      - name: "디지털타임스 ICT"
+        url: "https://www.dt.co.kr/rss/google/ict"
+      - name: "아이티데일리"
+        url: "https://www.itdaily.kr/rss/allArticle.xml"
+      - name: "지디넷코리아"
+        url: "https://feeds.feedburner.com/zdkorea"
+      - name: "블로터"
+        url: "https://www.bloter.net/rss/allArticle.xml"
+      - name: "바이라인네트워크"
+        url: "https://byline.network/feed/"
+      - name: "한국경제 IT"
+        url: "https://www.hankyung.com/feed/it"
+        user_agent: "curl/8.5.0"
+
+  - key: freelance
+    name: "프리랜서·원격근무 시장"
+    group: work
+    feeds:
+      - name: "Freelancers Union Blog"
+        url: "https://blog.freelancersunion.org/rss/"
+      - name: "Reddit r/Upwork (주간 상위)"
+        url: "https://www.reddit.com/r/Upwork/top/.rss?t=week"
+        region: world
+        max_items: 3
+      - name: "Reddit r/freelance (주간 상위)"
+        url: "https://www.reddit.com/r/freelance/top/.rss?t=week"
+        region: world
+        max_items: 2
+      - name: "Reddit r/remotework (주간 상위)"
+        url: "https://www.reddit.com/r/remotework/top/.rss?t=week"
+        region: world
+        max_items: 2
+
+  # ========================= 세상 =========================
+
   - key: kr_top
     name: "국내 주요뉴스"
-    schedule: daily
-    max_items: 5
+    group: world
     rank: coverage          # 여러 매체가 함께 다룬 사건 = 큰 줄기
     exclude_keywords: *exclude_entertainment
     feeds:
@@ -84,8 +445,7 @@ categories:
 
   - key: world_top
     name: "해외 주요뉴스"
-    schedule: daily
-    max_items: 5
+    group: world
     rank: coverage
     exclude_keywords: [sport, football, soccer, NBA, NFL, tennis, cricket, golf, jersey, celebrity, actor, actress, singer, rapper,
                        Oscar, Grammy, quiz, crossword, "Wordle"]
@@ -100,6 +460,12 @@ categories:
         url: "https://feeds.npr.org/1004/rss.xml"
       - name: "Al Jazeera"
         url: "https://www.aljazeera.com/xml/rss/all.xml"
+      - name: "South China Morning Post"
+        url: "https://www.scmp.com/rss/91/feed"
+      - name: "Deutsche Welle"
+        url: "https://rss.dw.com/rdf/rss-en-world"
+      - name: "France 24"
+        url: "https://www.france24.com/en/rss"
       - name: "BBC Business"
         url: "https://feeds.bbci.co.uk/news/business/rss.xml"
       - name: "NYT Business"
@@ -107,10 +473,35 @@ categories:
       - name: "연합뉴스 국제"
         url: "https://www.yna.co.kr/rss/international.xml"
 
+  - key: opinion
+    name: "오피니언"
+    group: world
+    # 주요 신문 사설·칼럼 (국내 위주, 해외는 피드당 1개)
+    exclude_keywords: [알림, "[알림]", 부고, 인사, 만평, 포토, 독자]
+    feeds:
+      - name: "동아일보 사설"
+        url: "https://rss.donga.com/editorials.xml"
+      - name: "경향신문 오피니언"
+        url: "https://www.khan.co.kr/rss/rssdata/opinion_news.xml"
+      - name: "조선일보 오피니언"
+        url: "https://www.chosun.com/arc/outboundfeeds/rss/category/opinion/?outputType=xml"
+      - name: "한국경제 오피니언"
+        url: "https://www.hankyung.com/feed/opinion"
+        user_agent: "curl/8.5.0"
+      - name: "연합뉴스 오피니언"
+        url: "https://www.yna.co.kr/rss/opinion.xml"
+      - name: "NYT Opinion"
+        url: "https://rss.nytimes.com/services/xml/rss/nyt/Opinion.xml"
+        max_items: 1
+      - name: "Guardian Opinion"
+        url: "https://www.theguardian.com/commentisfree/rss"
+        max_items: 1
+
+  # ========================= 경제·산업 =========================
+
   - key: market
     name: "경제·시장"
-    schedule: daily
-    max_items: 5
+    group: economy
     rank: coverage
     keywords: [금리, 기준금리, 환율, 달러, 원화, 코스피, 코스닥, 증시, 주가, 국채, 채권, 부동산, 집값, 아파트, 전세, 월세,
                분양, 재건축, 물가, 연준, Fed, FOMC]
@@ -134,243 +525,46 @@ categories:
       - name: "매일경제 부동산"
         url: "https://www.mk.co.kr/rss/50300009/"
 
-  - key: ai_industry
-    name: "AI 업계 소식"
-    schedule: daily
-    max_items: 5
-    feeds:
-      - name: "OpenAI News"
-        url: "https://openai.com/news/rss.xml"
-      - name: "Google DeepMind"
-        url: "https://deepmind.google/blog/rss.xml"
-      - name: "Meta Newsroom"
-        url: "https://about.fb.com/news/feed/"
-        keywords: [AI, Llama, Muse, superintelligence, model, models]
-      # Anthropic은 공식 RSS가 없어 아래 기술 매체에서 관련 기사로 대신 다룹니다.
-      - name: "TechCrunch AI"
-        url: "https://techcrunch.com/category/artificial-intelligence/feed/"
-        keywords: &big_ai [OpenAI, ChatGPT, GPT, Sora, DeepMind, Gemini, Google, Meta, Llama, Muse, Anthropic, Claude]
-      - name: "The Verge AI"
-        url: "https://www.theverge.com/rss/ai-artificial-intelligence/index.xml"
-        keywords: *big_ai
-      - name: "AI타임스"
-        url: "https://www.aitimes.com/rss/allArticle.xml"
-
-  - key: hacker_news
-    name: "Hacker News"
-    schedule: daily
-    type: hacker_news     # Algolia HN API, 기간 내 포인트 높은 순
-    min_points: 100
-    max_items: 5
-
-  - key: ml_papers
-    name: "ML 논문 (HF Daily Papers)"
-    schedule: daily
-    type: hf_papers       # Hugging Face Daily Papers API, 추천(upvotes) 많은 순
-    max_items: 3
-
-  # =========================================================================
-  # 주간 (월요일 데일리와 합쳐서, 최근 7일)
-  # 순서: 사고·지성 담론 → 문학·비평 → 현대미술 비평 → 전시·미술 → AI 실무 활용 → 데이터 엔지니어링 → 나머지
-  # =========================================================================
-  - key: ideas
-    name: "사고·지성 담론"
-    schedule: weekly
-    max_items: 5
-    summary_style: essay      # 한 줄 설명을 "무슨 주장·내용인지" 위주로
-    feeds:
-      - name: "Astral Codex Ten"
-        url: "https://www.astralcodexten.com/feed"
-        exclude_keywords: [Open Thread, Links For, Highlights From The Comments, Meetups]
-      - name: "LessWrong (Curated)"
-        url: "https://www.lesswrong.com/feed.xml?view=curated-rss"
-      - name: "Aeon"
-        url: "https://aeon.co/feed.rss"
-      # Ribbonfarm(RSS 없음), Edge.org(마지막 글 2023-11)는 README "후보 없음" 참고
-
-  - key: literature
-    name: "문학·비평"
-    schedule: weekly
-    max_items: 5
-    summary_style: essay
-    feeds:
-      - name: "The Paris Review"
-        url: "https://www.theparisreview.org/blog/feed/"
-      # LRB·NYRB는 격주간지라 기사가 몰려서 올라오므로 최근 3주까지 본다
-      - name: "London Review of Books"
-        url: "https://www.lrb.co.uk/feeds/rss"
-        hours_back: 504
-      - name: "The New York Review of Books"
-        url: "https://feeds.feedburner.com/nybooks"
-        hours_back: 504
-      # 국내 문학 웹진·문예지는 RSS가 있는 곳을 찾지 못해(README 참고) 출판 전문지의 문학 기사로 대신
-      - name: "독서신문"
-        url: "https://www.readersnews.com/rss/allArticle.xml"
-        keywords: [문학, 소설, 시집, 시인, 소설가, 작가, 문예지, 비평, 평론, 문학상, 등단]
-        max_items: 2
-
-  - key: art_criticism
-    name: "현대미술 비평"
-    schedule: weekly
-    max_items: 5
-    summary_style: essay
-    feeds:
-      - name: "Artforum"
-        url: "https://www.artforum.com/feed/"
-      - name: "Hyperallergic"
-        url: "https://hyperallergic.com/rss/"
-      - name: "Colossal"
-        url: "https://www.thisiscolossal.com/feed/"
-      - name: "Are.na Editorial"
-        url: "https://www.are.na/editorial/feed/rss"
-        hours_back: 504       # 한 달에 몇 편만 올라와서 3주까지 본다
-      # e-flux Journal, The Brooklyn Rail은 공식 RSS 없음 (README 참고)
-
-  - key: art
-    name: "전시·미술"
-    schedule: weekly
+  - key: industry
+    name: "산업·기업"
+    group: economy
+    # 반도체·배터리·대기업 실적·투자 등 (여러 매체가 다룬 소식 순)
     rank: coverage
-    keywords: [전시, 개인전, 기획전, 단체전, 미술관, 갤러리, 비엔날레, 아트페어, 미술, 작가전, 회고전]
-    exclude_keywords: [공연, 뮤지컬, 연극, 콘서트, 영화]
+    keywords: [반도체, 메모리, HBM, 파운드리, 배터리, 이차전지, 실적, 영업이익, 매출, 투자, 인수, 합병, M&A, 공장, 증설, 수주, 삼성전자, SK하이닉스, LG에너지솔루션, 삼성SDI, SK온, 현대차, 기아, LG전자, 포스코, 한화, 카카오, 네이버, chip, chips, semiconductor, TSMC, Nvidia, Intel, battery, earnings, profit, revenue, invest, investment, acquisition, acquire, merger, plant, factory, layoffs]
     feeds:
-      - name: "연합뉴스 문화"
-        url: "https://www.yna.co.kr/rss/culture.xml"
-      - name: "뉴시스 문화"
-        url: "https://www.newsis.com/RSS/culture.xml"
-      - name: "서울문화투데이"
-        url: "https://www.sctoday.co.kr/rss/allArticle.xml"
-      - name: "아트코리아방송"
-        url: "https://www.artkoreatv.com/rss/allArticle.xml"
-        max_items: 3
-      - name: "아트인사이트"
-        url: "https://www.artinsight.co.kr/rss/"
-        max_items: 2
-
-  - key: ai_practice
-    name: "AI 실무 활용"
-    schedule: weekly
-    # RAG, 에이전트, 기업 도입 사례
-    keywords: [RAG, retrieval, agent, agents, agentic, 에이전트, MCP, "case study", customer, customers, enterprise,
-               deploy, deploys, production, 도입, 사례, 구축, 적용]
-    feeds:
-      - name: "AWS Machine Learning Blog"
-        url: "https://aws.amazon.com/blogs/machine-learning/feed/"
-      - name: "Google Cloud AI Blog"
-        url: "https://cloudblog.withgoogle.com/products/ai-machine-learning/rss/"
-      - name: "Microsoft Cloud Blog"
-        url: "https://www.microsoft.com/en-us/microsoft-cloud/blog/feed/"
-      - name: "GeekNews"
-        url: "https://news.hada.io/rss/news"
-        keywords: [RAG, 에이전트, Agent, Agents, MCP, 도입 사례, 사례]
-      - name: "AI타임스"
-        url: "https://www.aitimes.com/rss/allArticle.xml"
-        keywords: [에이전트, RAG, 도입, 사례, 구축, 적용]
-
-  - key: data_eng
-    name: "데이터 엔지니어링"
-    schedule: weekly
-    exclude_keywords: [Brickster Voices, Meet, webinar, podcast, "Customer Story Spotlight"]
-    feeds:
-      - name: "Databricks Blog"
-        url: "https://www.databricks.com/feed"
-      - name: "dbt Labs Blog"
-        url: "https://www.getdbt.com/blog/feed.xml"
-      - name: "Snowflake Blog"
-        url: "https://www.snowflake.com/feed/"
-      - name: "AWS Big Data Blog"
-        url: "https://aws.amazon.com/blogs/big-data/feed/"
-      - name: "Data Engineering Weekly"
-        url: "https://www.dataengineeringweekly.com/feed"
-
-  - key: construction_it
-    name: "건설 IT·스마트건설"
-    schedule: weekly
-    keywords: [스마트건설, 스마트 건설, 스마트 안전, BIM, 디지털트윈, 디지털 트윈, 드론, 로봇, AI, 인공지능, 모듈러, OSC, 탈현장,
-               자동화, 건설기술, 디지털, 플랫폼, 데이터, 콘테크, 프롭테크, 무인]
-    feeds:
-      # 국내 건설 전문지 3곳은 https 인증서가 깨져 있어 http 주소를 씁니다(공식 RSS 주소, 읽기 전용).
-      - name: "국토일보"
-        url: "http://www.ikld.kr/rss/allArticle.xml"
-      - name: "한국건설신문"
-        url: "http://www.conslove.co.kr/rss/allArticle.xml"
-      - name: "건설이코노미뉴스"
-        url: "http://www.cenews.co.kr/rss/allArticle.xml"
-      - name: "건설타임즈"
-        url: "https://www.constimes.co.kr/rss/allArticle.xml"
-      - name: "Construction Dive (Technology)"
-        url: "https://www.constructiondive.com/feeds/topic/technology/"
-        keywords: []          # 기술 토픽 피드라 필터 없음
-      - name: "ENR"
-        url: "https://www.enr.com/rss/articles"
-        keywords: [technology, tech, BIM, AI, robot, robots, robotics, drone, drones, digital, software, automation,
-                   data, contech, startup, "digital twin", modular]
-
-  - key: erp_si
-    name: "ERP·SI 업계"
-    schedule: weekly
-    keywords: [SI, ERP, IT서비스, IT 서비스, 삼성SDS, LG CNS, SK AX, SK C&C, 현대오토에버, 포스코DX, 롯데이노베이트,
-               CJ올리브네트웍스, 신세계I&C, 대우정보시스템, 아이티센, 쌍용정보통신, 공공 SW, 공공SW, SAP, 오라클,
-               더존, 영림원, 시스템 통합, 클라우드 전환, 디지털 전환, 망분리, 차세대 시스템, 차세대 프로젝트]
-    feeds:
+      - name: "연합뉴스 산업"
+        url: "https://www.yna.co.kr/rss/industry.xml"
+      - name: "매일경제 기업"
+        url: "https://www.mk.co.kr/rss/40300001/"
       - name: "전자신문"
         url: "https://www.etnews.com/rss/Section901.xml"
-      - name: "디지털타임스 ICT"
-        url: "https://www.dt.co.kr/rss/google/ict"
-      - name: "아이티데일리"
-        url: "https://www.itdaily.kr/rss/allArticle.xml"
-      - name: "지디넷코리아"
-        url: "https://feeds.feedburner.com/zdkorea"
-      - name: "블로터"
-        url: "https://www.bloter.net/rss/allArticle.xml"
-      - name: "바이라인네트워크"
-        url: "https://byline.network/feed/"
-      - name: "한국경제 IT"
-        url: "https://www.hankyung.com/feed/it"
-        user_agent: "curl/8.5.0"
+      - name: "CNBC Business"
+        url: "https://www.cnbc.com/id/10001147/device/rss/rss.html"
+      - name: "CNBC Technology"
+        url: "https://www.cnbc.com/id/19854910/device/rss/rss.html"
 
-  - key: freelance
-    name: "프리랜서·원격근무 시장"
-    schedule: weekly
+  - key: labor
+    name: "노동·일자리"
+    group: economy
+    # 고용·임금·노동 정책·IT 인력 시장
     feeds:
-      - name: "Freelancers Union Blog"
-        url: "https://blog.freelancersunion.org/rss/"
-      - name: "Reddit r/Upwork (주간 상위)"
-        url: "https://www.reddit.com/r/Upwork/top/.rss?t=week"
-        max_items: 3
-      - name: "Reddit r/freelance (주간 상위)"
-        url: "https://www.reddit.com/r/freelance/top/.rss?t=week"
-        max_items: 2
-      - name: "Reddit r/remotework (주간 상위)"
-        url: "https://www.reddit.com/r/remotework/top/.rss?t=week"
-        max_items: 2
+      - name: "매일노동뉴스"
+        url: "https://www.labortoday.co.kr/rss/allArticle.xml"
+        keywords: &labor_kw [고용, 취업, 실업, 일자리, 임금, 최저임금, 성과급, 노동, 노조, 파업, 채용, 해고, 근로, 노사, 산재, 비정규직,
+                             플랫폼 노동, 개발자, IT 인력, 구조조정, 희망퇴직, 주4일, 근로시간]
+      - name: "연합뉴스 경제"
+        url: "https://www.yna.co.kr/rss/economy.xml"
+        keywords: *labor_kw
+      - name: "HR Dive"
+        url: "https://www.hrdive.com/feeds/news/"
+      - name: "Guardian Work & careers"
+        url: "https://www.theguardian.com/money/work-and-careers/rss"
 
-  - key: science
-    name: "과학 일반"
-    schedule: weekly
-    rank: coverage          # 여러 매체가 다룬 발견 = 큰 발견
-    exclude_keywords: [correction, corrections, podcast, quiz, crossword, review, fiction, "book review", APOD, "daily briefing",
-                       newsletter, webinar, 부고, 인사, 동정, 게시판, 포토]
-    feeds:
-      - name: "Nature"
-        url: "https://www.nature.com/nature.rss"
-      - name: "Science"
-        url: "https://www.science.org/rss/news_current.xml"
-      - name: "New Scientist"
-        url: "https://www.newscientist.com/feed/home/"
-      - name: "Quanta Magazine"
-        url: "https://www.quantamagazine.org/feed/"
-      - name: "Scientific American"
-        url: "https://www.scientificamerican.com/platform/syndication/rss/"
-      - name: "NASA"
-        url: "https://www.nasa.gov/news-release/feed/"
-      - name: "헬로디디"
-        url: "https://www.hellodd.com/rss/allArticle.xml"
-        keywords: [발견, 규명, 세계 최초, 우주, 위성, 블랙홀, 은하, 행성, 유전자, 세포, 뇌, 양자, 물리, 신소재, 연구팀]
+  # ========================= 생활 =========================
 
   - key: health
     name: "건강·의학"
-    schedule: weekly
-    max_items: 5
+    group: life
     # 생활 건강·연구 결과 위주 (건강식품 홍보·제약사 주가 기사 제외)
     rank: coverage
     exclude_keywords: [건강기능식품, 영양제, 효능, 다이어트 비법, 홈쇼핑, 출시, 특가, 체험단, 주가, 상장, 투자 유치, IPO, 임상 진입, 기술이전,
@@ -390,84 +584,11 @@ categories:
         url: "https://www.statnews.com/feed/"
       - name: "ScienceDaily 건강·의학"
         url: "https://www.sciencedaily.com/rss/health_medicine.xml"
-
-  - key: culture_books
-    name: "문화·책"
-    schedule: weekly
-    max_items: 5
-    # 출판·신간, 영화, 공연
-    keywords: [책, 신간, 출간, 출판, 소설, 시집, 에세이, 베스트셀러, 작가, 영화, 개봉, 감독, 영화제, 공연, 연극, 뮤지컬, 오페라, 콘서트, 무대, book, books, novel, novelist, author, film, films, movie, director, review, festival, theatre, theater, play, opera]
-    exclude_keywords: [단풍, 맛집, 날씨, 운세, 축제, "소식]", 행사 안내]
-    feeds:
-      - name: "연합뉴스 문화"
-        url: "https://www.yna.co.kr/rss/culture.xml"
-      - name: "경향신문 문화"
-        url: "https://www.khan.co.kr/rss/rssdata/culture_news.xml"
-      - name: "동아일보 문화"
-        url: "https://rss.donga.com/culture.xml"
-      - name: "독서신문"
-        url: "https://www.readersnews.com/rss/allArticle.xml"
-      - name: "Guardian Books"
-        url: "https://www.theguardian.com/books/rss"
-      - name: "Guardian Film"
-        url: "https://www.theguardian.com/film/rss"
-      - name: "Guardian Stage"
-        url: "https://www.theguardian.com/stage/rss"
-      - name: "NYT Books"
-        url: "https://rss.nytimes.com/services/xml/rss/nyt/Books.xml"
-
-  - key: gadgets
-    name: "IT 기기·서비스"
-    schedule: weekly
-    max_items: 5
-    # 스마트폰·앱·통신 등 생활 IT (할인·딜 기사 제외)
-    keywords: [스마트폰, 갤럭시, 아이폰, 폴더블, 태블릿, 워치, 이어폰, 노트북, 앱, 앱스토어, 카카오톡, 통신, 이통, 5G, 6G, 요금제, 알뜰폰, SKT, SK텔레콤, KT, LG유플러스, 단말기, iPhone, iPad, Galaxy, Pixel, Android, iOS, app, apps, smartphone, phone, phones, watch, earbuds, laptop, carrier, carriers]
-    exclude_keywords: [deal, deals, "% off", sale, coupon, "best buy", giveaway, 할인, 특가, 사전예약 혜택]
-    feeds:
-      - name: "전자신문"
-        url: "https://www.etnews.com/rss/Section901.xml"
-      - name: "지디넷코리아"
-        url: "https://feeds.feedburner.com/zdkorea"
-      - name: "블로터"
-        url: "https://www.bloter.net/rss/allArticle.xml"
-      - name: "The Verge"
-        url: "https://www.theverge.com/rss/index.xml"
-      - name: "Engadget"
-        url: "https://www.engadget.com/rss.xml"
-      - name: "9to5Mac"
-        url: "https://9to5mac.com/feed/"
-      - name: "Android Authority"
-        url: "https://www.androidauthority.com/feed/"
-
-  - key: sports
-    name: "스포츠"
-    schedule: weekly
-    max_items: 5
-    # 국내외 주요 소식 + 농구(KBL·NBA). 여러 매체가 다룬 소식 순
-    rank: coverage
-    exclude_keywords: [포토, "[포토]", 화보, 운세, 미디어데이, 캠프, fantasy, betting, odds, picks, prediction, predictions]
-    feeds:
-      - name: "연합뉴스 스포츠"
-        url: "https://www.yna.co.kr/rss/sports.xml"
-      - name: "한국경제 스포츠"
-        url: "https://www.hankyung.com/feed/sports"
-        user_agent: "curl/8.5.0"
-      - name: "루키 (농구)"
-        url: "https://www.rookie.co.kr/rss/allArticle.xml"
-        keywords: [KBL, 프로농구, NBA, 국가대표, 대표팀]
-      - name: "BBC Sport"
-        url: "https://feeds.bbci.co.uk/sport/rss.xml"
-      - name: "Guardian Sport"
-        url: "https://www.theguardian.com/sport/rss"
-      - name: "CBS Sports NBA"
-        url: "https://www.cbssports.com/rss/headlines/nba/"
-      - name: "Yahoo Sports NBA"
-        url: "https://sports.yahoo.com/nba/rss.xml"
+        region: world
 
   - key: climate
     name: "환경·기후"
-    schedule: weekly
-    max_items: 5
+    group: life
     # 기후변화·에너지 정책 (국내 매체는 기업 홍보가 섞여 키워드로 거름)
     keywords: [기후, 탄소, 온실가스, 배출, 재생에너지, 태양광, 풍력, 원전, 에너지 정책, 전력, 전기요금, 탄소중립, 넷제로, 폭염, 홍수, 가뭄, 산불, 생물다양성, 플라스틱, 환경부, 기후부, climate, carbon, emissions, renewable, solar, wind, nuclear, energy, heat, flood, drought, wildfire, wildfires, COP, biodiversity, EPA, fossil, oil, gas, coal]
     feeds:
@@ -492,8 +613,7 @@ categories:
 
   - key: mobility
     name: "자동차·모빌리티"
-    schedule: weekly
-    max_items: 5
+    group: life
     # 전기차·자율주행·개인 이동수단
     keywords: [전기차, EV, 배터리, 충전, 자율주행, 로보택시, 수소차, 하이브리드, 모빌리티, 전기자전거, 킥보드, PM, 판매, 보조금, 테슬라, 현대차, 기아, electric, autonomous, self-driving, robotaxi, Waymo, Tesla, charging, e-bike, ebike, scooter, micromobility, sales]
     exclude_keywords: [deal, deals, "% off", sale, 시승기 이벤트, 할인, 프로모션]
@@ -513,8 +633,7 @@ categories:
 
   - key: education
     name: "교육"
-    schedule: weekly
-    max_items: 5
+    group: life
     # 교육 정책 + 평생교육·성인 학습
     keywords: [교육부, 교육청, 교육과정, 수능, 입시, 대입, 학교, 교사, 교원, 학생, 대학, 고교학점제, 디지털교과서, 늘봄, 평생교육, 성인, 직업교육, 재교육, 리스킬링, 부트캠프, 교육 정책, education, school, schools, teacher, teachers, students, college, university, universities, learning, adult, lifelong, workforce, skills, policy]
     exclude_keywords: [독주회, 연주회, 동문, 장학금 전달, 기부, 기탁, 후원, 협약식, 인사, 동정, 부고, review]
@@ -534,8 +653,7 @@ categories:
 
   - key: travel
     name: "여행"
-    schedule: weekly
-    max_items: 5
+    group: life
     # 여행 트렌드, 항공·여행 정책 (특가·상품 홍보 제외)
     exclude_keywords: [특가, 할인, 프로모션, 이벤트, 패키지 출시, 상품 출시, 기획전, 경품, deal, deals, "% off", sale, giveaway]
     feeds:
@@ -552,10 +670,33 @@ categories:
       - name: "Guardian Travel"
         url: "https://www.theguardian.com/travel/rss"
 
+  - key: sports
+    name: "스포츠"
+    group: life
+    # 국내외 주요 소식 + 농구(KBL·NBA). 여러 매체가 다룬 소식 순
+    rank: coverage
+    exclude_keywords: [포토, "[포토]", 화보, 운세, 미디어데이, 캠프, fantasy, betting, odds, picks, prediction, predictions]
+    feeds:
+      - name: "연합뉴스 스포츠"
+        url: "https://www.yna.co.kr/rss/sports.xml"
+      - name: "한국경제 스포츠"
+        url: "https://www.hankyung.com/feed/sports"
+        user_agent: "curl/8.5.0"
+      - name: "루키 (농구)"
+        url: "https://www.rookie.co.kr/rss/allArticle.xml"
+        keywords: [KBL, 프로농구, NBA, 국가대표, 대표팀]
+      - name: "BBC Sport"
+        url: "https://feeds.bbci.co.uk/sport/rss.xml"
+      - name: "Guardian Sport"
+        url: "https://www.theguardian.com/sport/rss"
+      - name: "CBS Sports NBA"
+        url: "https://www.cbssports.com/rss/headlines/nba/"
+      - name: "Yahoo Sports NBA"
+        url: "https://sports.yahoo.com/nba/rss.xml"
+
   - key: entertainment
     name: "연예"
-    schedule: weekly
-    max_items: 3
+    group: life
     # 큰 이슈만: 여러 매체가 함께 다룬 소식 순, 가십 키워드 제외
     rank: coverage
     exclude_keywords: [열애, 결혼, 이혼, 파경, 근황, 화보, 공항패션, 셀카, 몸매, 비키니, 성형, 다이어트, 럽스타, 데이트, 포토, "[포토]", dating, divorce, "red carpet", outfit, "sex"]
@@ -571,86 +712,26 @@ categories:
       - name: "Billboard"
         url: "https://www.billboard.com/feed/"
 
-  - key: industry
-    name: "산업·기업"
-    schedule: weekly
-    max_items: 5
-    # 반도체·배터리·대기업 실적·투자 등 (여러 매체가 다룬 소식 순)
-    rank: coverage
-    keywords: [반도체, 메모리, HBM, 파운드리, 배터리, 이차전지, 실적, 영업이익, 매출, 투자, 인수, 합병, M&A, 공장, 증설, 수주, 삼성전자, SK하이닉스, LG에너지솔루션, 삼성SDI, SK온, 현대차, 기아, LG전자, 포스코, 한화, 카카오, 네이버, chip, chips, semiconductor, TSMC, Nvidia, Intel, battery, earnings, profit, revenue, invest, investment, acquisition, acquire, merger, plant, factory, layoffs]
+  - key: culture_books
+    name: "문화·책"
+    group: life
+    # 출판·신간, 영화, 공연
+    keywords: [책, 신간, 출간, 출판, 소설, 시집, 에세이, 베스트셀러, 작가, 영화, 개봉, 감독, 영화제, 공연, 연극, 뮤지컬, 오페라, 콘서트, 무대, book, books, novel, novelist, author, film, films, movie, director, review, festival, theatre, theater, play, opera]
+    exclude_keywords: [단풍, 맛집, 날씨, 운세, 축제, "소식]", 행사 안내]
     feeds:
-      - name: "연합뉴스 산업"
-        url: "https://www.yna.co.kr/rss/industry.xml"
-      - name: "매일경제 기업"
-        url: "https://www.mk.co.kr/rss/40300001/"
-      - name: "전자신문"
-        url: "https://www.etnews.com/rss/Section901.xml"
-      - name: "CNBC Business"
-        url: "https://www.cnbc.com/id/10001147/device/rss/rss.html"
-      - name: "CNBC Technology"
-        url: "https://www.cnbc.com/id/19854910/device/rss/rss.html"
-
-  - key: labor
-    name: "노동·일자리"
-    schedule: weekly
-    max_items: 5
-    # 고용·임금·노동 정책·IT 인력 시장
-    feeds:
-      - name: "매일노동뉴스"
-        url: "https://www.labortoday.co.kr/rss/allArticle.xml"
-        keywords: &labor_kw [고용, 취업, 실업, 일자리, 임금, 최저임금, 성과급, 노동, 노조, 파업, 채용, 해고, 근로, 노사, 산재, 비정규직,
-                             플랫폼 노동, 개발자, IT 인력, 구조조정, 희망퇴직, 주4일, 근로시간]
-      - name: "연합뉴스 경제"
-        url: "https://www.yna.co.kr/rss/economy.xml"
-        keywords: *labor_kw
-      - name: "HR Dive"
-        url: "https://www.hrdive.com/feeds/news/"
-      - name: "Guardian Work & careers"
-        url: "https://www.theguardian.com/money/work-and-careers/rss"
-
-  - key: opinion
-    name: "오피니언"
-    schedule: weekly
-    max_items: 5
-    # 주요 신문 사설·칼럼 (국내 위주, 해외는 피드당 1개)
-    exclude_keywords: [알림, "[알림]", 부고, 인사, 만평, 포토, 독자]
-    feeds:
-      - name: "동아일보 사설"
-        url: "https://rss.donga.com/editorials.xml"
-      - name: "경향신문 오피니언"
-        url: "https://www.khan.co.kr/rss/rssdata/opinion_news.xml"
-      - name: "조선일보 오피니언"
-        url: "https://www.chosun.com/arc/outboundfeeds/rss/category/opinion/?outputType=xml"
-      - name: "한국경제 오피니언"
-        url: "https://www.hankyung.com/feed/opinion"
-        user_agent: "curl/8.5.0"
-      - name: "연합뉴스 오피니언"
-        url: "https://www.yna.co.kr/rss/opinion.xml"
-      - name: "NYT Opinion"
-        url: "https://rss.nytimes.com/services/xml/rss/nyt/Opinion.xml"
-        max_items: 1
-      - name: "Guardian Opinion"
-        url: "https://www.theguardian.com/commentisfree/rss"
-        max_items: 1
-
-  - key: security
-    name: "보안·해킹"
-    schedule: weekly
-    max_items: 5
-    # 주요 해킹·유출 사건, 보안 취약점 (행사·제품 홍보 제외, 여러 매체가 다룬 사건 순)
-    rank: coverage
-    keywords: [해킹, 해커, 유출, 개인정보, 랜섬웨어, 악성코드, 취약점, 제로데이, 침해, 공격, 피싱, 스미싱, 디도스, DDoS, 보안 사고, breach, breached, hack, hacked, hackers, leak, leaked, ransomware, malware, vulnerability, vulnerabilities, zero-day, 0-day, exploit, exploited, CVE, phishing, attack, attacks, stolen]
-    exclude_keywords: [웨비나, 컨퍼런스, 세미나, 개최, 출시, 인증 획득, 협약, MOU, webinar, sponsored, "Weekly Recap"]
-    feeds:
-      - name: "보안뉴스"
-        url: "https://cdn.boannews.com/rss/gn_rss_allArticle.xml"
-      - name: "데일리시큐"
-        url: "https://www.dailysecu.com/rss/allArticle.xml"
-      - name: "BleepingComputer"
-        url: "https://www.bleepingcomputer.com/feed/"
-      - name: "The Hacker News"
-        url: "https://feeds.feedburner.com/TheHackersNews"
-      - name: "Krebs on Security"
-        url: "https://krebsonsecurity.com/feed/"
-      - name: "The Record"
-        url: "https://therecord.media/feed"
+      - name: "연합뉴스 문화"
+        url: "https://www.yna.co.kr/rss/culture.xml"
+      - name: "경향신문 문화"
+        url: "https://www.khan.co.kr/rss/rssdata/culture_news.xml"
+      - name: "동아일보 문화"
+        url: "https://rss.donga.com/culture.xml"
+      - name: "독서신문"
+        url: "https://www.readersnews.com/rss/allArticle.xml"
+      - name: "Guardian Books"
+        url: "https://www.theguardian.com/books/rss"
+      - name: "Guardian Film"
+        url: "https://www.theguardian.com/film/rss"
+      - name: "Guardian Stage"
+        url: "https://www.theguardian.com/stage/rss"
+      - name: "NYT Books"
+        url: "https://rss.nytimes.com/services/xml/rss/nyt/Books.xml"

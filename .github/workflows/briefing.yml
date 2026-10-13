@@ -1,17 +1,17 @@
-name: Daily + Weekly Briefing
+name: Daily Briefing
 
 on:
   schedule:
     # 매일 한국시간(KST, UTC+9) 오전 8:00 = 전날 UTC 23:00
-    # 한국시간 월요일(= UTC 일요일 23:00) 실행은 auto 모드에서 데일리+주간을 한 통으로 합쳐 보냅니다.
+    # 한국시간 월요일(= UTC 일요일 23:00) 실행은 메일 맨 위에 "이번 주 흐름"이 붙습니다.
     - cron: "0 23 * * *"
   workflow_dispatch:
     inputs:
-      mode:
-        description: "보낼 브리핑 종류"
+      weekly_trend:
+        description: "이번 주 흐름 (auto = 한국시간 월요일에만)"
         type: choice
-        options: [daily, weekly, both]
-        default: daily
+        options: [auto, "on", "off"]
+        default: auto
       dry_run:
         description: "발송하지 않고 미리보기(아티팩트)만 만들기"
         type: boolean
@@ -30,8 +30,10 @@ on:
         default: false
 
 env:
-  # 스케줄 실행은 auto(한국시간 월요일이면 both, 그 외 daily), 수동 실행은 선택한 값
-  MODE: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.mode || 'auto' }}
+  # 이번 주 흐름: 스케줄 실행은 auto(한국시간 월요일), 수동 실행은 선택한 값.
+  # 저장소 Variables에 WEEKLY_TREND=false를 넣으면 월요일에도 만들지 않습니다(기본 true).
+  TREND: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.weekly_trend || 'auto' }}
+  WEEKLY_TREND: ${{ vars.WEEKLY_TREND || 'true' }}
   DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.dry_run || 'false' }}
   # 수동 실행이면 입력값, 스케줄 실행이면 저장소 Variables의 TRANSLATE_TITLES / SUMMARIZE_ARTICLES / SUMMARIZE_HN (기본 false)
   TRANSLATE_TITLES: ${{ (github.event_name == 'workflow_dispatch' && github.event.inputs.translate_titles) || vars.TRANSLATE_TITLES || 'false' }}
@@ -42,7 +44,7 @@ jobs:
   briefing:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write   # 발송 기록(data/history)·주간 흐름(data/trends)을 저장소에 커밋
       id-token: write
     steps:
       - name: Checkout
@@ -56,24 +58,24 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Collect (${{ env.MODE }})
-        run: python -m src.collect --mode "$MODE"
+      - name: Collect
+        run: python -m src.collect --trend "$TREND"
 
-      - name: Prepare translation / summaries (optional)
+      - name: Prepare translation / summaries / weekly trend (optional)
         id: enrich
         run: python -m src.enrich
 
-      # 제목 번역·기사 요약·HN 댓글 요약을 Claude 한 번 호출로 처리 (Claude Pro 구독 사용, API 키 아님)
-      - name: Translate + summarize with Claude (optional, one call)
+      # 제목 번역·기사 요약·HN 댓글 요약·(월요일) 이번 주 흐름을 Claude 한 번 호출로 처리 (Claude Pro 구독 사용, API 키 아님)
+      - name: Translate + summarize (+ weekly trend) with Claude (one call)
         if: steps.enrich.outputs.needed == 'true'
         continue-on-error: true   # 실패해도 메일은 번역·요약 없이 그대로 발송
         uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          claude_args: '--model sonnet --max-turns 25 --allowedTools "Read,Write"'
+          claude_args: '--model sonnet --max-turns 40 --allowedTools "Read,Write"'
           prompt: |
-            data/enrich_prompt.md 파일을 Read로 읽고, 그 지시대로 data/enrich_input.json을 처리해서
-            결과를 data/enrich.json에 저장하라. 다른 파일은 수정하지 마라.
+            data/enrich_prompt.md 파일을 Read로 읽고 그 지시대로 작업하라.
+            지시문에 적힌 결과 파일 외에는 만들거나 수정하지 마라.
 
       - name: Build + send email (Secrets 없으면 자동으로 dry-run)
         env:
@@ -87,6 +89,25 @@ jobs:
             python -m src.send
           fi
 
+      # 발송 기록과 주간 흐름을 저장소에 남겨 다음 날(중복 방지)·다음 주(흐름 비교)로 이어지게 한다.
+      # 매일 커밋이 생기므로 60일 무활동으로 예약 실행이 꺼지는 일도 없다.
+      - name: Commit history
+        if: env.DRY_RUN != 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A data/history data/trends 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo "커밋할 기록 없음"
+            exit 0
+          fi
+          git commit -m "briefing history $(TZ=Asia/Seoul date +%Y-%m-%d)"
+          for i in 1 2 3; do
+            git pull --rebase origin "${GITHUB_REF_NAME}" && git push origin "HEAD:${GITHUB_REF_NAME}" && exit 0
+            sleep $((i * 5))
+          done
+          echo "기록 커밋 push 실패" && exit 1
+
       - name: Upload preview HTML
         if: always()
         uses: actions/upload-artifact@v4
@@ -95,6 +116,7 @@ jobs:
           path: |
             data/briefing.json
             data/enrich*.json
+            data/trend*.json
             data/preview.html
           if-no-files-found: ignore
           retention-days: 14
