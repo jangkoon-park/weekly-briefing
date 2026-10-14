@@ -346,7 +346,7 @@ def collect_hf_papers(category, hours_back, now_epoch):
     """HF Daily Papers API에서 기간 내 Daily Papers에 올라온 논문을 추천(upvotes) 많은 순으로 max_items개.
 
     Daily Papers는 날짜(UTC) 단위 목록이라, 그날의 절반 이상이 기간 안에 들어가는 날짜만 포함한다
-    (예: 매일 UTC 23:00 실행이면 '오늘(UTC)' 목록 하나). 날짜마다 API를 한 번씩 부른다.
+    (예: 매일 UTC 21:37 실행이면 '오늘(UTC)' 목록 하나). 날짜마다 API를 한 번씩 부른다.
     """
     cutoff_epoch = now_epoch - hours_back * 3600
     day = int((cutoff_epoch - 43200) // 86400) + 1   # day*86400 + 12h >= cutoff 인 첫 날짜

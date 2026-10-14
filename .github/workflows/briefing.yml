@@ -2,9 +2,11 @@ name: Daily Briefing
 
 on:
   schedule:
-    # 매일 한국시간(KST, UTC+9) 오전 8:00 = 전날 UTC 23:00
-    # 한국시간 월요일(= UTC 일요일 23:00) 실행은 메일 맨 위에 "이번 주 흐름"이 붙습니다.
-    - cron: "0 23 * * *"
+    # 매일 한국시간(KST, UTC+9) 오전 6:37 = 전날 UTC 21:37
+    # (GitHub 예약 실행은 정각에 몰려 크게 밀리므로, 일찍·정각이 아닌 분으로 잡음)
+    # 한국시간 월요일(= UTC 일요일 21:37) 실행은 메일 맨 위에 "이번 주 흐름"이 붙습니다.
+    # 요일 판단은 src/collect.py에서 한국시간 기준으로 합니다.
+    - cron: "37 21 * * *"
   workflow_dispatch:
     inputs:
       test_mail:
