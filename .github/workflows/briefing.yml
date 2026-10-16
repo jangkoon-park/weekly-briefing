@@ -25,15 +25,15 @@ on:
       translate_titles:
         description: "영어 제목을 한국어로 번역 (Claude Pro 구독 사용)"
         type: boolean
-        default: false
+        default: true
       summarize_articles:
         description: "기사별 쉬운 말 한 줄 요약 (Claude Pro 구독 사용)"
         type: boolean
-        default: false
+        default: true
       summarize_hn:
         description: "Hacker News 댓글 찬반 요약 (Claude Pro 구독 사용)"
         type: boolean
-        default: false
+        default: true
 
 # 발송 기록(data/history)·주간 흐름(data/trends)을 저장소에 커밋하므로 쓰기 권한 필요
 permissions:
