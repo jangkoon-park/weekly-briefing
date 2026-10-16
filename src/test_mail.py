@@ -47,7 +47,7 @@ def main():
         send_html_mail(subject, html, plain, creds)
     except smtplib.SMTPAuthenticationError as exc:
         logger.error(
-            "❌ 테스트 메일 발송 실패 (로그인 오류): GMAIL_USER와 GMAIL_APP_PASSWORD(16자리 앱 비밀번호)를 확인하세요. %s", exc
+            "❌ 테스트 메일 발송 실패 (로그인 오류): GMAIL_USER(보내는 주소)와 GMAIL_APP_PASSWORD(앱 비밀번호, 네이버는 계정 비밀번호 또는 애플리케이션 비밀번호)를 확인하세요. %s", exc
         )
         return 1
     except Exception as exc:  # noqa: BLE001 - 어떤 오류든 실패로 분명히 남긴다
