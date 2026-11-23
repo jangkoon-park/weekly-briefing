@@ -1,0 +1,1521 @@
+{
+ "areas": {
+  "outer": {
+   "kr": {
+    "text": "수능 부정행위 사태와 대법원장 탄핵 추진, 증시 급락이 한 주를 흔들었다.",
+    "links": [
+     {
+      "title": "교육부 장관 사퇴 “늦었지만 당연할 결정”",
+      "url": "http://www.hangyo.com/news/article.html?no=110160"
+     },
+     {
+      "title": "與, 조희대 탄핵 추진단 꾸려 소추준비 속도…민생 부각 여론전도",
+      "url": "https://www.yna.co.kr/view/AKR20261120073900001"
+     },
+     {
+      "title": "[마켓뷰] 'AI투매'에 급락 도미노…'검은월요일' 우려 커진 증시",
+      "url": "https://www.yna.co.kr/view/AKR20261123018900008"
+     }
+    ],
+    "change": "continue",
+    "basis": "세상·경제·산업·생활"
+   },
+   "world": {
+    "text": "미국 민주당 압승과 엔비디아 스캔들, COP31 합의 실패가 세계 뉴스였다.",
+    "links": [
+     {
+      "title": "Democrats win largest House majority since 1992 after flipping North Carolina seat",
+      "url": "https://www.bbc.co.uk/news/articles/c6vg29g7dlyno?at_medium=RSS&at_campaign=rss"
+     },
+     {
+      "title": "엔비디아 주가 14% 급락…2008년 금융위기 이후 최장 주간 하락",
+      "url": "https://www.cnbc.com/2026/11/20/nvidias-7-week-losing-streak-is-longest-since-2008-financial-crisis.html"
+     },
+     {
+      "title": "The good news out of Cop31? That most of the world’s governments said no to an agreement stripped of meaning | Bill Hare",
+      "url": "https://www.theguardian.com/environment/commentisfree/2026/nov/23/cop31-climate-summit-no-agreement"
+     }
+    ],
+    "change": "continue",
+    "basis": "세상·경제·산업·생활"
+   }
+  },
+  "techwork": {
+   "kr": {
+    "text": "개인정보 유출이 이어지는 가운데 공공·건설 현장에 AI 도입이 넓어졌다.",
+    "links": [
+     {
+      "title": "삼성증권, 고객 8,241명 개인정보 유출…VOC 첨부파일 외부 유출 확인",
+      "url": "https://www.dailysecu.com/news/articleView.html?idxno=209660"
+     },
+     {
+      "title": "[이슈] 한국부동산원, AI 에이전트 플랫폼 구축… AX 본격 추진",
+      "url": "http://www.ikld.kr/news/articleView.html?idxno=344317"
+     },
+     {
+      "title": "[어바웃 C] 삼성SDS 이준희 유임…'AI·클라우드' 드라이브 잇는다",
+      "url": "https://www.bloter.net/news/articleView.html?idxno=679224"
+     }
+    ],
+    "change": "continue",
+    "basis": "AI·기술·일"
+   },
+   "world": {
+    "text": "AI 업계는 상장과 새 모델로 달렸고 건설 현장·채용에도 AI가 스며들었다.",
+    "links": [
+     {
+      "title": "앤트로픽은 안전을 최우선에 둘 여유가 있을까?",
+      "url": "https://www.theverge.com/podcast/1038701/anthropic-ipo-ai-safety-openai-nvidia-structure"
+     },
+     {
+      "title": "GPT-6.2 아스트라와 솔 공개",
+      "url": "https://openai.com/index/introducing-gpt-6-2-astra-sol"
+     },
+     {
+      "title": "매스텍, 재생에너지 현장에 피지컬 AI 도입 협력",
+      "url": "https://www.constructiondive.com/news/mastec-partners-gritt-physical-ai-renewables-projects/875015/"
+     }
+    ],
+    "change": "continue",
+    "basis": "AI·기술·일"
+   }
+  },
+  "mind": {
+   "kr": {
+    "text": "문학·미술 비평이 장애예술과 수묵 등으로 넓어지고 뇌·마음 연구가 이어졌다.",
+    "links": [
+     {
+      "title": "[AK초점] '2026 장애예술 비평 포럼', 장애예술 복지를 넘어 창작의 주체로",
+      "url": "https://www.artkoreatv.com/news/articleView.html?idxno=105754"
+     },
+     {
+      "title": "‘김수영 문학상’에 송혜근 시인 ‘초희의 구체시학’외 55편 선정",
+      "url": "https://www.readersnews.com/news/articleView.html?idxno=200874"
+     },
+     {
+      "title": "출산 이후 기억력 저하, 뇌와 수면 변화와는 어떤 관련이 있을까?",
+      "url": "http://www.psychiatricnews.net/news/articleView.html?idxno=36815"
+     }
+    ],
+    "change": "continue",
+    "basis": "사고·지성·문학·미술"
+   },
+   "world": {
+    "text": "미술 시장 거래와 정치 비판 에세이, AI와 뇌를 묻는 글이 이어졌다.",
+    "links": [
+     {
+      "title": "휘트니 미술관은 왜 데 쿠닝 그림을 파나?",
+      "url": "https://hyperallergic.com/why-is-the-whitney-museum-selling-a-de-kooning-painting/"
+     },
+     {
+      "title": "투쟁은 시작됐다",
+      "url": "https://www.nybooks.com/online/2026/11/18/the-struggle-has-begun-midterms-trump/"
+     },
+     {
+      "title": "AI가 만든 얼굴을 볼 때 우리 뇌에서는 무슨 일이 일어날까",
+      "url": "https://nautil.us/what-goes-on-in-our-brains-when-we-see-an-ai-face-1286763/"
+     }
+    ],
+    "change": "continue",
+    "basis": "사고·지성·문학·미술"
+   }
+  }
+ },
+ "groups": {
+  "thought": {
+   "kr": {
+    "text": "AI 칩 규제와 유전자 치료 기대가 이어지고 뇌·마음 건강 연구도 꾸준했다.",
+    "links": [
+     {
+      "title": "미국, 중국의 해외 GPU 우회 이용 차단…새 수출 규제 발표",
+      "url": "https://www.aitimes.com/news/articleView.html?idxno=217467"
+     },
+     {
+      "title": "세계 첫 '체내 유전자 가위' 치료제 나오나···美 기업 FDA 승인 '코앞'",
+      "url": "http://www.hellodd.com/news/articleView.html?idxno=113889"
+     },
+     {
+      "title": "출산 이후 기억력 저하, 뇌와 수면 변화와는 어떤 관련이 있을까?",
+      "url": "http://www.psychiatricnews.net/news/articleView.html?idxno=36815"
+     }
+    ],
+    "change": "continue"
+   },
+   "world": {
+    "text": "AI와 뇌 연구, 우주 탐사 소식이 눈에 띄었다.",
+    "links": [
+     {
+      "title": "AI가 만든 얼굴을 볼 때 우리 뇌에서는 무슨 일이 일어날까",
+      "url": "https://nautil.us/what-goes-on-in-our-brains-when-we-see-an-ai-face-1286763/"
+     },
+     {
+      "title": "보이저 1호, 지구에서 '1광일' 거리에 처음 도달한다",
+      "url": "https://www.nature.com/articles/d41586-026-03672-1"
+     },
+     {
+      "title": "새로운 '노화의 중심 원리'가 보여주는 늙어감의 복잡함",
+      "url": "https://nautil.us/new-central-dogma-of-aging-highlights-the-complexity-of-getting-older-1286682/"
+     }
+    ],
+    "change": "continue"
+   }
+  },
+  "literature": {
+   "kr": {
+    "text": "문학상 소식과 인문 신간이 중심이었다.",
+    "links": [
+     {
+      "title": "‘김수영 문학상’에 송혜근 시인 ‘초희의 구체시학’외 55편 선정",
+      "url": "https://www.readersnews.com/news/articleView.html?idxno=200874"
+     },
+     {
+      "title": "[신간] 『식탁 위의 인문학』",
+      "url": "https://www.readersnews.com/news/articleView.html?idxno=200883"
+     },
+     {
+      "title": "[신간] 『소설로 만나는 한국 현대사』",
+      "url": "https://www.readersnews.com/news/articleView.html?idxno=200895"
+     }
+    ],
+    "change": "continue"
+   },
+   "world": {
+    "text": "정치 비판 에세이와 작가 평론이 늘었다.",
+    "links": [
+     {
+      "title": "투쟁은 시작됐다",
+      "url": "https://www.nybooks.com/online/2026/11/18/the-struggle-has-begun-midterms-trump/"
+     },
+     {
+      "title": "헬렌 가너, 2027년 하다다상 수상자로 선정",
+      "url": "https://www.theparisreview.org/blog/2026/11/17/helen-garner-will-receive-our-2027-hadada-award/"
+     },
+     {
+      "title": "Christopher Clark: Shouldered Umbrellas",
+      "url": "https://www.lrb.co.uk/the-paper/v48/n21/christopher-clark/shouldered-umbrellas"
+     }
+    ],
+    "change": "continue"
+   }
+  },
+  "art": {
+   "kr": {
+    "text": "새 단장 미술관 재개관과 개인전이 이어졌고 비평은 장애예술로 넓어졌다.",
+    "links": [
+     {
+      "title": "예술의전당 한가람미술관, 20여 년 만에 새 단장…내년 1월 재개관",
+      "url": "https://www.sctoday.co.kr/news/articleView.html?idxno=49061"
+     },
+     {
+      "title": "[AK초점] '2026 장애예술 비평 포럼', 장애예술 복지를 넘어 창작의 주체로",
+      "url": "https://www.artkoreatv.com/news/articleView.html?idxno=105754"
+     },
+     {
+      "title": "창원조각비엔날레 '공명장' 폐막…누적 관람객 11만명",
+      "url": "https://www.yna.co.kr/view/AKR20261118085200052"
+     }
+    ],
+    "change": "continue"
+   },
+   "world": {
+    "text": "미술 시장 거래와 기관 지원, 카메라·시각예술 소식이 이어졌다.",
+    "links": [
+     {
+      "title": "휘트니 미술관은 왜 데 쿠닝 그림을 파나?",
+      "url": "https://hyperallergic.com/why-is-the-whitney-museum-selling-a-de-kooning-painting/"
+     },
+     {
+      "title": "희귀한 힐마 아프 클린트 작품, 경매에 나온다",
+      "url": "https://hyperallergic.com/rare-hilma-af-klint-work-heads-to-auction/"
+     },
+     {
+      "title": "루믹스는 소니를 이길 영상 실력이 있는데 왜 도전하지 않을까?",
+      "url": "https://petapixel.com/2026/11/18/lumix-has-the-video-chops-to-beat-sony-so-why-wont-it-even-try/"
+     }
+    ],
+    "change": "continue"
+   }
+  },
+  "tech": {
+   "kr": {
+    "text": "개인정보 유출이 계속되고 엔비디아 후임 찾기와 AI 도구 출시가 이어졌다.",
+    "links": [
+     {
+      "title": "삼성증권, 고객 8,241명 개인정보 유출…VOC 첨부파일 외부 유출 확인",
+      "url": "https://www.dailysecu.com/news/articleView.html?idxno=209660"
+     },
+     {
+      "title": "엔비디아 이사회, 젠슨 황 CEO 복귀 거부...후임자 물색 본격화",
+      "url": "https://www.aitimes.com/news/articleView.html?idxno=217517"
+     },
+     {
+      "title": "OpenCode Browse - 코딩 에이전트가 사용자의 실제 브라우저를 쓰게 하는 도구",
+      "url": "https://news.hada.io/topic?id=37333&utm_source=geeknews&utm_medium=rss&utm_campaign=news"
+     }
+    ],
+    "change": "continue"
+   },
+   "world": {
+    "text": "앤트로픽 상장과 새 AI 모델 공개가 이어지고 AI를 이용한 해킹도 나왔다.",
+    "links": [
+     {
+      "title": "앤트로픽은 안전을 최우선에 둘 여유가 있을까?",
+      "url": "https://www.theverge.com/podcast/1038701/anthropic-ipo-ai-safety-openai-nvidia-structure"
+     },
+     {
+      "title": "GPT-6.2 아스트라와 솔 공개",
+      "url": "https://openai.com/index/introducing-gpt-6-2-astra-sol"
+     },
+     {
+      "title": "해커들, 자율 AI 도구 '케른'으로 미공개 취약점 찾아 서버 장악",
+      "url": "https://www.bleepingcomputer.com/news/security/hackers-use-autonomous-ai-tool-cairn-to-find-zero-day-take-over-server/"
+     }
+    ],
+    "change": "continue"
+   }
+  },
+  "work": {
+   "kr": {
+    "text": "공공·건설 분야에 AI 도입이 늘고 IT서비스 업계는 인사 소식이 중심이었다.",
+    "links": [
+     {
+      "title": "[이슈] 한국부동산원, AI 에이전트 플랫폼 구축… AX 본격 추진",
+      "url": "http://www.ikld.kr/news/articleView.html?idxno=344317"
+     },
+     {
+      "title": "[어바웃 C] 삼성SDS 이준희 유임…'AI·클라우드' 드라이브 잇는다",
+      "url": "https://www.bloter.net/news/articleView.html?idxno=679224"
+     },
+     {
+      "title": "SK에코플랜트, 설계특화 AI 플랫폼 'AXen' 도입… 전사적 AI전환 박차",
+      "url": "http://www.ikld.kr/news/articleView.html?idxno=344653"
+     }
+    ],
+    "change": "continue"
+   },
+   "world": {
+    "text": "건설 현장 AI와 데이터센터 규제, 프리랜서 세금 이야기가 나왔다.",
+    "links": [
+     {
+      "title": "펜실베이니아 데이터센터 건설: 달라지는 규제 환경",
+      "url": "https://www.enr.com/blogs/48-east-construction-views/post/64352-data-center-construction-in-pennsylvania-a-changing-regulatory-landscape"
+     },
+     {
+      "title": "매스텍, 재생에너지 현장에 피지컬 AI 도입 협력",
+      "url": "https://www.constructiondive.com/news/mastec-partners-gritt-physical-ai-renewables-projects/875015/"
+     },
+     {
+      "title": "프리랜서의 연말 세금 전략: 12월 31일 전에 자영업 세금 줄이는 결정들",
+      "url": "https://blog.freelancersunion.org/2026/11/16/the-freelancers-year-end-tax-playbook-strategic-decisions-to-slash-your-self-employment-tax-bill-before-dec-31/"
+     }
+    ],
+    "change": "continue"
+   }
+  },
+  "world": {
+   "kr": {
+    "text": "수능 AI 부정행위 대책과 대법원장 탄핵 추진이 정국과 사설을 채웠다.",
+    "links": [
+     {
+      "title": "당정, '올 수능부터 AI커닝시 10년 응시제한' 소급 입법 추진(종합)",
+      "url": "https://www.yna.co.kr/view/AKR20261118066952001"
+     },
+     {
+      "title": "與, 조희대 탄핵 추진단 꾸려 소추준비 속도…민생 부각 여론전도",
+      "url": "https://www.yna.co.kr/view/AKR20261120073900001"
+     },
+     {
+      "title": "[사설]조 대법원장 탄핵은 안 된다… 이 대통령이 제동 걸어야",
+      "url": "https://www.donga.com/news/Opinion/article/all/20261122/135070211/2"
+     }
+    ],
+    "change": "continue"
+   },
+   "world": {
+    "text": "미국 민주당 하원 압승과 미얀마 판결, 엔비디아 스캔들 논평이 이어졌다.",
+    "links": [
+     {
+      "title": "Democrats win largest House majority since 1992 after flipping North Carolina seat",
+      "url": "https://www.bbc.co.uk/news/articles/c6vg29g7dlyno?at_medium=RSS&at_campaign=rss"
+     },
+     {
+      "title": "유엔 최고 법원, 미얀마가 로힝야족에 집단학살 저질렀다고 판결",
+      "url": "https://www.bbc.co.uk/news/articles/c804wzp20ddvo?at_medium=RSS&at_campaign=rss"
+     },
+     {
+      "title": "엔비디아 스캔들의 핵심에 있는 분노스러운 위선",
+      "url": "https://www.nytimes.com/2026/11/16/opinion/nvidia-trump-jensen-huang-lutnick.html"
+     }
+    ],
+    "change": "continue"
+   }
+  },
+  "economy": {
+   "kr": {
+    "text": "AI 투매 우려로 증시가 급락했고 기업 인사와 노동 이슈가 이어졌다.",
+    "links": [
+     {
+      "title": "[마켓뷰] 'AI투매'에 급락 도미노…'검은월요일' 우려 커진 증시",
+      "url": "https://www.yna.co.kr/view/AKR20261123018900008"
+     },
+     {
+      "title": "삼성전자 사장 승진 모두 반도체…기존 투톱에 성과·기술 방점",
+      "url": "https://www.yna.co.kr/view/AKR20261120060900003"
+     },
+     {
+      "title": "삼성바이오 노조, 한국노총 가입…조합원 88% 찬성",
+      "url": "https://www.yna.co.kr/view/AKR20261118026200017"
+     }
+    ],
+    "change": "continue"
+   },
+   "world": {
+    "text": "엔비디아 주가 급락과 AI 이력서 탓의 채용 혼란이 두드러졌다.",
+    "links": [
+     {
+      "title": "엔비디아 주가 14% 급락…2008년 금융위기 이후 최장 주간 하락",
+      "url": "https://www.cnbc.com/2026/11/20/nvidias-7-week-losing-streak-is-longest-since-2008-financial-crisis.html"
+     },
+     {
+      "title": "구직자의 AI 사용 탓에 적합한 인재 가려내기 어려워졌다는 보고서",
+      "url": "https://www.hrdive.com/news/job-candidates-ai-usage-is-obscuring-their-viability-report-finds/875232/"
+     },
+     {
+      "title": "미 상무부, 중국 기업에 AI 칩 87만 9천 개 이상 판매 승인",
+      "url": "https://www.cnbc.com/2026/11/19/nvidia-amd-china-chip-sales-congress.html"
+     }
+    ],
+    "change": "continue"
+   }
+  },
+  "life": {
+   "kr": {
+    "text": "항생제 교육과 탄소시장 문제, 수능 사태, 방일 여행 증가가 나왔다.",
+    "links": [
+     {
+      "title": "\"항생제는 감기약이 아녜요\"…초등학교서 시작된 내성 예방 교육",
+      "url": "https://www.yna.co.kr/view/AKR20261120164000530"
+     },
+     {
+      "title": "\"사 오는 감축실적 절반이 불량\"...탄소시장 넓히는 정부, 검증은 뒷전",
+      "url": "https://www.newspenguin.com/news/articleView.html?idxno=22453"
+     },
+     {
+      "title": "교육부 장관 사퇴 “늦었지만 당연할 결정”",
+      "url": "http://www.hangyo.com/news/article.html?no=110160"
+     }
+    ],
+    "change": "continue"
+   },
+   "world": {
+    "text": "COP31 합의 실패와 AI 유방암 검진 시험, 항공 전산 장애가 전해졌다.",
+    "links": [
+     {
+      "title": "The good news out of Cop31? That most of the world’s governments said no to an agreement stripped of meaning | Bill Hare",
+      "url": "https://www.theguardian.com/environment/commentisfree/2026/nov/23/cop31-climate-summit-no-agreement"
+     },
+     {
+      "title": "Can AI spot breast cancer earlier? NHS launches world's largest trial to find out",
+      "url": "https://www.bbc.co.uk/news/articles/cmpdwnw3nvzjo?at_medium=RSS&at_campaign=rss"
+     },
+     {
+      "title": "유나이티드항공, 전국 운항 중단 일으킨 기술 문제 해결",
+      "url": "https://skift.com/2026/11/16/united-airlines-resolves-tech-issue-that-caused-systemwide-outage/"
+     }
+    ],
+    "change": "continue"
+   }
+  }
+ },
+ "sections": {
+  "ideas": {
+   "kr": null,
+   "world": {
+    "text": "KKK 집회소 보존, 말과 문명, 테헤란 여성 복장 등 역사와 사회를 되짚는 에세이가 이어졌다.",
+    "links": [
+     {
+      "title": "마지막 클라번: 미국에 남은 KKK 집회소를 어떻게 보존할까",
+      "url": "https://aeon.co/videos/how-a-texas-community-chose-to-transform-a-former-klan-headquarters"
+     },
+     {
+      "title": "말이 국가를 만들었다",
+      "url": "https://aeon.co/essays/the-origins-of-the-state-are-not-agrarian-but-pastoralist"
+     },
+     {
+      "title": "런웨이와 단속: 테헤란 여성들의 '존재의 예술'",
+      "url": "https://aeon.co/essays/its-not-political-the-young-fashionistas-of-tehran"
+     }
+    ],
+    "change": "continue"
+   }
+  },
+  "cognition": {
+   "kr": {
+    "text": "출산 뒤 기억력, ADHD와 수면 등 뇌·마음 건강 연구가 소개됐다.",
+    "links": [
+     {
+      "title": "출산 이후 기억력 저하, 뇌와 수면 변화와는 어떤 관련이 있을까?",
+      "url": "http://www.psychiatricnews.net/news/articleView.html?idxno=36815"
+     },
+     {
+      "title": "ADHD 성인, 행동 중독 위험 높아…충동성과 강박성과 연관",
+      "url": "http://www.psychiatricnews.net/news/articleView.html?idxno=36798"
+     },
+     {
+      "title": "부모의 수면과 ADHD 증상이 아동 수면 문제에 직접적 영향",
+      "url": "http://www.psychiatricnews.net/news/articleView.html?idxno=36796"
+     }
+    ],
+    "change": "continue"
+   },
+   "world": {
+    "text": "AI 얼굴을 볼 때의 뇌 반응, 노화·중독 연구 등 뇌와 몸 연구가 나왔다.",
+    "links": [
+     {
+      "title": "AI가 만든 얼굴을 볼 때 우리 뇌에서는 무슨 일이 일어날까",
+      "url": "https://nautil.us/what-goes-on-in-our-brains-when-we-see-an-ai-face-1286763/"
+     },
+     {
+      "title": "새로운 '노화의 중심 원리'가 보여주는 늙어감의 복잡함",
+      "url": "https://nautil.us/new-central-dogma-of-aging-highlights-the-complexity-of-getting-older-1286682/"
+     },
+     {
+      "title": "코카인 중독 습관이 생길 때 뇌 세포 네트워크는 어떻게 늘고 줄어드는가",
+      "url": "https://www.psypost.org/how-brain-cell-networks-expand-and-shrink-as-cocaine-habits-form/"
+     }
+    ],
+    "change": "continue"
+   }
+  },
+  "ai_alignment": {
+   "kr": {
+    "text": "미국의 중국 AI 칩 규제가 중국 기업 계약 취소와 사업 차질로 이어졌다.",
+    "links": [
+     {
+      "title": "미국, 중국의 해외 GPU 우회 이용 차단…새 수출 규제 발표",
+      "url": "https://www.aitimes.com/news/articleView.html?idxno=217467"
+     },
+     {
+      "title": "문샷 AI, 미국 수출 규제에 2000억 규모 엔비디아 칩 임대 계약 취소",
+      "url": "https://www.aitimes.com/news/articleView.html?idxno=217613"
+     },
+     {
+      "title": "미국 AI 칩 규제에 중국 기업들 잇단 타격…WSJ \"엔비디아 금단 현상\"",
+      "url": "https://www.aitimes.com/news/articleView.html?idxno=217660"
+     }
+    ],
+    "change": "continue"
+   },
+   "world": {
+    "text": "AI 예측 이론을 다룬 연구 소개 글이 한 건 나왔다.",
+    "links": [
+     {
+      "title": "반사 오라클을 이용한 솔로모노프 귀납",
+      "url": "https://www.alignmentforum.org/posts/nvrFYAwciyyj9T5ir/solomonoff-induction-with-reflective-oracles"
+     }
+    ],
+    "change": "down"
+   }
+  },
+  "science": {
+   "kr": {
+    "text": "몸속 유전자를 고치는 크리스퍼 치료제가 FDA 승인을 앞뒀다는 소식이 나왔다.",
+    "links": [
+     {
+      "title": "세계 첫 '체내 유전자 가위' 치료제 나오나···美 기업 FDA 승인 '코앞'",
+      "url": "http://www.hellodd.com/news/articleView.html?idxno=113889"
+     },
+     {
+      "title": "[조간브리핑]몸속에서 유전자 고치는 주사···희귀 유전병 치료 판도 바뀌나",
+      "url": "http://www.hellodd.com/news/articleView.html?idxno=113915"
+     }
+    ],
+    "change": "new"
+   },
+   "world": {
+    "text": "보이저 1호, 수성 도착 탐사선, 화성 탐사차 소식이 이어졌다.",
+    "links": [
+     {
+      "title": "보이저 1호, 지구에서 '1광일' 거리에 처음 도달한다",
+      "url": "https://www.nature.com/articles/d41586-026-03672-1"
+     },
+     {
+      "title": "베피콜롬보, 8년 여정 끝에 수성 도착",
+      "url": "https://www.nature.com/articles/d41586-026-03803-8"
+     },
+     {
+      "title": "퍼서비어런스 소식: '이두비'의 유령 같은 바위, 먼 옛날 물이 있던 흔적",
+      "url": "https://science.nasa.gov/blog/perseverance-update-the-ghostly-rocks-of-idubi-bright-remnants-of-aqueous-systems-from-long-ago/"
+     }
+    ],
+    "change": "continue"
+   }
+  },
+  "literature": {
+   "kr": {
+    "text": "김수영 문학상 선정과 인문·청소년 신간 소개가 나왔다.",
+    "links": [
+     {
+      "title": "‘김수영 문학상’에 송혜근 시인 ‘초희의 구체시학’외 55편 선정",
+      "url": "https://www.readersnews.com/news/articleView.html?idxno=200874"
+     },
+     {
+      "title": "[신간] 『식탁 위의 인문학』",
+      "url": "https://www.readersnews.com/news/articleView.html?idxno=200883"
+     },
+     {
+      "title": "[신간] 『소설로 만나는 한국 현대사』",
+      "url": "https://www.readersnews.com/news/articleView.html?idxno=200895"
+     }
+    ],
+    "change": "continue"
+   },
+   "world": {
+    "text": "미국 정치를 비판하는 글과 작가 평론, 하다다상 소식이 이어졌다.",
+    "links": [
+     {
+      "title": "투쟁은 시작됐다",
+      "url": "https://www.nybooks.com/online/2026/11/18/the-struggle-has-begun-midterms-trump/"
+     },
+     {
+      "title": "헬렌 가너, 2027년 하다다상 수상자로 선정",
+      "url": "https://www.theparisreview.org/blog/2026/11/17/helen-garner-will-receive-our-2027-hadada-award/"
+     },
+     {
+      "title": "Christopher Clark: Shouldered Umbrellas",
+      "url": "https://www.lrb.co.uk/the-paper/v48/n21/christopher-clark/shouldered-umbrellas"
+     }
+    ],
+    "change": "continue"
+   }
+  },
+  "art_criticism": {
+   "kr": {
+    "text": "영국 조각, 수묵, 장애예술 등을 짚는 국내 미술 비평이 이어졌다.",
+    "links": [
+     {
+      "title": "[김종근 미술평론] '영국 현대조각의 한 세기'",
+      "url": "https://www.artkoreatv.com/news/articleView.html?idxno=105633"
+     },
+     {
+      "title": "[박수억 수묵평론] 12. 농담, 하나의 먹에서 태어나는 깊이",
+      "url": "https://www.artkoreatv.com/news/articleView.html?idxno=105781"
+     },
+     {
+      "title": "[AK초점] '2026 장애예술 비평 포럼', 장애예술 복지를 넘어 창작의 주체로",
+      "url": "https://www.artkoreatv.com/news/articleView.html?idxno=105754"
+     }
+    ],
+    "change": "continue"
+   },
+   "world": {
+    "text": "데 쿠닝 그림 매각, 경매 기록, 지원금 등 미술 시장·기관 소식이 나왔다.",
+    "links": [
+     {
+      "title": "휘트니 미술관은 왜 데 쿠닝 그림을 파나?",
+      "url": "https://hyperallergic.com/why-is-the-whitney-museum-selling-a-de-kooning-painting/"
+     },
+     {
+      "title": "희귀한 힐마 아프 클린트 작품, 경매에 나온다",
+      "url": "https://hyperallergic.com/rare-hilma-af-klint-work-heads-to-auction/"
+     },
+     {
+      "title": "트렐리스 아트 펀드, 2026년 지원 작가 발표",
+      "url": "https://www.artforum.com/news/trellis-art-fund-announces-2026-cohort-1234763741/"
+     }
+    ],
+    "change": "continue"
+   }
+  },
+  "art": {
+   "kr": {
+    "text": "개인전과 새 단장 미술관 재개관, 비엔날레 폐막 소식이 이어졌다.",
+    "links": [
+     {
+      "title": "예술의전당 한가람미술관, 20여 년 만에 새 단장…내년 1월 재개관",
+      "url": "https://www.sctoday.co.kr/news/articleView.html?idxno=49061"
+     },
+     {
+      "title": "창원조각비엔날레 '공명장' 폐막…누적 관람객 11만명",
+      "url": "https://www.yna.co.kr/view/AKR20261118085200052"
+     },
+     {
+      "title": "[현장스케치] 서울미술관, 임직순 작고 30주기 특별전 《내면의 세계를 그리고 싶다》",
+      "url": "https://www.sctoday.co.kr/news/articleView.html?idxno=49088"
+     }
+    ],
+    "change": "continue"
+   },
+   "world": null
+  },
+  "design_arch": {
+   "kr": {
+    "text": "건축 감리비 제도, 건축사협회 가입 의무화 등 건축 제도 논의가 이어졌다.",
+    "links": [
+     {
+      "title": "[사설] 감리 독립성, 감리비 예치제로 더욱 확고히 해야",
+      "url": "http://www.ancnews.kr/news/articleView.html?idxno=21439"
+     },
+     {
+      "title": "‘건축사사무소 개설 전 건축사협회 가입’…윤리규정·자격대여 사각지대 메운다",
+      "url": "http://www.ancnews.kr/news/articleView.html?idxno=21451"
+     },
+     {
+      "title": "대한건축사협회·한국공인중개사협회, 건축·부동산 법·제도 개선 상호 협력 위한 업무협약",
+      "url": "http://www.ancnews.kr/news/articleView.html?idxno=21446"
+     }
+    ],
+    "change": "continue"
+   },
+   "world": {
+    "text": "공공주택 철거 반대, 모로코 왕립극장 완공 등 건축 소식이 나왔다.",
+    "links": [
+     {
+      "title": "\"완벽하다는 말은 아니다\": 멜버른 공공주택 단지를 지키려는 건축가",
+      "url": "https://www.dezeen.com/2026/11/17/office-simon-robinson-public-housing-melbourne-australia/"
+     },
+     {
+      "title": "ZHA, 모로코 라바트 왕립극장 완공",
+      "url": "https://www.dezeen.com/2026/11/21/zha-theatre-royal-de-rabat-morroco/"
+     },
+     {
+      "title": "아틀리에 만페르디니, 디지털 오류 무늬로 버지니아 변전소 외관 설계",
+      "url": "https://www.dezeen.com/2026/11/20/atelier-manferdini-virginia-power-station/"
+     }
+    ],
+    "change": "continue"
+   }
+  },
+  "photo_video": {
+   "kr": null,
+   "world": {
+    "text": "카메라 업계 소식과 AI 보정 시험, 흑백사진 수상작이 소개됐다.",
+    "links": [
+     {
+      "title": "루믹스는 소니를 이길 영상 실력이 있는데 왜 도전하지 않을까?",
+      "url": "https://petapixel.com/2026/11/18/lumix-has-the-video-chops-to-beat-sony-so-why-wont-it-even-try/"
+     },
+     {
+      "title": "인물 사진가가 AI 보정에 대한 흔한 오해 6가지를 시험해 봤다",
+      "url": "https://petapixel.com/2026/11/17/a-portrait-photographer-puts-6-common-ai-retouching-myths-to-the-test/"
+     },
+     {
+      "title": "2026 흑백사진 어워드 수상작 25점 공개",
+      "url": "https://petapixel.com/2026/11/21/all-25-beautiful-bw-winners-from-the-black-and-white-photo-awards-2026/"
+     }
+    ],
+    "change": "continue"
+   }
+  },
+  "visual_culture": {
+   "kr": null,
+   "world": {
+    "text": "애니메이션과 설치·사진 작가 소개, 바스키아 다큐가 눈에 띄었다.",
+    "links": [
+     {
+      "title": "손글씨로 한 사람의 삶을 따라가는 애니메이션 '페이퍼 트레일'",
+      "url": "https://www.thisiscolossal.com/2026/11/paper-trail-animal-don-hertzfeldt/"
+     },
+     {
+      "title": "바스키아 새 다큐멘터리, 작품 뒤의 예술가를 조명",
+      "url": "https://www.thisiscolossal.com/2026/11/jean-michel-basquiat-authorized-documentary-netflix/"
+     },
+     {
+      "title": "요시토모 나라의 큰 눈 인물들, 뉴욕으로 돌아오다",
+      "url": "https://www.thisiscolossal.com/2026/11/yoshitomo-nara-new-york/"
+     }
+    ],
+    "change": "continue"
+   }
+  },
+  "ai_industry": {
+   "kr": {
+    "text": "엔비디아가 젠슨 황 복귀를 거부하고 후임을 찾기 시작했고 AI 앱 개편이 이어졌다.",
+    "links": [
+     {
+      "title": "엔비디아 이사회, 젠슨 황 CEO 복귀 거부...후임자 물색 본격화",
+      "url": "https://www.aitimes.com/news/articleView.html?idxno=217517"
+     },
+     {
+      "title": "트럼프 \"젠슨 황에 두 번째 기회 줘야\"…CEO 복귀 재촉구",
+      "url": "https://www.aitimes.com/news/articleView.html?idxno=217646"
+     },
+     {
+      "title": "챗GPT·클로드, 모바일 앱 나란히 개편…AI 에이전트 기능 전면에",
+      "url": "https://www.aitimes.com/news/articleView.html?idxno=217654"
+     }
+    ],
+    "change": "continue"
+   },
+   "world": {
+    "text": "앤트로픽 상장과 오픈AI 새 모델 공개, 리만 가설 증명 주장이 나왔다.",
+    "links": [
+     {
+      "title": "앤트로픽은 안전을 최우선에 둘 여유가 있을까?",
+      "url": "https://www.theverge.com/podcast/1038701/anthropic-ipo-ai-safety-openai-nvidia-structure"
+     },
+     {
+      "title": "GPT-6.2 아스트라와 솔 공개",
+      "url": "https://openai.com/index/introducing-gpt-6-2-astra-sol"
+     },
+     {
+      "title": "앤트로픽 수학자, 클로드로 밀레니엄 난제 풀었다고 주장",
+      "url": "https://www.theverge.com/ai-artificial-intelligence/1010051/anthropic-riemann-hypothesis-millennium-prize-problem"
+     }
+    ],
+    "change": "continue"
+   }
+  },
+  "ai_practice": {
+   "kr": {
+    "text": "AI 코딩 도우미를 돕는 도구와 에이전트 기능이 잇따랐고 AI 통제 소송도 제기됐다.",
+    "links": [
+     {
+      "title": "OpenCode Browse - 코딩 에이전트가 사용자의 실제 브라우저를 쓰게 하는 도구",
+      "url": "https://news.hada.io/topic?id=37333&utm_source=geeknews&utm_medium=rss&utm_campaign=news"
+     },
+     {
+      "title": "퍼플렉시티, AI 에이전트 16개가 협업·상호 검증하는 기능 출시",
+      "url": "https://www.aitimes.com/news/articleView.html?idxno=217543"
+     },
+     {
+      "title": "캘리포니아주, 오픈AI 상대 소송...\"AI 에이전트 통제 실패 80건 넘어\"",
+      "url": "https://www.aitimes.com/news/articleView.html?idxno=217476"
+     }
+    ],
+    "change": "continue"
+   },
+   "world": {
+    "text": "AWS가 AI 에이전트 결제·기억·관리 기능을 잇달아 내놓았다.",
+    "links": [
+     {
+      "title": "아마존 베드록 에이전트코어 결제로 AI가 AWS 마켓플레이스 상품을 직접 결제",
+      "url": "https://aws.amazon.com/blogs/machine-learning/enable-ai-agents-to-pay-for-aws-marketplace-x402-products-with-amazon-bedrock-agentcore-payments/"
+     },
+     {
+      "title": "아마존 베드록 관리형 지식 기반으로 기억하는 AI 비서 만들기",
+      "url": "https://aws.amazon.com/blogs/machine-learning/build-memory-aware-ai-agents-with-agentic-retrieve-on-amazon-bedrock-managed-knowledge-base/"
+     },
+     {
+      "title": "AWS 퀵의 새 기능: 더 강력해진 업무 흐름, 새 웹 화면, 함께 일하는 에이전트",
+      "url": "https://aws.amazon.com/blogs/machine-learning/new-in-aws-quick-more-capable-flows-an-updated-web-experience-and-agents-that-work-together/"
+     }
+    ],
+    "change": "continue"
+   }
+  },
+  "hacker_news": {
+   "kr": null,
+   "world": {
+    "text": "앤트로픽 상장과 자바·엔진엑스 보안 결함, 애플 서비스 장애가 화제였다.",
+    "links": [
+     {
+      "title": "앤트로픽의 나스닥 상장",
+      "url": "https://www.reuters.com/business/finance/anthropics-historic-debut-put-ais-promise-peril-wall-st-test-2026-11-19/"
+     },
+     {
+      "title": "엔진엑스(Nginx)에서 로그인 없이 원격 코드 실행이 가능한 보안 결함",
+      "url": "https://www.wiz.io/blog/nginx-http2-rce-vulnerabilities"
+     },
+     {
+      "title": "애플 서비스 장애",
+      "url": "https://developer.apple.com/system-status/"
+     }
+    ],
+    "change": "continue"
+   }
+  },
+  "ml_papers": {
+   "kr": null,
+   "world": {
+    "text": "로봇·영상 생성·화웨이 칩 기반 AI 모델 논문이 이어졌다.",
+    "links": [
+     {
+      "title": "에이전트형 로보틱스 구상: 로봇 시스템의 새 시대",
+      "url": "https://huggingface.co/papers/2611.18359"
+     },
+     {
+      "title": "텔레챗에서 싱4로: 국산 칩과 프레임워크로 만든 최첨단 AI 모델",
+      "url": "https://huggingface.co/papers/2611.22115"
+     },
+     {
+      "title": "ALIVE: 스트리밍 영상 모델을 대화형으로",
+      "url": "https://huggingface.co/papers/2611.21366"
+     }
+    ],
+    "change": "continue"
+   }
+  },
+  "data_eng": {
+   "kr": null,
+   "world": {
+    "text": "데이터브릭스·스노우플레이크·아마존 데이터 처리 최적화 글이 나왔다.",
+    "links": [
+     {
+      "title": "데이터브릭스 클러스터 생성 한도를 7.5배 높인 방법",
+      "url": "https://www.databricks.com/blog/how-we-raised-databricks-cluster-rate-limits-75"
+     },
+     {
+      "title": "AI 함수 최적화: 더 낮은 비용으로 더 높은 품질",
+      "url": "https://www.snowflake.com/content/snowflake-site/global/en/blog/ai-functions-optimization"
+     },
+     {
+      "title": "클라비요가 아마존 MSK 익스프레스로 하루 30억 건 이벤트를 처리하는 방법",
+      "url": "https://aws.amazon.com/blogs/big-data/how-klaviyo-processes-3-billion-daily-events-at-scale-with-amazon-msk-express/"
+     }
+    ],
+    "change": "continue"
+   }
+  },
+  "security": {
+   "kr": {
+    "text": "대학·증권·보험·유통 등에서 개인정보 유출이 잇따랐고 자바 취약점 긴급 점검이 권고됐다.",
+    "links": [
+     {
+      "title": "삼성증권, 고객 8,241명 개인정보 유출…VOC 첨부파일 외부 유출 확인",
+      "url": "https://www.dailysecu.com/news/articleView.html?idxno=209660"
+     },
+     {
+      "title": "미래에셋생명 개인정보 유출 규모 1만418명... 금융당국 신고",
+      "url": "https://www.boannews.com/news/articleView.html?idxno=147356"
+     },
+     {
+      "title": "[자바 취약점 비상] “인터넷 공개 서비스부터!”... 과기정통부, 자바 취약점 긴급점검 권고",
+      "url": "https://www.boannews.com/news/articleView.html?idxno=147343"
+     }
+    ],
+    "change": "continue"
+   },
+   "world": {
+    "text": "VMware 취약점 악용, AI 도구를 쓴 공격 등 해킹 소식이 이어졌다.",
+    "links": [
+     {
+      "title": "VMware, 9월부터 공격받은 vCenter 제로데이 취약점 패치",
+      "url": "https://www.bleepingcomputer.com/news/security/vmware-patches-vcenter-zero-day-exploited-in-attacks-since-september/"
+     },
+     {
+      "title": "해커들, 자율 AI 도구 '케른'으로 미공개 취약점 찾아 서버 장악",
+      "url": "https://www.bleepingcomputer.com/news/security/hackers-use-autonomous-ai-tool-cairn-to-find-zero-day-take-over-server/"
+     },
+     {
+      "title": "Hackers exploit GL.iNet cloud flaw to infect routers, KVM devices",
+      "url": "https://www.bleepingcomputer.com/news/security/hackers-exploit-glinet-cloud-flaw-to-infect-routers-kvm-devices/"
+     }
+    ],
+    "change": "continue"
+   }
+  },
+  "gadgets": {
+   "kr": {
+    "text": "카카오톡 업데이트와 삼성 갤럭시 워치 격년 출시 전환 소식이 나왔다.",
+    "links": [
+     {
+      "title": "공지 등록 10개까지·외국어 자동 번역…카카오톡 업데이트",
+      "url": "https://zdnet.co.kr/view/?no=20261119101917"
+     },
+     {
+      "title": "삼성전자, 내년 '갤럭시 워치' 신제품 없다",
+      "url": "https://www.etnews.com/20261120000237"
+     },
+     {
+      "title": "애플, 올해 '앱스토어 어워드' 후보작 45개 공개…당근·붉은사막 포함",
+      "url": "https://www.etnews.com/20261119000020"
+     }
+    ],
+    "change": "continue"
+   },
+   "world": {
+    "text": "애플 앱스토어 가격 조정과 AR 안경 리뷰, 아이폰 기능 소개가 나왔다.",
+    "links": [
+     {
+      "title": "애플, 여러 나라 앱스토어 가격 조정과 캘리포니아 새 세금 규정 발표",
+      "url": "https://9to5mac.com/2026/11/17/apple-announces-app-store-price-changes-in-multiple-countries-new-california-tax-rules/"
+     },
+     {
+      "title": "엑스리얼 오라 리뷰: 괜찮은 AR 안경이지만 덜 다듬어진 구글 안드로이드 XR이 발목",
+      "url": "https://www.engadget.com/2320945/xreal-aura-review/"
+     },
+     {
+      "title": "iOS 27: AI 말고 마음에 드는 새 아이폰 기능들",
+      "url": "https://9to5mac.com/2026/11/21/ios-27-my-favorite-new-iphone-features-other-than-ai/"
+     }
+    ],
+    "change": "continue"
+   }
+  },
+  "construction_it": {
+   "kr": {
+    "text": "공공기관의 건설·부동산 AI 에이전트 도입과 도로안전 기술 개발이 이어졌다.",
+    "links": [
+     {
+      "title": "[이슈] 한국부동산원, AI 에이전트 플랫폼 구축… AX 본격 추진",
+      "url": "http://www.ikld.kr/news/articleView.html?idxno=344317"
+     },
+     {
+      "title": "건설연, ‘도로안전 기술’ 개발… AI·건설 신소재로 도로노면 위험 선제 대응한다",
+      "url": "http://www.ikld.kr/news/articleView.html?idxno=344533"
+     },
+     {
+      "title": "SK에코플랜트, 설계특화 AI 플랫폼 'AXen' 도입… 전사적 AI전환 박차",
+      "url": "http://www.ikld.kr/news/articleView.html?idxno=344653"
+     }
+    ],
+    "change": "continue"
+   },
+   "world": {
+    "text": "데이터센터 건설 규제와 설계 분쟁, 건설 현장 AI 도입이 나왔다.",
+    "links": [
+     {
+      "title": "펜실베이니아 데이터센터 건설: 달라지는 규제 환경",
+      "url": "https://www.enr.com/blogs/48-east-construction-views/post/64352-data-center-construction-in-pennsylvania-a-changing-regulatory-landscape"
+     },
+     {
+      "title": "WSP와 AECOM, 프랑크푸르트 데이터센터 합의금 두고 영국 법원서 다툼",
+      "url": "https://www.enr.com/articles/64369-wsp-and-aecom-contest-frankfurt-data-center-settlement"
+     },
+     {
+      "title": "매스텍, 재생에너지 현장에 피지컬 AI 도입 협력",
+      "url": "https://www.constructiondive.com/news/mastec-partners-gritt-physical-ai-renewables-projects/875015/"
+     }
+    ],
+    "change": "continue"
+   }
+  },
+  "erp_si": {
+   "kr": {
+    "text": "삼성SDS 대표 유임, LG CNS 임원인사 등 IT서비스 업계 인사와 AI 공장 구축 소식이 나왔다.",
+    "links": [
+     {
+      "title": "[어바웃 C] 삼성SDS 이준희 유임…'AI·클라우드' 드라이브 잇는다",
+      "url": "https://www.bloter.net/news/articleView.html?idxno=679224"
+     },
+     {
+      "title": "LG CNS, 2027 임원인사…AX사업 역량 강화 집중",
+      "url": "https://www.dt.co.kr/article/12096215"
+     },
+     {
+      "title": "CJ올리브네트웍스, 와이즈메디 진천공장 AI팩토리 구축 맡아",
+      "url": "https://www.dt.co.kr/article/12095869"
+     }
+    ],
+    "change": "continue"
+   },
+   "world": null
+  },
+  "freelance": {
+   "kr": null,
+   "world": {
+    "text": "프리랜서 플랫폼의 사기성 설문과 연말 세금 전략이 다뤄졌다.",
+    "links": [
+     {
+      "title": "업워크는 왜 돈도 안 주는 사기성 설문을 허용하나? 플랫폼이 막아야 하지 않나?",
+      "url": "https://www.reddit.com/r/Upwork/comments/1xy2tk7/why_does_upwork_allow_scammy_surveys_that_dont/"
+     },
+     {
+      "title": "프리랜서의 연말 세금 전략: 12월 31일 전에 자영업 세금 줄이는 결정들",
+      "url": "https://blog.freelancersunion.org/2026/11/16/the-freelancers-year-end-tax-playbook-strategic-decisions-to-slash-your-self-employment-tax-bill-before-dec-31/"
+     }
+    ],
+    "change": "continue"
+   }
+  },
+  "kr_top": {
+   "kr": {
+    "text": "수능 AI 부정행위 대책과 조희대 대법원장 탄핵 추진이 정국을 달궜다.",
+    "links": [
+     {
+      "title": "당정, '올 수능부터 AI커닝시 10년 응시제한' 소급 입법 추진(종합)",
+      "url": "https://www.yna.co.kr/view/AKR20261118066952001"
+     },
+     {
+      "title": "與, 조희대 탄핵 추진단 꾸려 소추준비 속도…민생 부각 여론전도",
+      "url": "https://www.yna.co.kr/view/AKR20261120073900001"
+     },
+     {
+      "title": "李대통령 \"수능 부정행위 신고포상금 건당 최소 1억…행위자수만큼 가산\"",
+      "url": "https://www.yna.co.kr/view/AKR20261121039400001"
+     }
+    ],
+    "change": "new"
+   },
+   "world": null
+  },
+  "world_top": {
+   "kr": {
+    "text": "크림대교 폭발, 머스크 발언, 러트닉 엔비디아 논란이 보도됐다.",
+    "links": [
+     {
+      "title": "[영상] 플라밍고 날자 크림대교 큰 폭발…'푸틴 자존심' 핵심구간 붕괴",
+      "url": "https://www.yna.co.kr/view/AKR20261118095600704"
+     },
+     {
+      "title": "머스크 \"중간선거에 거액 지출 어리석었다…난 마가 아냐\"",
+      "url": "https://www.yna.co.kr/view/AKR20261119078800009"
+     },
+     {
+      "title": "러트닉 미 상무, '엔비디아 스캔들 연루 위기' 넘어 건재 과시",
+      "url": "https://www.yna.co.kr/view/AKR20261122016400009"
+     }
+    ],
+    "change": "continue"
+   },
+   "world": {
+    "text": "미얀마 집단학살 판결, EU 이주민 추방센터, 민주당 하원 압승이 전해졌다.",
+    "links": [
+     {
+      "title": "유엔 최고 법원, 미얀마가 로힝야족에 집단학살 저질렀다고 판결",
+      "url": "https://www.bbc.co.uk/news/articles/c804wzp20ddvo?at_medium=RSS&at_campaign=rss"
+     },
+     {
+      "title": "EU 5개국, 르완다에 이주민 추방 센터 설치 발표",
+      "url": "https://www.bbc.co.uk/news/articles/cw987343352go?at_medium=RSS&at_campaign=rss"
+     },
+     {
+      "title": "Democrats win largest House majority since 1992 after flipping North Carolina seat",
+      "url": "https://www.bbc.co.uk/news/articles/c6vg29g7dlyno?at_medium=RSS&at_campaign=rss"
+     }
+    ],
+    "change": "continue"
+   }
+  },
+  "opinion": {
+   "kr": {
+    "text": "수능 AI 부정행위와 대법원장 탄핵을 다룬 사설이 이어졌다.",
+    "links": [
+     {
+      "title": "[사설]AI로 ‘실력 위조’하는 시대… 現 시험-선발 제도론 백약이 무효",
+      "url": "https://www.donga.com/news/Opinion/article/all/20261116/135035651/2"
+     },
+     {
+      "title": "[사설] 판결 다음날 대법원장 탄핵 결의, 집권당의 충동적 국헌문란",
+      "url": "https://www.chosun.com/opinion/editorial/2026/11/21/BAEGROUXLZFB5F43OJHACTW5EE/"
+     },
+     {
+      "title": "[사설]조 대법원장 탄핵은 안 된다… 이 대통령이 제동 걸어야",
+      "url": "https://www.donga.com/news/Opinion/article/all/20261122/135070211/2"
+     }
+    ],
+    "change": "continue"
+   },
+   "world": {
+    "text": "엔비디아 스캔들과 트럼프 내각, 핵 경쟁을 논평하는 글이 나왔다.",
+    "links": [
+     {
+      "title": "엔비디아 스캔들의 핵심에 있는 분노스러운 위선",
+      "url": "https://www.nytimes.com/2026/11/16/opinion/nvidia-trump-jensen-huang-lutnick.html"
+     },
+     {
+      "title": "민주당에 드리는 조언: 트럼프 내각을 탄핵하라",
+      "url": "https://www.nytimes.com/2026/11/21/opinion/trump-xi-putin-summit-china-ai-democrats.html"
+     },
+     {
+      "title": "트럼프는 어떻게 세계 핵무기 경쟁을 피할 수 있나",
+      "url": "https://www.nytimes.com/2026/11/18/opinion/trump-xi-putin-china-nuclear.html"
+     }
+    ],
+    "change": "continue"
+   }
+  },
+  "market": {
+   "kr": {
+    "text": "엔비디아와 앤트로픽 상장 변수에 코스피·코스닥이 급락해 검은 월요일 우려가 커졌다.",
+    "links": [
+     {
+      "title": "코스피 이어 코스닥도 매도 사이드카…삼전닉스 6%대 급락(종합)",
+      "url": "https://www.yna.co.kr/view/AKR20261120086351008"
+     },
+     {
+      "title": "[마켓뷰] 'AI투매'에 급락 도미노…'검은월요일' 우려 커진 증시",
+      "url": "https://www.yna.co.kr/view/AKR20261123018900008"
+     },
+     {
+      "title": "[속보] 3%대로 하락폭 커진 코스닥, 장중 연저점 깨져",
+      "url": "https://www.yna.co.kr/view/AKR20261123054700008"
+     }
+    ],
+    "change": "continue"
+   },
+   "world": null
+  },
+  "industry": {
+   "kr": {
+    "text": "삼성전자 사장단 인사, 네이버 물류 자회사, 포스코 임금 합의 소식이 나왔다.",
+    "links": [
+     {
+      "title": "삼성전자 사장 승진 모두 반도체…기존 투톱에 성과·기술 방점",
+      "url": "https://www.yna.co.kr/view/AKR20261120060900003"
+     },
+     {
+      "title": "[단독] 네이버 물류 자회사 ‘네이버로직스’...수장에 김범준 COO 내정",
+      "url": "https://www.mk.co.kr/news/business/12215910"
+     },
+     {
+      "title": "포스코 노사, 1차 합의안 부결 13일 만에 임금교섭 잠정합의(종합)",
+      "url": "https://www.yna.co.kr/view/AKR20261120166151053"
+     }
+    ],
+    "change": "continue"
+   },
+   "world": {
+    "text": "엔비디아 주가가 급락하고 중국 AI 칩 판매 승인이 논란이 됐다.",
+    "links": [
+     {
+      "title": "엔비디아 주가 14% 급락…2008년 금융위기 이후 최장 주간 하락",
+      "url": "https://www.cnbc.com/2026/11/20/nvidias-7-week-losing-streak-is-longest-since-2008-financial-crisis.html"
+     },
+     {
+      "title": "미 상무부, 중국 기업에 AI 칩 87만 9천 개 이상 판매 승인",
+      "url": "https://www.cnbc.com/2026/11/19/nvidia-amd-china-chip-sales-congress.html"
+     },
+     {
+      "title": "인텔, 최첨단 18A 칩의 첫 외부 고객 확보",
+      "url": "https://www.cnbc.com/2026/11/18/intel-first-18a-foundry-customer.html"
+     }
+    ],
+    "change": "continue"
+   }
+  },
+  "labor": {
+   "kr": {
+    "text": "이주노동자 의존 확대와 노조 가입, 쿠팡 산재 유족 수상이 전해졌다.",
+    "links": [
+     {
+      "title": "중소기업 고숙련 직무, 이주노동자 ‘의존도’ 커졌다",
+      "url": "https://www.labortoday.co.kr/news/articleView.html?idxno=237778"
+     },
+     {
+      "title": "삼성바이오 노조, 한국노총 가입…조합원 88% 찬성",
+      "url": "https://www.yna.co.kr/view/AKR20261118026200017"
+     },
+     {
+      "title": "우분투상 대상에 쿠팡 산재 유족 박미숙·장광씨",
+      "url": "https://www.labortoday.co.kr/news/articleView.html?idxno=237827"
+     }
+    ],
+    "change": "continue"
+   },
+   "world": {
+    "text": "AI 이력서 탓에 인재 선별이 어려워지고 구직 행태 조사가 나왔다.",
+    "links": [
+     {
+      "title": "구직자의 AI 사용 탓에 적합한 인재 가려내기 어려워졌다는 보고서",
+      "url": "https://www.hrdive.com/news/job-candidates-ai-usage-is-obscuring-their-viability-report-finds/875232/"
+     },
+     {
+      "title": "거의 즉시 오는 탈락 통보가 구직 행동을 바꿨을 수 있다",
+      "url": "https://www.hrdive.com/news/near-instant-rejections-may-have-changed-job-search-behavior/875085/"
+     },
+     {
+      "title": "불안한 경제 속에서도 기업 복리후생은 유지",
+      "url": "https://www.hrdive.com/news/employer-benefits-hold-steady-despite-unstable-macroeconomic-conditions/874945/"
+     }
+    ],
+    "change": "continue"
+   }
+  },
+  "health": {
+   "kr": {
+    "text": "먹는 치매약 효과와 항생제 오해 조사, 내성 예방 교육 소식이 나왔다.",
+    "links": [
+     {
+      "title": "아리바이오 \"먹는 치매약, 악화 31% 늦춰\"…일부 환자 한정(종합)",
+      "url": "https://www.yna.co.kr/view/AKR20261117049651017"
+     },
+     {
+      "title": "국민 71%, 항생제 잘못 알고 있다…\"항생제가 감기 치료에 도움\"",
+      "url": "https://www.yna.co.kr/view/AKR20261118054900530"
+     },
+     {
+      "title": "\"항생제는 감기약이 아녜요\"…초등학교서 시작된 내성 예방 교육",
+      "url": "https://www.yna.co.kr/view/AKR20261120164000530"
+     }
+    ],
+    "change": "continue"
+   },
+   "world": {
+    "text": "FDA 청장 지명 철회, 침팬지 보호구역 이송, AI 유방암 검진 시험이 전해졌다.",
+    "links": [
+     {
+      "title": "백악관, 하이디 오버턴 FDA 청장 지명 철회",
+      "url": "https://www.nytimes.com/2026/11/17/us/overton-fda-nomination-withdrawn.html"
+     },
+     {
+      "title": "NIH, 은퇴한 연구용 침팬지 마지막 무리를 보호구역으로 옮긴다",
+      "url": "https://www.nytimes.com/2026/11/18/science/nih-chimpanzees-sanctuary.html"
+     },
+     {
+      "title": "Can AI spot breast cancer earlier? NHS launches world's largest trial to find out",
+      "url": "https://www.bbc.co.uk/news/articles/cmpdwnw3nvzjo?at_medium=RSS&at_campaign=rss"
+     }
+    ],
+    "change": "continue"
+   }
+  },
+  "climate": {
+   "kr": {
+    "text": "탄소시장 검증 부실과 석탄 대신 가스, 바이오매스 발전소 논란이 나왔다.",
+    "links": [
+     {
+      "title": "\"사 오는 감축실적 절반이 불량\"...탄소시장 넓히는 정부, 검증은 뒷전",
+      "url": "https://www.newspenguin.com/news/articleView.html?idxno=22453"
+     },
+     {
+      "title": "석탄 뺀 자리 가스로 채울라...한·호주 '탈탄소 MOU' 앞으로 과제는?",
+      "url": "https://www.newspenguin.com/news/articleView.html?idxno=22461"
+     },
+     {
+      "title": "'탄소중립 역행' 영일만 발전소, 환경평가 '면죄부' 노리나",
+      "url": "https://www.newspenguin.com/news/articleView.html?idxno=22467"
+     }
+    ],
+    "change": "continue"
+   },
+   "world": {
+    "text": "COP31이 화석연료 문구 삭제 논란 끝에 합의에 실패했다.",
+    "links": [
+     {
+      "title": "COP31, 초안서 화석연료 언급 전부 삭제돼 '유령 정상회의' 우려",
+      "url": "https://www.theguardian.com/environment/2026/nov/19/cop31-risks-becoming-ghost-summit-after-all-mentions-of-fossil-fuels-removed-from-draft-text"
+     },
+     {
+      "title": "COP31, 화석연료 문제로 결렬 위기…외교관들 타협 모색",
+      "url": "https://www.theguardian.com/environment/live/2026/nov/21/cop31-climate-deal-latest-news-updates"
+     },
+     {
+      "title": "The good news out of Cop31? That most of the world’s governments said no to an agreement stripped of meaning | Bill Hare",
+      "url": "https://www.theguardian.com/environment/commentisfree/2026/nov/23/cop31-climate-summit-no-agreement"
+     }
+    ],
+    "change": "continue"
+   }
+  },
+  "mobility": {
+   "kr": {
+    "text": "자율주행 버스 시험 확대와 샤오미 전기차 해외 판매 소식이 나왔다.",
+    "links": [
+     {
+      "title": "만트럭버스 그룹, 독일 뮌헨에서 자율주행 전기버스 실증 확대",
+      "url": "https://www.motorgraph.com/news/articleView.html?idxno=44969"
+     },
+     {
+      "title": "\"가전 제품이 아니다\" 샤오미, 중국 넘어 첫 해외 판매 시동 UAE에 등장",
+      "url": "http://www.autoherald.co.kr/news/articleView.html?idxno=62264"
+     },
+     {
+      "title": "금호타이어, 자율주행버스 스마트 타이어 적용 확대 추진",
+      "url": "https://www.motorgraph.com/news/articleView.html?idxno=44952"
+     }
+    ],
+    "change": "continue"
+   },
+   "world": {
+    "text": "테슬라 사이버캡 충돌과 폐배터리 저장장치, 샤오미 해외 판매가 다뤄졌다.",
+    "links": [
+     {
+      "title": "테슬라 사이버캡 충돌 8건, 데이터로 본 저속 문제",
+      "url": "https://electrek.co/2026/11/16/tesla-cybercab-crashes-speed-problem/"
+     },
+     {
+      "title": "폐전기차 배터리로 만든 500kWh 에너지 저장 장치",
+      "url": "https://electrek.co/2026/11/20/this-500-kwh-energy-storage-system-runs-on-retired-ev-batteries/"
+     },
+     {
+      "title": "붉은 물결: 샤오미, 첫 해외 전기차 판매 시작",
+      "url": "https://electrek.co/2026/11/21/red-wave-xiaomi-goes-global-with-first-overseas-ev-sales/"
+     }
+    ],
+    "change": "continue"
+   }
+  },
+  "education": {
+   "kr": {
+    "text": "수능 AI 부정행위 적발이 이어지다 교육부 장관이 사퇴했다.",
+    "links": [
+     {
+      "title": "수능, 초소형 카메라 부정행위 적발 .. 경기도교육청 공식 확인",
+      "url": "https://www.edupress.kr/news/articleView.html?idxno=30658"
+     },
+     {
+      "title": "이 대통령 “수능 부정행위 '반드시 잡는다'…감독교사 어려움 세심히 살피길”",
+      "url": "https://www.edupress.kr/news/articleView.html?idxno=30637"
+     },
+     {
+      "title": "교육부 장관 사퇴 “늦었지만 당연할 결정”",
+      "url": "http://www.hangyo.com/news/article.html?no=110160"
+     }
+    ],
+    "change": "continue"
+   },
+   "world": {
+    "text": "미국 대학 전공 평가와 소수인종 우대 이후 채용, AI 시대 교육이 논의됐다.",
+    "links": [
+     {
+      "title": "주 정부들, 대학 전공과 훈련 과정의 '승자 고르기'에 나선다",
+      "url": "https://hechingerreport.org/proof-points-states-priority-fields/"
+     },
+     {
+      "title": "DEI·소수인종 우대 공격 이후 흑인·라틴계 학생의 취업 통로가 말라간다",
+      "url": "https://hechingerreport.org/job-pipelines-for-black-and-latino-students-dry-up-after-dei-and-affirmative-action-attacks/"
+     },
+     {
+      "title": "의견: 준비된 인력을 위해 학교는 변하는 경제에 맞는 역량을 다시 생각해야",
+      "url": "https://hechingerreport.org/workforce-preparation-changing-economy/"
+     }
+    ],
+    "change": "continue"
+   }
+  },
+  "travel": {
+   "kr": {
+    "text": "유류할증료 소폭 하락, 방일 한국인 1000만 명 임박, 항공·여행사 실적이 나왔다.",
+    "links": [
+     {
+      "title": "'롤러코스터' 탄 국제선 유류할증료, 12월 소폭 하락",
+      "url": "https://www.traveltimes.co.kr/news/articleView.html?idxno=500739"
+     },
+     {
+      "title": "방일 한국인 첫 1,000만 명까지 70만 명…11월 돌파 유력",
+      "url": "https://www.traveltimes.co.kr/news/articleView.html?idxno=500747"
+     },
+     {
+      "title": "LCC 3사는 흑자로 턴어라운드, 여행사는 희비…수익성 격차",
+      "url": "https://www.traveltimes.co.kr/news/articleView.html?idxno=500755"
+     }
+    ],
+    "change": "continue"
+   },
+   "world": {
+    "text": "항공·호텔 전산 장애와 부킹홀딩스 조사, AI 여행 예약 경쟁이 전해졌다.",
+    "links": [
+     {
+      "title": "유나이티드항공, 전국 운항 중단 일으킨 기술 문제 해결",
+      "url": "https://skift.com/2026/11/16/united-airlines-resolves-tech-issue-that-caused-systemwide-outage/"
+     },
+     {
+      "title": "메리어트 본보이 로그인, 몇 시간 동안 먹통",
+      "url": "https://skift.com/2026/11/17/marriott-bonvoy-sign-ins-were-down-for-hours-disrupting-mobile-keys/"
+     },
+     {
+      "title": "세이버, AI 여행 예약 뒤의 거래 엔진 되려 한다",
+      "url": "https://skift.com/2026/11/19/sabre-wants-to-be-the-transaction-engine-behind-ai-travel-bookings/"
+     }
+    ],
+    "change": "continue"
+   }
+  },
+  "sports": {
+   "kr": {
+    "text": "이강인 AFC 2년 연속 수상, 변상일 삼성화재배 우승, LPGA 데이터 도입이 나왔다.",
+    "links": [
+     {
+      "title": "이강인, AFC 국제선수 최초 2년 연속 수상…황인범·우에다 제쳐",
+      "url": "https://www.yna.co.kr/view/AKR20261120021100007"
+     },
+     {
+      "title": "삼성화재배 첫 우승 변상일 \"자신감 좀 더 생길 것 같다\"",
+      "url": "https://www.yna.co.kr/view/AKR20261120157500007"
+     },
+     {
+      "title": "LPGA 투어, 내년부터 '공 위치 데이터' 도입…중계와 앱에 활용",
+      "url": "https://www.yna.co.kr/view/AKR20261119012100007"
+     }
+    ],
+    "change": "continue"
+   },
+   "world": {
+    "text": "ATP 파이널스와 NBA 하든·웸바냐마 활약, 포체티노 맨유 출발이 전해졌다.",
+    "links": [
+     {
+      "title": "무자비한 즈베레프, ATP 파이널스 4강 토너먼트 진출",
+      "url": "https://www.bbc.co.uk/sport/tennis/articles/c6x2eveyyxp0o?at_medium=RSS&at_campaign=rss"
+     },
+     {
+      "title": "클리블랜드 하든, 51점 폭발로 코비 브라이언트 제치다",
+      "url": "https://www.theguardian.com/sport/2026/nov/21/james-harden-51-points-kobe-bryant-cavaliers-pacers-nba"
+     },
+     {
+      "title": "Chaotic week, nightmare start and huge reality check for Pochettino",
+      "url": "https://www.bbc.co.uk/sport/football/articles/cwd012903kvgo?at_medium=RSS&at_campaign=rss"
+     }
+    ],
+    "change": "continue"
+   }
+  },
+  "entertainment": {
+   "kr": {
+    "text": "빅뱅 신곡, 나 홀로 집에 속편 소식과 방송인 음주운전 사과가 나왔다.",
+    "links": [
+     {
+      "title": "20주년 빅뱅, 오늘 신곡 깜짝 발표…내일 '마마 어워즈' 출연",
+      "url": "https://www.yna.co.kr/view/AKR20261120036800005"
+     },
+     {
+      "title": "'나 홀로 집에' 속편 나온다…맥컬리 컬킨 34년만에 복귀",
+      "url": "https://www.yna.co.kr/view/AKR20261121017200009"
+     },
+     {
+      "title": "'보검 매직컬2' 측 \"고경표 음주운전 유감…시청 불편 최소화\"",
+      "url": "https://www.yna.co.kr/view/AKR20261118043900005"
+     }
+    ],
+    "change": "continue"
+   },
+   "world": {
+    "text": "테일러 스위프트 CMA 공연, 에이티즈 빌보드 1위, CAA·하이브 제휴가 화제였다.",
+    "links": [
+     {
+      "title": "테일러 스위프트, CMA 어워드에서 신곡과 '아워 송' 매시업 공연",
+      "url": "https://variety.com/2026/music/news/taylor-swift-performs-i-knew-it-i-knew-you-our-song-cmas-1236952619/"
+     },
+     {
+      "title": "Ateez Debuts at No. 1 on Billboard 200 for the Third Time This Year; U2’s ‘Carnaval de Luz’ Bows at No. 4",
+      "url": "https://variety.com/2026/music/news/ateez-u2-album-chart-debut-billboard-1236955537/"
+     },
+     {
+      "title": "CAA와 하이브, 전략적 파트너십 출범",
+      "url": "https://variety.com/2026/biz/news/caa-hybe-strategic-partnership-1236949852/"
+     }
+    ],
+    "change": "continue"
+   }
+  },
+  "culture_books": {
+   "kr": {
+    "text": "하루키 신작이 4주째 베스트셀러 1위이고 연극 '먼지여자' 등 소식이 나왔다.",
+    "links": [
+     {
+      "title": "AI 난리에 ‘공부의 종말’ 판매량 급증···하루키 ‘가호’는 4주째 베스트셀러 1위",
+      "url": "https://www.khan.co.kr/article/202611200930001/?utm_source=khan_rss&utm_medium=rss&utm_campaign=culture_news"
+     },
+     {
+      "title": "세상이 바뀌어도 그대로 남아있는 폭력의 구조…연극 '먼지여자'",
+      "url": "https://www.yna.co.kr/view/AKR20261121030500005"
+     },
+     {
+      "title": "포디움 없앤 지휘자…'클래식 구원자' 쿠렌치스의 파격 무대",
+      "url": "https://www.yna.co.kr/view/AKR20261118087700005"
+     }
+    ],
+    "change": "continue"
+   },
+   "world": {
+    "text": "하루키 서평과 소니아 간디 회고록, 질리 쿠퍼 표절 의혹이 나왔다.",
+    "links": [
+     {
+      "title": "무라카미 하루키 『고양이를 버리다』 서평: 가족과 기억에 대한 내밀한 성찰",
+      "url": "https://www.theguardian.com/books/2026/nov/19/abandoning-a-cat-by-haruki-murakami-review-an-intimate-meditation-on-family-and-memory"
+     },
+     {
+      "title": "소니아 간디의 『소속』 서평: 인도의 원로 정치인이 침묵을 깨다",
+      "url": "https://www.theguardian.com/books/2026/nov/17/belonging-by-sonia-gandhi-review-indias-elder-stateswoman-breaks-her-silence"
+     },
+     {
+      "title": "Rivals author Jilly Cooper accused of ‘extensive and deliberate plagiarism’",
+      "url": "https://www.theguardian.com/books/2026/nov/22/rivals-author-jilly-cooper-accused-plagiarism"
+     }
+    ],
+    "change": "continue"
+   }
+  }
+ }
+}
