@@ -1,4 +1,4 @@
-# 데일리 브리핑 설정 (8개 분야 · 34개 섹션, 매일 오전 8시 발송, 월요일엔 맨 위에 "이번 주 흐름").
+# 데일리 브리핑 설정 (8개 분야 · 35개 섹션, 매일 오전 8시 발송, 월요일엔 맨 위에 "이번 주 흐름").
 #
 # ■ 섹션(category) 하나의 형식
 #   - key: ai_data              # 영문 식별자 (목차 링크에 사용)
@@ -275,6 +275,30 @@ categories:
       - name: "AI타임스"
         url: "https://www.aitimes.com/rss/allArticle.xml"
         keywords: [에이전트, RAG, 도입, 사례, 구축, 적용]
+
+  - key: dev_methods
+    name: "개발 기술·방법론"
+    group: tech
+    # TDD·리팩터링·아키텍처 같은 개발 방법론과 AI 코딩 기법. 뉴스가 아니라 "어떤 기법·도구가 있나"를 걸어두는 섹션
+    hours_back: 168        # 방법론 글은 드물어서 1주치
+    exclude_keywords: [Podcast, Webinar, "Quoting", 채용, 행사 안내]
+    feeds:
+      - name: "Martin Fowler"
+        url: "https://www.martinfowler.com/feed.atom"
+      - name: "InfoQ"
+        url: "https://feed.infoq.com/"
+      - name: "Simon Willison (AI 코딩)"
+        url: "https://simonwillison.net/atom/everything/"
+        region: world
+        keywords: [LLM, LLMs, Claude, "Claude Code", Codex, Cursor, agent, agents, coding, prompt, prompts, MCP, "vibe coding", tool, tools]
+      - name: "토스 기술 블로그"
+        url: "https://toss.tech/rss.xml"
+        region: kr
+      - name: "GeekNews (개발 방법론)"
+        url: "https://news.hada.io/rss/news"
+        region: kr
+        keywords: [TDD, 테스트, 리팩터링, 리팩토링, 아키텍처, 설계, 패턴, 방법론, 코드 리뷰, 클린 코드, DDD, CI/CD, 마이크로서비스,
+                   모노레포, 바이브 코딩, 프롬프트, 코딩 에이전트, Claude Code, Cursor, Codex, 개발 생산성, 디버깅, 성능]
 
   - key: hacker_news
     name: "Hacker News"
